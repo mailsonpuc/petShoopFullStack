@@ -1,5 +1,5 @@
 import axios from "axios"
 
 export const api = axios.create({
-    baseURL: "http://localhost:5146"
+    baseURL: "https://apiracao-g2dwgrh6fse0c9a3.canadacentral-01.azurewebsites.net"
 })
