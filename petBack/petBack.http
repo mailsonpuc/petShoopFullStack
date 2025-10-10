@@ -1,0 +1,6 @@
+@petBack_HostAddress = http://localhost:5146
+
+GET {{petBack_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

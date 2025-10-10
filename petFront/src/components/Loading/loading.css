@@ -1,0 +1,22 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #fffbe6;
+}
+
+.pet-loading-image {
+    width: 30%;
+    height: auto;
+    animation: bounce 1.5s infinite;
+}
+
+.loading-progress-text {
+    margin-top: 1rem;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 1rem;
+    color: #2b11c0;
+    text-align: center;
+}
