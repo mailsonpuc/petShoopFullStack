@@ -230,7 +230,7 @@ dotnet run
 cd Frontend
 
 ### Instalar dependências
-yarninstall
+yarn install
 
 ### Executar em modo desenvolvimento
 yarn run dev
