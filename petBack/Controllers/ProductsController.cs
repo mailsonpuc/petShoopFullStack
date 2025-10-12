@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using petBack.DTOS;
 using petBack.DTOS.Mappings;
 using petBack.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace petBack.Controllers
 {
@@ -11,29 +14,56 @@ namespace petBack.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IMemoryCache _cache;
 
-        public ProductsController(IUnitOfWork uof, ILogger<ProductsController> logger)
+        public ProductsController(IUnitOfWork uof, ILogger<ProductsController> logger, IMemoryCache cache)
         {
             _uof = uof;
             _logger = logger;
+            _cache = cache;
         }
+
 
         /// <summary>
         /// Obtém todos os produtos.
         /// </summary>
         [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> Get()
         {
-            var products = await _uof.ProductRepository.GetAllAsync();
+            const string cacheKey = "all_products";
 
-            if (products == null || !products.Any())
+            if (!_cache.TryGetValue(cacheKey, out IEnumerable<ProductDTO>? productsDto))
             {
-                _logger.LogWarning("Nenhum produto encontrado.");
-                return NotFound("Nenhum produto encontrado.");
+                var products = await _uof.ProductRepository.GetAllAsync();
+
+                if (products == null || !products.Any())
+                {
+                    _logger.LogWarning("Nenhum produto encontrado.");
+                    return NotFound("Nenhum produto encontrado.");
+                }
+
+                productsDto = products.ToProductDTOList();
+
+                // Define tempo de expiração do cache (2 horas)
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2),
+                    Priority = CacheItemPriority.High
+                };
+
+                _cache.Set(cacheKey, productsDto, cacheOptions);
+                _logger.LogInformation("Cache criado para todos os produtos (2 horas).");
+            }
+            else
+            {
+                _logger.LogInformation("Retornando produtos do cache.");
             }
 
-            return Ok(products.ToProductDTOList());
+            return Ok(productsDto);
         }
+
+
 
         /// <summary>
         /// Obtém um produto pelo ID.
@@ -52,6 +82,8 @@ namespace petBack.Controllers
             return Ok(product.ToProductDTO());
         }
 
+
+
         /// <summary>
         /// Cria um novo produto.
         /// </summary>
@@ -67,6 +99,8 @@ namespace petBack.Controllers
             var product = productDto.ToProduct();
             var createdProduct = _uof.ProductRepository.Create(product);
             await _uof.Commit();
+            _cache.Remove("all_products"); // limpa cache da lista geral
+
 
             var resultDto = createdProduct.ToProductDTO();
 
@@ -74,8 +108,9 @@ namespace petBack.Controllers
         }
 
         /// <summary>
-        /// Atualiza um produto existente.
+        /// Atualiza um produto existente. --> Authorize
         /// </summary>
+        [Authorize]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<ProductDTO>> Put(Guid id, [FromBody] ProductDTO productDto)
         {
@@ -99,7 +134,10 @@ namespace petBack.Controllers
             existingProduct.ImagemUrl = productDto.ImagemUrl;
 
             _uof.ProductRepository.Update(existingProduct);
+
             await _uof.Commit();
+            _cache.Remove("all_products"); // limpa cache da lista geral
+
 
             return Ok(existingProduct.ToProductDTO());
         }
@@ -109,8 +147,9 @@ namespace petBack.Controllers
 
 
         /// <summary>
-        /// Remove um produto.
+        /// Remove um produto. --> Authorize
         /// </summary>
+        [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProductDTO>> Delete(Guid id)
         {
@@ -123,7 +162,10 @@ namespace petBack.Controllers
             }
 
             _uof.ProductRepository.Delete(existingProduct);
+
             await _uof.Commit();
+            _cache.Remove("all_products"); // limpa cache da lista geral
+
 
             return Ok(existingProduct.ToProductDTO());
         }

@@ -1,7 +1,11 @@
 .svg-loading-animation {
     width: 30%;
     height: auto;
-    color: #2b11c0; /* Define a cor da linha animada */
+<<<<<<< HEAD
+    color: #2b11c0;
+=======
+    color: #2b11c0; 
+>>>>>>> ce399ec (update full)
 }
 
 .animated-line-svg {
