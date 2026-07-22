@@ -6,6 +6,8 @@
 /obj
 .vscode
 
+.idea
+
 # dotenv files
 .env
 
