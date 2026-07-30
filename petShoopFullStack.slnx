@@ -2,6 +2,7 @@
   <Project Path="PetShoop.API/PetShoop.API.csproj" />
   <Project Path="PetShoop.Application/PetShoop.Application.csproj" />
   <Project Path="PetShoop.CrossCutting/PetShoop.CrossCutting.csproj" />
+  <Project Path="PetShoop.Domain.Tests/PetShoop.Domain.Tests.csproj" />
   <Project Path="PetShoop.Domain/PetShoop.Domain.csproj" />
   <Project Path="PetShoop.Infrastructure/PetShoop.Infrastructure.csproj" />
 </Solution>
