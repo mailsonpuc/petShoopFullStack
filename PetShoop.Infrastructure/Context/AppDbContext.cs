@@ -1,10 +1,12 @@
 
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PetShoop.Domain.Entities;
+using PetShoop.Infrastructure.Identity;
 
 namespace PetShoop.Infrastructure.Context;
 
-public class AppDbContext : DbContext
+public class AppDbContext :  IdentityDbContext<ApplicationUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
