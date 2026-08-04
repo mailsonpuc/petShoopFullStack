@@ -22,6 +22,9 @@ public static class DependencyInjectionAPI
         services.AddScoped<IClienteRepository, ClienteRepository>();
         services.AddScoped<IClienteService, ClienteService>();
 
+        services.AddScoped<IPetRepository, PetRepository>();
+        services.AddScoped<IPetService, PetService>();
+
         /*
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
         services.AddScoped<IConsultaRepository, ConsultaRepository>();
