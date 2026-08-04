@@ -19,14 +19,19 @@ public static class DependencyInjectionAPI
         services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("DataBase"));
 
 
+        //cliente
         services.AddScoped<IClienteRepository, ClienteRepository>();
         services.AddScoped<IClienteService, ClienteService>();
 
+        //pet
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IPetService, PetService>();
 
-        /*
+        //agendamento
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
+        services.AddScoped<IAgendamentoService, AgendamentoService>();
+
+        /*
         services.AddScoped<IConsultaRepository, ConsultaRepository>();
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
         services.AddScoped<IItemVendaRepository, ItemVendaRepository>();
@@ -38,17 +43,17 @@ public static class DependencyInjectionAPI
         services.AddScoped<IVendaRepository, VendaRepository>();
         */
 
-            // ===============================
-            // CONFIGURAÇÃO DO ASP.NET IDENTITY
-            // ===============================
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+        // ===============================
+        // CONFIGURAÇÃO DO ASP.NET IDENTITY
+        // ===============================
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
-            // ===============================
-            // SERVIÇO DE AUTENTICAÇÃO
-            // ===============================
-            services.AddScoped<IAuthenticate, AuthenticateService>();
+        // ===============================
+        // SERVIÇO DE AUTENTICAÇÃO
+        // ===============================
+        services.AddScoped<IAuthenticate, AuthenticateService>();
 
 
         return services;

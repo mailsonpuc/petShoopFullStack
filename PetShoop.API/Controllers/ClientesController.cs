@@ -35,6 +35,11 @@ public class ClientesController : ControllerBase
         return Ok(cliente);
     }
 
+
+
+    /// <summary>
+    /// Clientes deve se o primeiro a se criado.
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] ClienteDto clienteDto)
     {
