@@ -6,6 +6,9 @@ using PetShoop.Application.Services;
 using PetShoop.Domain.Interfaces;
 using PetShoop.Infrastructure.Context;
 using PetShoop.Infrastructure.Repositories;
+using PetShoop.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using PetShoop.Infrastructure.Identity.Interfaces;
 
 namespace PetShoop.CrossCutting.IoC;
 
@@ -31,6 +34,20 @@ public static class DependencyInjectionAPI
         services.AddScoped<IVacinaRepository, VacinaRepository>();
         services.AddScoped<IVendaRepository, VendaRepository>();
         */
+
+            // ===============================
+            // CONFIGURAÇÃO DO ASP.NET IDENTITY
+            // ===============================
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            // ===============================
+            // SERVIÇO DE AUTENTICAÇÃO
+            // ===============================
+            services.AddScoped<IAuthenticate, AuthenticateService>();
+
+
         return services;
     }
 }
