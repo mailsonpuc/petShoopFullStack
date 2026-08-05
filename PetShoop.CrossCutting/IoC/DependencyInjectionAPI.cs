@@ -16,7 +16,20 @@ public static class DependencyInjectionAPI
 {
     public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+        //Usando em Memomy
+        //services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+
+
+        //Usando SQL Server
+        services.AddDbContext<AppDbContext>(options =>
+                     options.UseSqlServer(
+                         // String de conexão vinda do appsettings.json
+                         configuration.GetConnectionString("DefaultConnection"),
+
+                         // Define onde ficarão as migrations
+                         b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
+                     )
+                 );
 
 
         //cliente
@@ -30,6 +43,10 @@ public static class DependencyInjectionAPI
         //agendamento
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
         services.AddScoped<IAgendamentoService, AgendamentoService>();
+
+        //vacina
+        services.AddScoped<IVacinaRepository, VacinaRepository>();
+        services.AddScoped<IVacinaService, VacinaService>();
 
         /*
         services.AddScoped<IConsultaRepository, ConsultaRepository>();
