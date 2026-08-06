@@ -57,7 +57,10 @@ public static class DependencyInjectionAPI
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
         services.AddScoped<IFuncionarioService, FuncionarioService>();
 
-        
+        //ItemVenda
+        services.AddScoped<IItemVendaRepository, ItemVendaRepository>();
+        services.AddScoped<IItemVendaService, ItemVendaService>();
+
         /*
         services.AddScoped<IConsultaRepository, ConsultaRepository>();
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
