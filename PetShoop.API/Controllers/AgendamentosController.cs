@@ -15,6 +15,12 @@ public class AgendamentosController : ControllerBase
         _agendamentoService = agendamentoService;
     }
 
+    /// <summary>
+    /// Obtém a lista de todos os agendamentos cadastrados.
+    /// </summary>
+    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
+    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AgendamentoDto>>> Get()
     {

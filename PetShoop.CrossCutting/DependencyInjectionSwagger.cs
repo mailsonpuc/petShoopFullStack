@@ -1,4 +1,3 @@
-
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,17 +16,19 @@ public static class DependencyInjectionSwagger
         {
             options.Title = "Shoop API";
             options.Version = "v1";
+
             options.SchemaSettings.GenerateXmlObjects = true;
 
-            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-            if (assembly != null)
-            {
-                options.Description = $"API do projeto PetShoop. Assembly: {assembly.GetName().Name}";
-            }
+            var assembly = Assembly.GetEntryAssembly()
+                           ?? Assembly.GetExecutingAssembly();
+
+            options.Description =
+                $"API do projeto PetShoop. Assembly: {assembly.GetName().Name}";
 
             options.PostProcess = document =>
             {
-                document.Info.Description = "API RESTful para gerenciamento de petShoop em Clean Architecture";
+                document.Info.Description =
+                    "API RESTful para gerenciamento de PetShop em Clean Architecture";
 
                 document.Info.Contact = new OpenApiContact
                 {
@@ -50,7 +51,8 @@ public static class DependencyInjectionSwagger
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = OpenApiSecurityApiKeyLocation.Header,
-                    Description = "Informe o token no formato: Bearer {seu_token}"
+                    Description =
+                        "Informe o token no formato: Bearer {seu_token}"
                 }
             );
 
@@ -62,3 +64,4 @@ public static class DependencyInjectionSwagger
         return services;
     }
 }
+
