@@ -69,17 +69,13 @@ public static class DependencyInjectionAPI
         services.AddScoped<IVendaRepository, VendaRepository>();
         services.AddScoped<IVendaService, VendaService>();
 
-        /*
-        services.AddScoped<IConsultaRepository, ConsultaRepository>();
-        services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
-        services.AddScoped<IItemVendaRepository, ItemVendaRepository>();
-        services.AddScoped<IPetRepository, PetRepository>();
-        services.AddScoped<IProdutoRepository, ProdutoRepository>();
-        services.AddScoped<IProntuarioRepository, ProntuarioRepository>();
+        //Servico
         services.AddScoped<IServicoRepository, ServicoRepository>();
-        services.AddScoped<IVacinaRepository, VacinaRepository>();
-        services.AddScoped<IVendaRepository, VendaRepository>();
-        */
+        services.AddScoped<IServicoService, ServicoService>();
+
+        //Produto
+        services.AddScoped<IProdutoRepository, ProdutoRepository>();
+        services.AddScoped<IProdutoService, ProdutoService>();
 
         // ===============================
         // CONFIGURAÇÃO DO ASP.NET IDENTITY
