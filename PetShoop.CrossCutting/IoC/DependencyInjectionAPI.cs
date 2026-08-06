@@ -48,6 +48,10 @@ public static class DependencyInjectionAPI
         services.AddScoped<IVacinaRepository, VacinaRepository>();
         services.AddScoped<IVacinaService, VacinaService>();
 
+        //Consulta
+        services.AddScoped<IConsultaRepository, ConsultaRepository>();
+        services.AddScoped<IConsultaService, ConsultaService>();
+
         /*
         services.AddScoped<IConsultaRepository, ConsultaRepository>();
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
