@@ -125,7 +125,7 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=1q2w3e4r@#$" -p 1433:1433 --
 ```
 
 ## Screenshots
-Adicione capturas da aplicação aqui quando necessário.
+<img src="docPet.png"/>
 
 ## Roadmap
 - Melhorar autenticação e autorização
