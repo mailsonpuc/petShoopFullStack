@@ -12,12 +12,12 @@ namespace PetShoop.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TokenControlle : ControllerBase
+public class TokenController : ControllerBase
 {
     private readonly IAuthenticate _authenticate;
     private readonly IConfiguration _configuration;
 
-    public TokenControlle(IAuthenticate authenticate, IConfiguration configuration)
+    public TokenController(IAuthenticate authenticate, IConfiguration configuration)
     {
         _authenticate = authenticate;
         _configuration = configuration;
@@ -114,7 +114,7 @@ public class TokenControlle : ControllerBase
         };
     }
 
-        
+
 
 
 }
