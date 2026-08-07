@@ -23,12 +23,12 @@ public class ProntuarioRepository : IProntuarioRepository
 
     public async Task<Prontuario> GetByIdAsync(Guid? id)
     {
-        return (await _context.Prontuarios.SingleOrDefaultAsync(p => p.ProntuarioId == id))!;
+        return (await _context.Prontuarios.AsNoTracking().SingleOrDefaultAsync(p => p.ProntuarioId == id))!;
     }
 
     public async Task<IEnumerable<Prontuario>> GetProntuariosAsync()
     {
-        return await _context.Prontuarios.ToListAsync();
+        return await _context.Prontuarios.AsNoTracking().ToListAsync();
     }
 
     public async Task<Prontuario> RemoveAsync(Prontuario prontuario)

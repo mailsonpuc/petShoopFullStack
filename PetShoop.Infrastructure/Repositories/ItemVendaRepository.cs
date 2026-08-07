@@ -23,12 +23,12 @@ public class ItemVendaRepository : IItemVendaRepository
 
     public async Task<ItemVenda> GetByIdAsync(Guid? id)
     {
-        return (await _context.ItensVendas.SingleOrDefaultAsync(i => i.ItemVendaId == id))!;
+        return (await _context.ItensVendas.AsNoTracking().SingleOrDefaultAsync(i => i.ItemVendaId == id))!;
     }
 
     public async Task<IEnumerable<ItemVenda>> GetItensVendasAsync()
     {
-        return await _context.ItensVendas.ToListAsync();
+        return await _context.ItensVendas.AsNoTracking().ToListAsync();
     }
 
     public async Task<ItemVenda> RemoveAsync(ItemVenda itemVenda)

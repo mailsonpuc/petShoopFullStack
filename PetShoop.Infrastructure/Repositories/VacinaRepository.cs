@@ -23,12 +23,12 @@ public class VacinaRepository : IVacinaRepository
 
     public async Task<Vacina> GetByIdAsync(Guid? id)
     {
-        return (await _context.Vacinas.SingleOrDefaultAsync(v => v.VacinaId == id))!;
+        return (await _context.Vacinas.AsNoTracking().SingleOrDefaultAsync(v => v.VacinaId == id))!;
     }
 
     public async Task<IEnumerable<Vacina>> GetVacinasAsync()
     {
-        return await _context.Vacinas.ToListAsync();
+        return await _context.Vacinas.AsNoTracking().ToListAsync();
     }
 
     public async Task<Vacina> RemoveAsync(Vacina vacina)

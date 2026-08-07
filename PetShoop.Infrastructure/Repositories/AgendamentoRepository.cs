@@ -23,12 +23,12 @@ public class AgendamentoRepository : IAgendamentoRepository
 
     public async Task<Agendamento> GetByIdAsync(Guid? id)
     {
-        return (await _context.Agendamentos.SingleOrDefaultAsync(a => a.AgendamentoId == id))!;
+        return (await _context.Agendamentos.AsNoTracking().SingleOrDefaultAsync(a => a.AgendamentoId == id))!;
     }
 
     public async Task<IEnumerable<Agendamento>> GetAgendamentosAsync()
     {
-        return await _context.Agendamentos.ToListAsync();
+        return await _context.Agendamentos.AsNoTracking().ToListAsync();
     }
 
     public async Task<Agendamento> RemoveAsync(Agendamento agendamento)

@@ -23,12 +23,12 @@ public class ConsultaRepository : IConsultaRepository
 
     public async Task<Consulta> GetByIdAsync(Guid? id)
     {
-        return (await _context.Consultas.SingleOrDefaultAsync(c => c.ConsultaId == id))!;
+        return (await _context.Consultas.AsNoTracking().SingleOrDefaultAsync(c => c.ConsultaId == id))!;
     }
 
     public async Task<IEnumerable<Consulta>> GetConsultasAsync()
     {
-        return await _context.Consultas.ToListAsync();
+        return await _context.Consultas.AsNoTracking().ToListAsync();
     }
 
     public async Task<Consulta> RemoveAsync(Consulta consulta)
