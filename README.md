@@ -26,6 +26,25 @@ A solução está organizada em camadas:
 - PetShoop.Infrastructure: contexto, repositórios, migrations e acesso ao banco
 - PetShoop.CrossCutting: injeção de dependência e configurações transversais
 
+## Documentação do Projeto
+
+Para mais detalhes sobre as etapas do projeto, consulte a documentação nos links abaixo:
+
+### Documentação
+<ol>
+<li><a href="documents/01-Documentação de Contexto.md"> Documentação de Contexto</a></li>
+<li><a href="documents/02-Especificação do Projeto.md"> Especificação do Projeto</a></li>
+<li><a href="documents/03-Projeto de Interface.md"> Projeto de Interface</a></li>
+<li><a href="documents/04-Testes de Software.md"> Testes de Software</a></li>
+<li><a href="documents/05-Implantação.md"> Implantação</a></li>
+</ol>
+
+### Código Fonte
+<li><a href="src/README.md"> Código Fonte</a></li>
+
+### Apresentação
+<li><a href="presentations/README.md"> Apresentação da solução</a></li>
+
 ## Requisitos
 Antes de rodar o projeto, certifique-se de ter:
 - .NET SDK 10 instalado
