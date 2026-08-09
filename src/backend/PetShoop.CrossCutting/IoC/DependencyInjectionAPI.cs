@@ -9,6 +9,7 @@ using PetShoop.Infrastructure.Repositories;
 using PetShoop.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using PetShoop.Infrastructure.Identity.Interfaces;
+using PetShoop.Infrastructure.Identity.Services;
 
 namespace PetShoop.CrossCutting.IoC;
 
@@ -88,6 +89,7 @@ public static class DependencyInjectionAPI
         // SERVIÇO DE AUTENTICAÇÃO
         // ===============================
         services.AddScoped<IAuthenticate, AuthenticateService>();
+        services.AddScoped<ITokenService, TokenService>();
 
 
         return services;
