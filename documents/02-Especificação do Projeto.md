@@ -7,22 +7,22 @@
 
 ## Visão Geral da Especificação do Projeto
 
-Nesta etapa do projeto de desenvolvimento do sistema para uma **barbearia**, será apresentada a **especificação funcional e estrutural** do sistema. O objetivo é definir com clareza os requisitos, as funcionalidades e os componentes envolvidos no funcionamento do sistema, garantindo que todas as necessidades do negócio sejam devidamente representadas.
+Nesta etapa do projeto de desenvolvimento do sistema para o **PetShoop**, será apresentada a **especificação funcional e estrutural** do sistema. O objetivo é definir com clareza os requisitos, as funcionalidades e os componentes envolvidos no funcionamento do sistema, garantindo que todas as necessidades do negócio sejam devidamente representadas.
 
 ### Técnicas e Ferramentas Utilizadas:
 
 1. **Modelo Entidade-Relacionamento (ER)**
    - Ferramenta gráfica para representar a estrutura do banco de dados.
-   - Define entidades (ex: Cliente, Barbeiro, Serviço), seus atributos e os relacionamentos entre elas.
+   - Define entidades (ex: Cliente, Pet, Serviço), seus atributos e os relacionamentos entre elas.
    - Utilizada para organizar e visualizar como os dados serão armazenados.
 
 2. **Derivação para Modelo Lógico Relacional**
    - Conversão do Modelo ER para tabelas relacionais (modelo lógico).
    - Define chaves primárias, estrangeiras e integridade referencial.
-   - Base para implementação do banco de dados em SGBDs como MySQL ou PostgreSQL.
+   - Base para implementação do banco de dados em SGBDs como SQL Server, PostgreSQL ou MySQL.
 
 3. **Casos de Uso**
-   - Descrição de funcionalidades sob a perspectiva do usuário (ex: “Agendar serviço”, “Cadastrar barbeiro”).
+   - Descrição de funcionalidades sob a perspectiva do usuário (ex: “Agendar banho e tosa”, “Cadastrar pet”).
    - Representa os atores (usuários) e suas interações com o sistema.
    - Utilizado para identificar os requisitos funcionais.
 
@@ -33,7 +33,7 @@ Nesta etapa do projeto de desenvolvimento do sistema para uma **barbearia**, ser
 
 5. **Ferramentas Utilizadas**
    - **Draw.io / Lucidchart**: para criação de diagramas ER e UML.
-   - **MySQL Workbench / DBeaver**: para modelagem e implementação do banco de dados.
+   - **SQL Server Management Studio / DBeaver**: para modelagem e implementação do banco de dados.
    - **Figma (opcional)**: para prototipagem de interface do sistema.
 
 ---
@@ -54,7 +54,7 @@ Através de pesquisas de campo dentro do público alvo do projeto, foram estipul
 
 | PERFIL                                                                                                                                                                                   | EXPECTATIVAS                                                                                                                                 | ATIVIDADES                                                                                                                                                                                                                                                                                                                                 |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Leonardo tem 28 anos, é engenheiro de software e trabalha remotamente. Valoriza a praticidade e otimização do tempo em seu dia a dia. Gosta de tecnologia e está sempre buscando formas de tornar sua rotina mais eficiente. |Ele espera encontrar um serviço rápido e confiável para cortar o cabelo sem precisar aguardar em filas. Quer agendar horários online e encontrar um barbeiro que entenda seu estilo. | Tem uma rotina corrida e não quer perder tempo procurando barbearias ou esperando atendimento. Busca um aplicativo intuitivo para escolher um profissional, visualizar portfólios e agendar serviços conforme sua disponibilidade. |
+| Leonardo tem 28 anos, é engenheiro de software e trabalha remotamente. Valoriza a praticidade e otimização do tempo em seu dia a dia. Gosta de tecnologia e está sempre buscando formas de tornar sua rotina mais eficiente. | Ele espera encontrar um serviço rápido e confiável para agendar o cuidado do seu pet online, sem precisar aguardar em longas filas. Quer encontrar uma equipe que entenda as necessidades do seu animal. | Tem uma rotina corrida e não quer perder tempo procurando pet shops ou clínicas. Busca um aplicativo intuitivo para escolher serviços, visualizar histórico e agendar atendimentos conforme sua disponibilidade. |
 
 ---
 
@@ -64,7 +64,7 @@ Através de pesquisas de campo dentro do público alvo do projeto, foram estipul
 
 | PERFIL                                                                                                           | EXPECTATIVAS                                                                                                                                      | ATIVIDADES                                                                                                                                                                                                                                                                           |
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Marcos tem 35 anos e é gerente comercial. Seu trabalho exige uma apresentação impecável, e ele frequenta a barbearia regularmente para manter a aparência profissional. Prefere atendimento personalizado e está disposto a pagar mais por um serviço de qualidade. | Busca um aplicativo que ofereça serviços premium, como atendimento VIP, assinatura mensal e agendamento recorrente para evitar preocupações com marcações de última hora. |  Mantém um compromisso fixo com sua barbearia, mas gostaria de mais praticidade no agendamento. Está sempre atento a tendências e promoções especiais. |
+| Marcos tem 35 anos e é gerente comercial. Seu trabalho exige uma apresentação impecável, e ele frequenta o pet shop regularmente para manter a saúde e higiene de seus animais. Prefere atendimento personalizado e está disposto a pagar mais por serviços de qualidade. | Busca um aplicativo que ofereça serviços premium para pets, como atendimento VIP, planos de manutenção e agendamento recorrente para evitar preocupações com marcações de última hora. | Mantém um compromisso com o cuidado dos pets, mas gostaria de mais praticidade no agendamento. Está sempre atento a novidades e promoções para seus animais. |
 
 ---
 
@@ -74,7 +74,7 @@ Através de pesquisas de campo dentro do público alvo do projeto, foram estipul
 
 | PERFIL                                                                                                           | EXPECTATIVAS                                                                                                                                      | ATIVIDADES                                                                                                                                                                                                                                                                           |
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Diego tem 22 anos, é estudante universitário e trabalha meio período. Gosta de mudar o estilo do cabelo frequentemente e acompanha tendências nas redes sociais. Procura serviços acessíveis e flexíveis. | Ele deseja encontrar barbeiros que ofereçam cortes modernos e criativos. Também busca avaliações de outros clientes e promoções para aproveitar descontos. |  Usa redes sociais para se inspirar em novos cortes e estilos. Quer um aplicativo que facilite encontrar barbeiros com habilidades específicas e permita agendamentos rápidos, mesmo de última hora. |
+| Diego tem 22 anos, é estudante universitário e trabalha meio período. Gosta de pets e procura opções acessíveis e rápidas para cuidar dos seus animais. | Ele deseja encontrar serviços de banho, tosa e consulta que possam ser agendados facilmente. Também busca avaliações de outros clientes e promoções para aproveitar descontos. | Usa redes sociais para se inspirar e quer um aplicativo que facilite encontrar serviços para pets e agendar atendimentos rápidos, mesmo de última hora. |
 
 ---
 
@@ -86,9 +86,9 @@ A partir da compreensão do dia a dia das personas identificadas para o projeto,
 
 | EU COMO... `PERSONA` | QUERO/PRECISO ... `FUNCIONALIDADE`                                                                                          | PARA ... `MOTIVO/VALOR`                                                                                                                                                                                                                                                                                             |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Leonardo   | agendar um horário com o barbeiro de minha preferência.                                                              |garantir que serei atendido no dia e hora que mais me convém. |
-| Marcos   | desejo um aplicativo inovador, para acha barbero na minha cidade.                                                             |me organizar e me preparar para atender cada cliente com qualidade. |
-| Diego   | visualizar cortes de barbearia na moda.                                                             |marcar online. |
+| Leonardo   | agendar um atendimento para o meu pet online.                                                              |garantir que o cuidado do meu animal ocorra no dia e hora que mais me convém. |
+| Marcos   | desejo um aplicativo inovador para encontrar serviços para pets na minha cidade.                                                             |me organizar e cuidar melhor dos meus animais com qualidade. |
+| Diego   | visualizar serviços e avaliações de pet shops.                                                             |marcar online com facilidade. |
 
 
 
@@ -119,15 +119,15 @@ O servidor será responsável por fornecer uma **Web API RESTful**, desenvolvida
 
 ###  **Frontend (Cliente da Aplicação)**
 
-A interface do usuário será construída com **React Native**, um framework multiplataforma criado pela Meta (Facebook), que permite o desenvolvimento de aplicativos móveis nativos para **Android e iOS** utilizando **JavaScript** e **React.js**.
+A interface do usuário será construída com **ReactJS**, utilizando componentes web modernos e responsivos para garantir uma boa experiência em desktops e dispositivos móveis.
 
 Essa escolha visa proporcionar uma **experiência fluida e moderna ao usuário**, com reutilização de componentes, facilidade de manutenção e redução no tempo de desenvolvimento.
 
-- **Framework**: React Native
+- **Framework**: ReactJS
 - **Linguagem**: JavaScript (ou TypeScript, opcionalmente)
 - **Bibliotecas de apoio**:
   - Axios (para chamadas HTTP à API)
-  - React Navigation (para navegação entre telas)
+  - React Router (para navegação entre páginas)
   - Redux ou Context API (para gerenciamento de estado, se necessário)
   - Styled-components ou Tailwind CSS (para estilização dos componentes)
 
@@ -136,7 +136,7 @@ Essa escolha visa proporcionar uma **experiência fluida e moderna ao usuário**
 - **Hospedagem do Backend**: Azure, AWS ou algum provedor com suporte a aplicações .NET
 - **Banco de Dados**: pode ser hospedado em nuvem junto ao servidor, com backups automatizados
 - **CI/CD**: GitHub Actions, Azure DevOps ou outra pipeline para automatizar testes e deploys
-- **Publicação do App**: Google Play Store e Apple App Store, após os testes e homologações
+- **Publicação do Frontend**: hospedagem em plataformas web como Vercel, Netlify ou Azure Static Web Apps
 
 ---
 
@@ -162,16 +162,16 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 |ID    | Descrição do Requisito  | Prioridade |
 |------|-----------------------------------------|----|
-|RF-001| Permitir que o cliente agende um horário online | ALTA | 
-|RF-002| Enviar lembretes automáticos de agendamentos   | ALTA | 
-|RF-003| Possibilitar que o cliente avalie o corte realizado | MÉDIA | 
-|RF-004| Exibir uma galeria de estilos com catálogo de cortes e barbas | ALTA | 
-|RF-005| Fornecer um link direto para o WhatsApp da barbearia | ALTA | 
-|RF-006| Integração ao Google Maps para exibir a localização da barbearia | MÉDIA | 
-|RF-007| Permitir que os barbeiros gerenciem seus horários de atendimento | ALTA | 
+|RF-001| Permitir que o cliente agende um horário de serviço para seu pet online | ALTA | 
+|RF-002| Enviar lembretes automáticos de agendamentos de serviços e consultas para pets | ALTA | 
+|RF-003| Possibilitar que o cliente avalie o atendimento prestado ao seu pet | MÉDIA | 
+|RF-004| Exibir um catálogo de serviços e produtos para pets | ALTA | 
+|RF-005| Fornecer um contato direto com o pet shop ou clínica via chat ou WhatsApp | ALTA | 
+|RF-006| Integração ao Google Maps para exibir a localização do estabelecimento | MÉDIA | 
+|RF-007| Permitir que atendentes e veterinários gerenciem seus horários de atendimento | ALTA | 
 |RF-008| Implementar sistema de confirmação automática de agendamentos | ALTA | 
-|RF-009| Oferecer um painel para os barbeiros visualizarem seus agendamentos diários | MÉDIA | 
-|RF-010| Notificar os barbeiros sobre novos agendamentos ou cancelamentos | ALTA | 
+|RF-009| Oferecer um painel administrativo para controle de agendamentos e vendas | MÉDIA | 
+|RF-010| Notificar a equipe sobre novos agendamentos ou cancelamentos | ALTA | 
 
 ### Requisitos não Funcionais
 
@@ -204,10 +204,10 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 
 
 <br><br><br><br>
-##  Planejamento do Projeto de TI – Sistema para Barbearia
+##  Planejamento do Projeto de TI – Sistema PetShoop
 
 ###  Objetivo
-Desenvolver um sistema de agendamento e gestão para uma barbearia, com aplicativo móvel para clientes e painel administrativo para barbeiros e gestores.
+Desenvolver um sistema de agendamento e gestão para um pet shop e clínica veterinária, com interface web para clientes e painel administrativo para a equipe.
 
 ---
 
@@ -215,14 +215,14 @@ Desenvolver um sistema de agendamento e gestão para uma barbearia, com aplicati
 
 | Etapa                       | Atividades principais                                                                 | Responsável           | Duração estimada |
 |----------------------------|----------------------------------------------------------------------------------------|------------------------|------------------|
-| **1. Levantamento de Requisitos** | Entrevistas com clientes e barbeiros, definição das funcionalidades principais         | Analista de Sistemas   | 1 semana         |
+| **1. Levantamento de Requisitos** | Entrevistas com clientes, donos de pets e equipe, definição das funcionalidades principais         | Analista de Sistemas   | 1 semana         |
 | **2. Modelagem e Especificações** | Criação do modelo ER, histórias de usuário, diagrama de casos de uso e arquitetura     | Analista / Arquiteto   | 1 semana         |
 | **3. Design da Interface**       | Criação dos protótipos de telas no Figma ou similar                                   | Designer UI/UX         | 1 semana         |
 | **4. Desenvolvimento Backend**   | Criação da API com .NET, modelagem do banco, autenticação, endpoints principais       | Desenvolvedor Backend  | 3 semanas        |
-| **5. Desenvolvimento Mobile**    | Telas com React Native, integração com API, autenticação, agendamento, perfil         | Desenvolvedor Mobile   | 2 semanas        |
+| **5. Desenvolvimento Frontend**    | Telas com ReactJS, integração com API, autenticação, agendamento, perfil do pet       | Desenvolvedor Frontend | 3 semanas        |
 | **6. Testes e Validações**      | Testes de usabilidade, testes automatizados, correção de bugs                         | QA / Todos os Devs     | 1 semana         |
-| **7. Implantação**              | Deploy do backend em nuvem, publicação do app em lojas (Google/Apple)                 | DevOps / Equipe Geral  | 1 semana         |
-| **8. Treinamento e Suporte**    | Capacitação para barbeiros e administradores, suporte técnico inicial                 | Analista / Suporte     | Contínuo         |
+| **7. Implantação**              | Deploy do backend e frontend em nuvem, publicação da aplicação web                    | DevOps / Equipe Geral  | 1 semana         |
+| **8. Treinamento e Suporte**    | Capacitação para equipe e suporte técnico inicial                                     | Analista / Suporte     | Contínuo         |
 
 ---
 
@@ -234,7 +234,7 @@ Desenvolver um sistema de agendamento e gestão para uma barbearia, com aplicati
 | **Analista de Sistemas** |            | Define os requisitos, desenha as soluções e faz a ponte entre técnico e negócio    |
 | **Designer UI/UX**       |            | Cria protótipos e garante boa experiência do usuário                               |
 | **Desenvolvedor Backend**| Mailson Silva | Cria e mantém a lógica do sistema e a API de comunicação                           |
-| **Desenvolvedor Mobile** |            | Desenvolve o app em React Native, conectando ao backend                            |
+| **Desenvolvedor Frontend** |            | Desenvolve a interface web em ReactJS e conecta ao backend                         |
 | **Testador (QA)**        | Mailson Silva | Testa funcionalidades, busca bugs e garante a qualidade geral                      |
 | **DevOps (opcional)**    | Mailson Silva  | Cuida do deploy, infraestrutura e automações                                       |
 | **Suporte Técnico**      |            | Apoia os usuários após a entrega                                                   |
@@ -246,10 +246,10 @@ Desenvolver um sistema de agendamento e gestão para uma barbearia, com aplicati
 
 <br><br><br><br>
 
-##  Planejamento de Custos – Projeto de Sistema para Barbearia
+##  Planejamento de Custos – Projeto de Sistema PetShoop
 
 ###  Objetivo
-Estimar e controlar os custos relacionados ao desenvolvimento e implantação do sistema de agendamento e gestão para uma barbearia, considerando mão de obra, ferramentas e infraestrutura.
+Estimar e controlar os custos relacionados ao desenvolvimento e implantação do sistema de agendamento e gestão para um pet shop, considerando mão de obra, ferramentas e infraestrutura.
 
 ---
 
@@ -260,7 +260,7 @@ Estimar e controlar os custos relacionados ao desenvolvimento e implantação do
 | **1. Levantamento de Requisitos** | Analista de Sistemas (freelancer ou interno)   | R$ 1.200             | Semana 1         |
 | **2. Modelagem e Design**         | Designer UI/UX + Analista                    | R$ 1.500             | Semana 2         |
 | **3. Desenvolvimento Backend**    | Dev .NET (freelancer ou equipe)              | R$ 3.000             | Semanas 3–4      |
-| **4. Desenvolvimento Mobile**     | Dev React Native                             | R$ 3.500             | Semanas 5–6      |
+| **4. Desenvolvimento Frontend**     | Dev ReactJS                                 | R$ 3.500             | Semanas 5–7      |
 | **5. Infraestrutura e Deploy**    | Hospedagem (Azure ou AWS) + domínio          | R$ 500 (mensal)      | Semana 7         |
 | **6. Testes e Correções**         | QA Tester + horas extras devs                | R$ 1.000             | Semana 8         |
 | **7. Publicação nas Lojas**       | Google Play (R$ 25 único) / Apple Store (R$ 499 anual) | R$ 524             | Semana 9         |
@@ -286,25 +286,25 @@ Estimar e controlar os custos relacionados ao desenvolvimento e implantação do
 
 <br><br><br><br>
 
-##  Análise da Situação Atual do Processo de Negócio – Barbearia
+##  Análise da Situação Atual do Processo de Negócio – Pet Shop
 
 ###  Situação Atual (antes da automação)
 
-A maioria das barbearias ainda opera com processos manuais ou pouco informatizados. Os agendamentos e registros são feitos da seguinte forma:
+Muitos pet shops e clínicas veterinárias ainda operam com processos manuais ou pouco informatizados. Os agendamentos e registros são feitos da seguinte forma:
 
 - **Agendamento por telefone, WhatsApp ou presencialmente**  
   → Sem controle centralizado; risco de horários duplicados ou esquecidos.
 
-- **Registro de clientes feito em papel ou anotações informais**  
-  → Difícil acompanhar o histórico, preferências ou frequência do cliente.
+- **Registro de clientes e pets feito em papel ou anotações informais**  
+  → Difícil acompanhar o histórico de vacinas, serviços e preferências do animal.
 
-- **Gerenciamento de horários e agenda do barbeiro manual (caderneta ou planilha)**  
+- **Gerenciamento de horários de veterinários e atendentes manual (caderneta ou planilha)**  
   → Falta de visibilidade em tempo real, risco de sobreposição.
 
-- **Controle de caixa e serviços feitos no final do dia**  
+- **Controle de estoque e serviços feito no final do dia**  
   → Sujeito a erros e sem relatórios automatizados.
 
-- **Divulgação da barbearia feita em redes sociais, sem integração com sistema de agendamento**  
+- **Divulgação do pet shop feita em redes sociais, sem integração com sistema de agendamento**  
   → O cliente vê a oferta, mas precisa entrar em contato manualmente.
 
 ---
@@ -315,11 +315,11 @@ Abaixo, as áreas que podem ser automatizadas com o sistema proposto:
 
 | Área de Negócio                | Solução de Automação                                             | Benefícios Esperados                                  |
 |-------------------------------|-------------------------------------------------------------------|--------------------------------------------------------|
-| **Agendamentos**              | App móvel com escolha de serviço, barbeiro e horário disponível  | Elimina conflitos de agenda, reduz chamadas/espera     |
-| **Cadastro de Clientes**      | Registro automático no sistema com histórico                     | Facilita fidelização, promoções e comunicação          |
-| **Agenda do Barbeiro**        | Painel digital com horários, serviços e nome do cliente           | Organização pessoal, ganho de produtividade            |
-| **Pagamentos e Caixa**        | Relatórios financeiros e integração com métodos de pagamento      | Controle financeiro mais claro e seguro                |
-| **Promoções e Notificações**  | Envio de lembretes e promoções via push notification ou e-mail    | Aumenta a fidelização e reduz faltas                   |
+| **Agendamentos**              | Interface web com escolha de serviço, pet e horário disponível     | Elimina conflitos de agenda, reduz chamadas/espera     |
+| **Cadastro de Clientes e Pets**      | Registro automático no sistema com histórico                     | Facilita fidelização, promoções e comunicação          |
+| **Agenda da Equipe**        | Painel digital com horários, serviços e nome do cliente           | Organização pessoal, ganho de produtividade            |
+| **Produtos e Serviços**      | Relatórios de vendas e integração com métodos de pagamento         | Controle financeiro mais claro e seguro                |
+| **Promoções e Notificações**  | Envio de lembretes e promoções por e-mail ou push notification    | Aumenta a fidelização e reduz faltas                   |
 
 ---
 
@@ -337,7 +337,7 @@ Abaixo, as áreas que podem ser automatizadas com o sistema proposto:
 
 ###  Conclusão
 
-Automatizar o processo da barbearia com um sistema digital **traz melhorias diretas na organização, produtividade e experiência do cliente**, além de permitir crescimento e controle com mais facilidade. É um investimento que impacta tanto a rotina operacional quanto as decisões estratégicas do negócio.
+Automatizar o processo do pet shop com um sistema digital **traz melhorias diretas na organização, produtividade e experiência do cliente**, além de permitir crescimento e controle com mais facilidade. É um investimento que impacta tanto a rotina operacional quanto as decisões estratégicas do negócio.
 
 ---
 
@@ -373,11 +373,11 @@ Automatizar o processo da barbearia com um sistema digital **traz melhorias dire
 
 
 <br><br><br><br>
-## Projeto da Base de Dados - Sistema de Agendamento de Barbearia
+## Projeto da Base de Dados - Sistema PetShoop
 
 # Introdução
 
-Este projeto descreve a base de dados relacional para um sistema de agendamento de serviços em barbearias. O modelo é derivado de um diagrama ER (Entidade-Relacionamento) e contempla as entidades, atributos, chaves primárias e estrangeiras, e todas as restrições de integridade.
+Este projeto descreve a base de dados relacional para um sistema de agendamento e gestão de serviços para um pet shop. O modelo é derivado de um diagrama ER (Entidade-Relacionamento) e contempla as entidades, atributos, chaves primárias e estrangeiras, e todas as restrições de integridade.
 
 ---
 
@@ -389,114 +389,105 @@ Abaixo estão descritas as tabelas do banco de dados, com seus respectivos campo
 
 ### 🔹 Tabela: `Cliente`
 
-Contém informações dos usuários que realizam agendamentos.
+Contém informações dos donos dos pets que realizam agendamentos ou compras.
 
 | Campo            | Tipo          | Restrições              |
 |------------------|---------------|--------------------------|
-| `id`             | INT           | PRIMARY KEY              |
-| `nome`           | VARCHAR(100)  |                |
-| `email`          | VARCHAR(100)  | NOT NULL, UNIQUE         |
-| `senha`          | VARCHAR(100)  | NOT NULL                 |
-| `telefone`       | VARCHAR(20)   |                          |
-| `data_nascimento`| DATE          |                          |
+| `cliente_id`     | UNIQUEIDENTIFIER | PRIMARY KEY           |
+| `nome`           | VARCHAR(100)  | NOT NULL                |
+| `email`          | VARCHAR(100)  | NOT NULL, UNIQUE        |
+| `telefone`       | VARCHAR(20)   |                         |
+| `endereco`       | VARCHAR(200)  |                         |
+| `data_nascimento`| DATE          |                         |
 
 ---
 
-### 🔹 Tabela: `Barbeiro`
+### 🔹 Tabela: `Pet`
 
-Contém os dados das barbearias cadastradas.
+Contém as informações dos animais de estimação dos clientes.
 
-| Campo        | Tipo          | Restrições                      |
-|--------------|---------------|---------------------------------|
-| `id`         | INT           | PRIMARY KEY, AUTO_INCREMENT     |
-| `nome`       | VARCHAR(100)  |                                 |
-| `email`      | VARCHAR(100)  | NOT NULL, UNIQUE                |
-| `senha`      | VARCHAR(200)  | NOT NULL                        |
-| `telefone`   | VARCHAR(20)   |                                 |
-
----
-
-### 🔹 Tabela: `Oferece`
-
-Representa os serviços oferecidos por cada barbeiro, com preços e durações personalizados.
-
-| Campo           | Tipo                               | Restrições                       |
-|-----------------|------------------------------------|----------------------------------|
-| `id_barbeiro`   | INT                                | FOREIGN KEY → Barbeiro(id)       |
-| `id_servico`    | INT                                | FOREIGN KEY → Servico(id)        |
-| `preco`         | DECIMAL                            | NOT NULL                         |
-| `duracao`       | INT                                | NOT NULL(em minutos)             |
-| PRIMARY KEY     | (id_barbeiro, id_servico)          | Chave composta                   |
-
-Tabela Oferece representa a associação entre barbeiros e os serviços que eles oferecem, incluindo a personalização de preço e duração.
+| Campo            | Tipo          | Restrições              |
+|------------------|---------------|--------------------------|
+| `pet_id`         | UNIQUEIDENTIFIER | PRIMARY KEY           |
+| `nome`           | VARCHAR(100)  | NOT NULL                |
+| `especie`        | VARCHAR(50)   |                         |
+| `raca`           | VARCHAR(50)   |                         |
+| `sexo`           | VARCHAR(20)   |                         |
+| `data_nascimento`| DATE          |                         |
+| `peso`           | DECIMAL(5,2)  |                         |
+| `cliente_id`     | UNIQUEIDENTIFIER | FOREIGN KEY → Cliente(cliente_id) |
 
 ---
 
 ### 🔹 Tabela: `Servico`
 
-Representa os barbeiros administradores das barbearias.
+Representa os serviços oferecidos pelo pet shop ou clínica.
 
 | Campo           | Tipo          | Restrições                       |
 |-----------------|---------------|----------------------------------|
-| `id`            | INT           | PRIMARY KEY, AUTO_INCREMENT      |
-| `nome`          | VARCHAR(100)  |                                  |
+| `servico_id`    | UNIQUEIDENTIFIER | PRIMARY KEY                   |
+| `nome`          | VARCHAR(100)  | NOT NULL                        |
 | `descricao`     | TEXT          |                                  |
+| `duracao_minutos` | INT         |                                  |
+| `preco`         | DECIMAL(10,2) | NOT NULL                         |
 
 ---
 
 ### 🔹 Tabela: `Agendamento`
 
-Registra os horários agendados pelos clientes com os barbeiros.
+Registra os horários agendados para os pets.
 
 | Campo               | Tipo          | Restrições                                     |
 |---------------------|---------------|------------------------------------------------|
-| `id_agendamento`    | INT           | PRIMARY KEY, AUTO_INCREMENT                  |
-| `status`            | VARCHAR(100)  |                                              |
-| `lembrete_enviado`  | BOOLEAN       |                                              |
-| `id_cliente`        | INT           | FOREIGN KEY → Cliente(id_cliente)            |
-| `id_servico`        | INT           | FOREIGN KEY → Servico(id_servico)            |
-| `id_horario`        | INT           | FOREIGN KEY → HorarioDisponivel(id_horario)  |
+| `agendamento_id`    | UNIQUEIDENTIFIER | PRIMARY KEY                               |
+| `data`              | DATE          | NOT NULL                                      |
+| `hora`              | TIME          | NOT NULL                                      |
+| `status`            | VARCHAR(50)   | NOT NULL                                      |
+| `lembrete_enviado`  | BIT           |                                              |
+| `cliente_id`        | UNIQUEIDENTIFIER | FOREIGN KEY → Cliente(cliente_id)          |
+| `pet_id`            | UNIQUEIDENTIFIER | FOREIGN KEY → Pet(pet_id)                  |
+| `servico_id`        | UNIQUEIDENTIFIER | FOREIGN KEY → Servico(servico_id)          |
 
 ---
 
-### 🔹 Tabela: `HorarioDisponivel`
+### 🔹 Tabela: `Produto`
 
-Contém comentários e avaliações do cliente sobre o serviço.
+Registra os produtos disponíveis para venda no pet shop.
 
-| Campo            | Tipo        | Restrições                                 |
-|------------------|-------------|--------------------------------------------|
-| `id_horario`     | INT         | PRIMARY KEY, AUTO_INCREMENT                |
-| `id_barbeiro`    | INT         | FOREIGN KEY → Barbeiro(id_barbeiro)        |
-| `data`           | DATE        |                                            |
-| `hora_inicio`    | TIME        |                                            |
-| `hora_fim`       | TIME        |                                            |
+| Campo           | Tipo          | Restrições                       |
+|-----------------|---------------|----------------------------------|
+| `produto_id`    | UNIQUEIDENTIFIER | PRIMARY KEY                   |
+| `nome`          | VARCHAR(100)  | NOT NULL                        |
+| `descricao`     | TEXT          |                                  |
+| `preco`         | DECIMAL(10,2) | NOT NULL                         |
+| `estoque`       | INT           | NOT NULL                         |
+
+---
+
+### 🔹 Tabela: `Venda`
+
+Registra as vendas de produtos e serviços realizadas no pet shop.
+
+| Campo              | Tipo          | Restrições                                 |
+|--------------------|---------------|--------------------------------------------|
+| `venda_id`         | UNIQUEIDENTIFIER | PRIMARY KEY                             |
+| `data`             | DATE          | NOT NULL                                  |
+| `valor_total`      | DECIMAL(10,2) | NOT NULL                                  |
+| `cliente_id`       | UNIQUEIDENTIFIER | FOREIGN KEY → Cliente(cliente_id)        |
 
 ---
 
 ### 🔹 Tabela: `Avaliacao`
 
-Contém comentários e avaliações do cliente sobre o serviço.
+Contém comentários e avaliações do cliente sobre o atendimento.
 
 | Campo              | Tipo        | Restrições                                 |
 |--------------------|-------------|--------------------------------------------|
-| `id_avaliacao`     | INT         | PRIMARY KEY, AUTO_INCREMENT                |
+| `avaliacao_id`     | UNIQUEIDENTIFIER | PRIMARY KEY                            |
 | `nota`             | INT         |                                            |
 | `comentario`       | TEXT        |                                            |
 | `data`             | DATE        |                                            |
-| `id_agendamento`   | INT         | FOREIGN KEY → Agendamento(id_agendamento)  |
-
----
-
-### 🔹 Tabela: `HistoricoCorte`
-
-Contém comentários e avaliações do cliente sobre o serviço.
-
-| Campo              | Tipo        | Restrições                                 |
-|--------------------|-------------|--------------------------------------------|
-| `id_historico`     | INT         | PRIMARY KEY, AUTO_INCREMENT                |
-| `foto`             | TEXT        |                                            |
-| `observacoes`      | TEXT        |                                            |
-| `id_agendamento`   | INT         | FOREIGN KEY → Agendamento(id_agendamento)  |
+| `agendamento_id`   | UNIQUEIDENTIFIER | FOREIGN KEY → Agendamento(agendamento_id) |
 
 ---
 
@@ -505,51 +496,49 @@ Contém comentários e avaliações do cliente sobre o serviço.
 - **Chaves primárias** garantem a unicidade dos registros.
 - **Chaves estrangeiras** asseguram integridade entre relacionamentos.
 - **Relacionamentos principais**:
+  - Cliente → Pet (1:N)
   - Cliente → Agendamento (1:N)
-  - Barbeiro → HorarioDisponivel (1:N)
-  - HorarioDisponivel → Agendamento (1:N)
+  - Pet → Agendamento (1:N)
   - Servico → Agendamento (1:N)
   - Agendamento → Avaliacao (1:1)
-  - Agendamento → HistoricoCorte (1:1)
+  - Cliente → Venda (1:N)
 
 ---
 
 ## 💡 Regras de Negócio
 
-- Cada cliente pode realizar múltiplos agendamentos.
-- Cada barbeiro tem sua agenda de horários.
-- Todos os barbeiros oferecem os mesmos serviços.
-- Cada agendamento pode ser avaliado e ter um histórico.
-- O barbeiro consegue acessar o histórico de cortes dos clientes através dos agendamentos.
+- Cada cliente pode ter múltiplos pets cadastrados.
+- Cada pet pode ter múltiplos agendamentos.
+- O sistema deve registrar histórico de serviços e avaliações por agendamento.
+- Produtos podem ser vendidos separadamente ou como parte de um atendimento.
+- A equipe deve poder consultar o histórico completo do cliente e do pet.
 
 ---
 
 ## 🔄 Possibilidades de Expansão
 
-- Serviços detalhados por barbeiro
-- Histórico com imagens dos cortes
-- Chat com o barbeiro via WhatsApp
-- Notificações via e-mail ou WhatsApp
-- Pagamento online via integração com gateways
+- Histórico de vacinas e visitas ao veterinário.
+- Cadastro de planos de assinatura para banho e tosa.
+- Integração com gateways de pagamento online.
+- Relatórios de estoque e vendas por período.
+- Notificações por e-mail ou WhatsApp.
 
 ---
 
 ## 🛠️ Tecnologias Recomendadas
 
-- **Banco de Dados**: MySQL ou SQL Server
-- **Backend**: Node.js, .NET Core
-- **Frontend**: React
-- **ORM**: Entity Framework
+- **Banco de Dados**: SQL Server ou PostgreSQL
+- **Backend**: ASP.NET Core (.NET)
+- **Frontend**: ReactJS
+- **ORM**: Entity Framework Core
 
 ---
 
 ## 📌 Conclusão
 
-Este projeto tem como objetivo geral desenvolver uma estrutura de banco de dados relacional que ofereça suporte a um sistema de agendamento de serviços para barbearias, promovendo o controle eficaz de clientes, profissionais (barbeiros), agendamento, lembrete de agendamento, catálogo de serviços, histórico de cortes e avaliações de serviços prestados.
+Este projeto tem como objetivo geral desenvolver uma estrutura de software e banco de dados que ofereça suporte a um sistema de agendamento e gestão para pet shops e clínicas veterinárias. A modelagem proposta assegura a integridade dos dados através de chaves primárias e estrangeiras, define claramente os relacionamentos entre as entidades e permite futuras expansões, como pagamentos online e notificações automáticas.
 
-A modelagem proposta assegura a integridade dos dados através de chaves primárias e estrangeiras, define claramente os relacionamentos entre as entidades e permite futuras expansões, como pagamento online e notificações automáticas por outros aplicativos.
-
-Trata-se de uma base sólida, escalável e aderente a boas práticas de modelagem, apta a ser implementada em sistemas reais voltados ao setor de serviços pessoais.
+Trata-se de uma base sólida, escalável e aderente a boas práticas de modelagem, apta a ser implementada em sistemas reais voltados ao setor de serviços para pets.
 
 
 
