@@ -347,29 +347,17 @@ Automatizar o processo do pet shop com um sistema digital **traz melhorias diret
 <br><br><br><br>
 ## Diagrama de Casos de Uso
 
-<img src="img/sistemav4.svg" width="700px">
+<img src="img/DiagramaCasosDeUsoPetV1.png" width="700px">
 
 ---
-<br><br><br><br>
-
-
-
-
-## Modelagem dos processos : notação BPMN
-
-<img src="img/diagramaBPMN.svg">
-
+<br>
 
 
 
 <br><br><br><br>
 ## Modelo ER (Projeto Conceitual)
 
-![image](https://github.com/user-attachments/assets/aedd95f3-df40-4095-b4e4-0aea624590cf)
-
-
-
-
+![image](img/DiagramaErCOnceitualPetV1.png)
 
 
 <br><br><br><br>
