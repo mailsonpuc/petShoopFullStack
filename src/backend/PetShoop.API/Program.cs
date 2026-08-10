@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Logging;
 using PetShoop.CrossCutting;
 using PetShoop.CrossCutting.IoC;
 
@@ -9,11 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-// JWT
-builder.Services.AddJwtConfiguration(builder.Configuration);
-
 // Dependency Injection
 builder.Services.AddInfrastructureAPI(builder.Configuration);
+
+// JWT
+builder.Services.AddJwtConfiguration(builder.Configuration);
 
 // Swagger
 builder.Services.AddInfrastructureSwagger(builder.Configuration);

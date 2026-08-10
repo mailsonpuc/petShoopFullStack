@@ -38,6 +38,11 @@ public class AuthController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var user = await _userManager.FindByNameAsync(model.UserName!);
         if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password!))
         {
@@ -46,7 +51,7 @@ public class AuthController : ControllerBase
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName ?? model.UserName!),
-                new Claim("id",user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -59,7 +64,6 @@ public class AuthController : ControllerBase
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
-
 
             var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
 
@@ -83,7 +87,6 @@ public class AuthController : ControllerBase
         }
 
         return Unauthorized();
-
     }
 
 
@@ -93,6 +96,11 @@ public class AuthController : ControllerBase
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var userExists = await _userManager.FindByNameAsync(model.UserName!);
 
         if (userExists != null)
@@ -122,9 +130,10 @@ public class AuthController : ControllerBase
 
 
 
+    [Authorize]
     [HttpPost]
     [Route("CreateRole")]
-    public async Task<IActionResult> CreateRole(string roleName)
+    public async Task<IActionResult> CreateRole([FromQuery] string roleName)
     {
         var roleExist = await _roleManager.RoleExistsAsync(roleName);
 
@@ -161,9 +170,10 @@ public class AuthController : ControllerBase
 
 
 
+    [Authorize]
     [HttpPost]
     [Route("AddUserToRole")]
-    public async Task<IActionResult> AddUserToRole(string email, string roleName)
+    public async Task<IActionResult> AddUserToRole([FromQuery] string email, [FromQuery] string roleName)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -230,6 +240,11 @@ public class AuthController : ControllerBase
         if (user == null || user.RefreshToken != refreshToken
                      || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                await _userManager.UpdateAsync(user);
+            }
             return BadRequest("Invalid access token/refresh token");
         }
 
@@ -261,7 +276,7 @@ public class AuthController : ControllerBase
     [Authorize]
     [HttpPost]
     [Route("revoke/{username}")]
-    public async Task<IActionResult> Revoke(string username)
+    public async Task<IActionResult> Revoke([FromRoute] string username)
     {
         var user = await _userManager.FindByNameAsync(username);
 

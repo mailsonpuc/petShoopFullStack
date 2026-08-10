@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
@@ -6,7 +7,8 @@ using PetShoop.Application.Interfaces;
 namespace PetShoop.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
+[Authorize]
 public class VacinasController : ControllerBase
 {
     private readonly IVacinaService _vacinaService;

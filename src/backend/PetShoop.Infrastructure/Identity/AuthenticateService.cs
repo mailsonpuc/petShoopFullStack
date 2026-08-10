@@ -25,7 +25,13 @@ public class AuthenticateService : IAuthenticate
 
     public async Task<bool> Authenticate(string email, string password)
     {
-        var result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
         return result.Succeeded;
     }
 
@@ -50,7 +56,6 @@ public class AuthenticateService : IAuthenticate
 
         if (result.Succeeded)
         {
-            await _signInManager.SignInAsync(AppUser, isPersistent: false);
             return (true, null);
         }
 

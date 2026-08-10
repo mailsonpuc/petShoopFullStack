@@ -12,14 +12,19 @@ public class TokenService : ITokenService
     public JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims, IConfiguration config)
     {
         var jwtSettings = config.GetSection("Jwt");
-        var secretKey = jwtSettings["SecretKey"];
+        var secretKey = jwtSettings["SecretKey"] ?? string.Empty;
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
         var expireMinutes = int.TryParse(jwtSettings["ExpireMinutes"], out var parsedExpireMinutes)
             ? parsedExpireMinutes
             : 60;
 
-        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? string.Empty));
+        if (string.IsNullOrEmpty(secretKey))
+        {
+            throw new InvalidOperationException("JWT SecretKey is not configured.");
+        }
+
+        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
         return new JwtSecurityToken(
             issuer: issuer,

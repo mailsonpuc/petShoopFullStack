@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
@@ -7,6 +8,7 @@ namespace PetShoop.API.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
+[Authorize]
 public class ConsultasController : ControllerBase
 {
     private readonly IConsultaService _consultaService;
