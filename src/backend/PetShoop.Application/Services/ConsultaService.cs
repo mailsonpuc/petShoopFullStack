@@ -8,16 +8,34 @@ namespace PetShoop.Application.Services;
 public class ConsultaService : IConsultaService
 {
     private readonly IConsultaRepository _consultaRepository;
+    private readonly IPetService _petService;
+    private readonly IFuncionarioService _funcionarioService;
 
-    public ConsultaService(IConsultaRepository consultaRepository)
+    public ConsultaService(IConsultaRepository consultaRepository, IPetService petService, IFuncionarioService funcionarioService)
     {
         _consultaRepository = consultaRepository;
+        _petService = petService;
+        _funcionarioService = funcionarioService;
     }
 
     public async Task<IEnumerable<ConsultaDto>> GetConsultas()
     {
         var consultas = await _consultaRepository.GetConsultasAsync();
-        return consultas.ToConsultaDtoList();
+        var consultaDtos = consultas.ToConsultaDtoList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        var funcionarios = await _funcionarioService.GetFuncionarios();
+        var funcionarioMap = funcionarios.ToDictionary(f => f.FuncionarioId, f => f.Nome);
+
+        foreach (var dto in consultaDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+            dto.FuncionarioNome = funcionarioMap.GetValueOrDefault(dto.FuncionarioId);
+        }
+
+        return consultaDtos;
     }
 
     public async Task<ConsultaDto> GetById(Guid? id)
@@ -29,6 +47,12 @@ public class ConsultaService : IConsultaService
         {
             throw new InvalidOperationException("Consulta não encontrada.");
         }
+
+        var pet = await _petService.GetById(consultaDto.PetId);
+        consultaDto.PetNome = pet?.Nome;
+
+        var funcionario = await _funcionarioService.GetById(consultaDto.FuncionarioId);
+        consultaDto.FuncionarioNome = funcionario?.Nome;
 
         return consultaDto;
     }

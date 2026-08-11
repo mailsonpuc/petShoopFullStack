@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 
 export function Login() {
@@ -33,7 +33,10 @@ export function Login() {
       <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl shadow-blue-950/20 backdrop-blur-sm">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 font-bold text-white shadow-lg shadow-blue-500/30">
-            P
+            <Link to="/" className="flex items-center gap-2 text-white no-underline hover:text-slate-100">
+              <span>P</span>
+          
+            </Link>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
             Acesse sua conta

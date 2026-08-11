@@ -22,4 +22,6 @@ public class VacinaDto
 
     [DataType(DataType.Date, ErrorMessage = "Informe uma data válida.")]
     public DateTime ProximaDose { get; set; }
+
+    public string? PetNome { get; set; }
 }

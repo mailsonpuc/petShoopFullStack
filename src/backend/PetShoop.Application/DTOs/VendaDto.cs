@@ -20,4 +20,6 @@ public class VendaDto
     [Required(ErrorMessage = "Forma de pagamento é obrigatória.")]
     [EnumDataType(typeof(FormaPagamento), ErrorMessage = "Forma de pagamento inválida.")]
     public FormaPagamento FormaPagamento { get; set; }
+
+    public string? ClienteNome { get; set; }
 }

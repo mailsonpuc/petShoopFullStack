@@ -37,4 +37,6 @@ public class PetDto
 
     [Required(ErrorMessage = "Cliente é obrigatório.")]
     public Guid ClienteId { get; set; }
+
+    public string? ClienteNome { get; set; }
 }

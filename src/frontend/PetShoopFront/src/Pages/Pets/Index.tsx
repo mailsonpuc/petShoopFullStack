@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCrud } from "../../Hooks/useCrud";
-import { petsApi } from "../../Services/api";
-import type { Pet, CreatePetDto } from "../../Types";
+import { petsApi, clientesApi } from "../../Services/api";
+import type { Pet, CreatePetDto, Cliente } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
 
@@ -9,6 +9,7 @@ export function PetsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Pet | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formData, setFormData] = useState<CreatePetDto>({
     nome: "",
     especie: "",
@@ -28,6 +29,10 @@ export function PetsPage() {
     updateFn: petsApi.update,
     deleteFn: petsApi.delete,
   });
+
+  useEffect(() => {
+    clientesApi.list().then(setClientes).catch(() => setClientes([]));
+  }, []);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -101,14 +106,15 @@ export function PetsPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Raça</th>
               <th className="px-6 py-3 font-medium text-slate-300">Sexo</th>
               <th className="px-6 py-3 font-medium text-slate-300">Peso</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Cliente</th>
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
             {isLoading ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
+              <tr><td colSpan={7} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Nenhum pet encontrado</td></tr>
+              <tr><td colSpan={7} className="px-6 py-8 text-center text-slate-400">Nenhum pet encontrado</td></tr>
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-800/30">
@@ -117,6 +123,7 @@ export function PetsPage() {
                   <td className="px-6 py-4 text-slate-300">{item.raca}</td>
                   <td className="px-6 py-4 text-slate-300">{item.sexo}</td>
                   <td className="px-6 py-4 text-slate-300">{item.peso} kg</td>
+                  <td className="px-6 py-4 text-slate-300">{item.clienteNome || "-"}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
@@ -139,7 +146,15 @@ export function PetsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Espécie</label>
-              <input required value={formData.especie} onChange={(e) => setFormData({ ...formData, especie: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+              <select required value={formData.especie} onChange={(e) => setFormData({ ...formData, especie: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+                <option value="">Selecione</option>
+                <option value="Cachorro">Cachorro</option>
+                <option value="Gato">Gato</option>
+                <option value="Ave">Ave</option>
+                <option value="Roedor">Roedor</option>
+                <option value="Reptil">Reptil</option>
+                <option value="Outro">Outro</option>
+              </select>
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Raça</label>
@@ -180,8 +195,13 @@ export function PetsPage() {
             <input required value={formData.cor} onChange={(e) => setFormData({ ...formData, cor: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-300">Cliente ID</label>
-            <input required value={formData.clienteId} onChange={(e) => setFormData({ ...formData, clienteId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-300">Cliente</label>
+            <select required value={formData.clienteId} onChange={(e) => setFormData({ ...formData, clienteId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+              <option value="">Selecione</option>
+              {clientes.map((cliente) => (
+                <option key={cliente.id} value={cliente.id}>{cliente.nome}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Observações</label>

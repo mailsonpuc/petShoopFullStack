@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCrud } from "../../Hooks/useCrud";
-import { itemVendasApi } from "../../Services/api";
-import type { ItemVenda, CreateItemVendaDto } from "../../Types";
+import { itemVendasApi, produtosApi, vendasApi } from "../../Services/api";
+import type { ItemVenda, CreateItemVendaDto, Produto, Venda } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
 
@@ -9,6 +9,8 @@ export function ItemVendasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ItemVenda | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [vendas, setVendas] = useState<Venda[]>([]);
   const [formData, setFormData] = useState<CreateItemVendaDto>({
     vendaId: "",
     produtoId: "",
@@ -22,6 +24,13 @@ export function ItemVendasPage() {
     updateFn: itemVendasApi.update,
     deleteFn: itemVendasApi.delete,
   });
+
+  useEffect(() => {
+    Promise.all([produtosApi.list(), vendasApi.list()]).then(([p, v]) => {
+      setProdutos(p);
+      setVendas(v);
+    }).catch(() => {});
+  }, []);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -73,8 +82,9 @@ export function ItemVendasPage() {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
-              <th className="px-6 py-3 font-medium text-slate-300">Venda ID</th>
-              <th className="px-6 py-3 font-medium text-slate-300">Produto ID</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Venda</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Cliente</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Produto</th>
               <th className="px-6 py-3 font-medium text-slate-300">Quantidade</th>
               <th className="px-6 py-3 font-medium text-slate-300">Valor Unitário</th>
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
@@ -82,14 +92,15 @@ export function ItemVendasPage() {
           </thead>
           <tbody className="divide-y divide-slate-800">
             {isLoading ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Nenhum item encontrado</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Nenhum item encontrado</td></tr>
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-800/30">
-                  <td className="px-6 py-4 text-white">{item.vendaId}</td>
-                  <td className="px-6 py-4 text-slate-300">{item.produtoId}</td>
+                  <td className="px-6 py-4 text-white">{item.vendaInfo || "-"}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.clienteNome || "-"}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.produtoNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.quantidade}</td>
                   <td className="px-6 py-4 text-slate-300">R$ {item.valorUnitario.toFixed(2)}</td>
                   <td className="px-6 py-4">
@@ -109,12 +120,22 @@ export function ItemVendasPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-300">Venda ID</label>
-              <input required value={formData.vendaId} onChange={(e) => setFormData({ ...formData, vendaId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+              <label className="mb-1.5 block text-sm font-medium text-slate-300">Venda</label>
+              <select required value={formData.vendaId} onChange={(e) => setFormData({ ...formData, vendaId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+                <option value="">Selecione</option>
+                {vendas.map((venda) => (
+                  <option key={venda.id} value={venda.id}>{venda.clienteNome || venda.id} - {new Date(venda.dataVenda).toLocaleString()}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-300">Produto ID</label>
-              <input required value={formData.produtoId} onChange={(e) => setFormData({ ...formData, produtoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+              <label className="mb-1.5 block text-sm font-medium text-slate-300">Produto</label>
+              <select required value={formData.produtoId} onChange={(e) => setFormData({ ...formData, produtoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+                <option value="">Selecione</option>
+                {produtos.map((produto) => (
+                  <option key={produto.id} value={produto.id}>{produto.nome}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

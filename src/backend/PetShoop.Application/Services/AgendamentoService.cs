@@ -10,16 +10,40 @@ namespace PetShoop.Application.Services;
 public class AgendamentoService : IAgendamentoService
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
+    private readonly IPetService _petService;
+    private readonly IServicoService _servicoService;
+    private readonly IFuncionarioService _funcionarioService;
 
-    public AgendamentoService(IAgendamentoRepository agendamentoRepository)
+    public AgendamentoService(IAgendamentoRepository agendamentoRepository, IPetService petService, IServicoService servicoService, IFuncionarioService funcionarioService)
     {
         _agendamentoRepository = agendamentoRepository;
+        _petService = petService;
+        _servicoService = servicoService;
+        _funcionarioService = funcionarioService;
     }
 
     public async Task<IEnumerable<AgendamentoDto>> GetAgendamentos()
     {
         var agendamentos = await _agendamentoRepository.GetAgendamentosAsync();
-        return agendamentos.ToAgendamentoDtoList();
+        var agendamentoDtos = agendamentos.ToAgendamentoDtoList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        var servicos = await _servicoService.GetServicos();
+        var servicoMap = servicos.ToDictionary(s => s.ServicoId, s => s.Nome);
+
+        var funcionarios = await _funcionarioService.GetFuncionarios();
+        var funcionarioMap = funcionarios.ToDictionary(f => f.FuncionarioId, f => f.Nome);
+
+        foreach (var dto in agendamentoDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+            dto.ServicoNome = servicoMap.GetValueOrDefault(dto.ServicoId);
+            dto.FuncionarioNome = funcionarioMap.GetValueOrDefault(dto.FuncionarioId);
+        }
+
+        return agendamentoDtos;
     }
 
     public async Task<AgendamentoDto> GetById(Guid? id)
@@ -31,6 +55,15 @@ public class AgendamentoService : IAgendamentoService
         {
             throw new InvalidOperationException("Agendamento não encontrado.");
         }
+
+        var pet = await _petService.GetById(agendamentoDto.PetId);
+        agendamentoDto.PetNome = pet?.Nome;
+
+        var servico = await _servicoService.GetById(agendamentoDto.ServicoId);
+        agendamentoDto.ServicoNome = servico?.Nome;
+
+        var funcionario = await _funcionarioService.GetById(agendamentoDto.FuncionarioId);
+        agendamentoDto.FuncionarioNome = funcionario?.Nome;
 
         return agendamentoDto;
     }

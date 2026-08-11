@@ -9,16 +9,28 @@ namespace PetShoop.Application.Services;
 public class VacinaService : IVacinaService
 {
     private readonly IVacinaRepository _vacinaRepository;
+    private readonly IPetService _petService;
 
-    public VacinaService(IVacinaRepository vacinaRepository)
+    public VacinaService(IVacinaRepository vacinaRepository, IPetService petService)
     {
         _vacinaRepository = vacinaRepository;
+        _petService = petService;
     }
 
-    public async Task<IEnumerable<VacinaDto>> GetPets()
+    public async Task<IEnumerable<VacinaDto>> GetVacinas()
     {
         var vacinas = await _vacinaRepository.GetVacinasAsync();
-        return vacinas.ToVacinaDtoList();
+        var vacinaDtos = vacinas.ToVacinaDtoList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        foreach (var dto in vacinaDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+        }
+
+        return vacinaDtos;
     }
 
     public async Task<VacinaDto> GetById(Guid? id)
@@ -30,6 +42,9 @@ public class VacinaService : IVacinaService
         {
             throw new InvalidOperationException("Vacina não encontrada.");
         }
+
+        var pet = await _petService.GetById(vacinaDto.PetId);
+        vacinaDto.PetNome = pet?.Nome;
 
         return vacinaDto;
     }

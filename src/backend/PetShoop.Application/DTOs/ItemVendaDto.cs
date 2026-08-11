@@ -21,4 +21,8 @@ public class ItemVendaDto
     [Required(ErrorMessage = "Valor unitário é obrigatório.")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Valor unitário deve ser maior que zero.")]
     public decimal ValorUnitario { get; set; }
+
+    public string? ProdutoNome { get; set; }
+    public string? VendaInfo { get; set; }
+    public string? ClienteNome { get; set; }
 }

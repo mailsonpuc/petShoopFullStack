@@ -127,9 +127,11 @@ export function ProdutosPage() {
               <select value={formData.categoria} onChange={(e) => setFormData({ ...formData, categoria: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 <option value="Racao">Ração</option>
+                <option value="Brinquedo">Brinquedo</option>
                 <option value="Medicamento">Medicamento</option>
                 <option value="Acessorio">Acessório</option>
                 <option value="Higiene">Higiene</option>
+                <option value="Outro">Outro</option>
               </select>
             </div>
             <div>

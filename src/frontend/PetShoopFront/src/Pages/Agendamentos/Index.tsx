@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCrud } from "../../Hooks/useCrud";
-import { agendamentosApi } from "../../Services/api";
-import type { Agendamento, CreateAgendamentoDto } from "../../Types";
+import { agendamentosApi, petsApi, servicosApi, funcionariosApi } from "../../Services/api";
+import type { Agendamento, CreateAgendamentoDto, Pet, Servico, Funcionario } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
 
@@ -9,6 +9,9 @@ export function AgendamentosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Agendamento | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [formData, setFormData] = useState<CreateAgendamentoDto>({
     petId: "",
     servicoId: "",
@@ -24,6 +27,14 @@ export function AgendamentosPage() {
     updateFn: agendamentosApi.update,
     deleteFn: agendamentosApi.delete,
   });
+
+  useEffect(() => {
+    Promise.all([petsApi.list(), servicosApi.list(), funcionariosApi.list()]).then(([p, s, f]) => {
+      setPets(p);
+      setServicos(s);
+      setFuncionarios(f);
+    }).catch(() => {});
+  }, []);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -77,9 +88,9 @@ export function AgendamentosPage() {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
-              <th className="px-6 py-3 font-medium text-slate-300">Pet ID</th>
-              <th className="px-6 py-3 font-medium text-slate-300">Serviço ID</th>
-              <th className="px-6 py-3 font-medium text-slate-300">Funcionário ID</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Pet</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Serviço</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Funcionário</th>
               <th className="px-6 py-3 font-medium text-slate-300">Data/Hora</th>
               <th className="px-6 py-3 font-medium text-slate-300">Status</th>
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
@@ -93,9 +104,9 @@ export function AgendamentosPage() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-800/30">
-                  <td className="px-6 py-4 text-white">{item.petId}</td>
-                  <td className="px-6 py-4 text-slate-300">{item.servicoId}</td>
-                  <td className="px-6 py-4 text-slate-300">{item.funcionarioId}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.petNome || "-"}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.servicoNome || "-"}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.funcionarioNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.dataHora}</td>
                   <td className="px-6 py-4 text-slate-300">{item.status}</td>
                   <td className="px-6 py-4">
@@ -115,17 +126,32 @@ export function AgendamentosPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet ID</label>
-              <input required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+              <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet</label>
+              <select required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+                <option value="">Selecione</option>
+                {pets.map((pet) => (
+                  <option key={pet.id} value={pet.id}>{pet.nome}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-300">Serviço ID</label>
-              <input required value={formData.servicoId} onChange={(e) => setFormData({ ...formData, servicoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+              <label className="mb-1.5 block text-sm font-medium text-slate-300">Serviço</label>
+              <select required value={formData.servicoId} onChange={(e) => setFormData({ ...formData, servicoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+                <option value="">Selecione</option>
+                {servicos.map((servico) => (
+                  <option key={servico.id} value={servico.id}>{servico.nome}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-300">Funcionário ID</label>
-            <input required value={formData.funcionarioId} onChange={(e) => setFormData({ ...formData, funcionarioId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-300">Funcionário</label>
+            <select required value={formData.funcionarioId} onChange={(e) => setFormData({ ...formData, funcionarioId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+              <option value="">Selecione</option>
+              {funcionarios.map((funcionario) => (
+                <option key={funcionario.id} value={funcionario.id}>{funcionario.nome}</option>
+              ))}
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

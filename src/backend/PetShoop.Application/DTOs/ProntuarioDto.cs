@@ -19,4 +19,7 @@ public class ProntuarioDto
     [Required(ErrorMessage = "Descrição é obrigatória.")]
     [StringLength(1000, ErrorMessage = "Descrição deve ter no máximo 1000 caracteres.")]
     public string Descricao { get; set; } = string.Empty;
+
+    public string? PetNome { get; set; }
+    public string? FuncionarioNome { get; set; }
 }

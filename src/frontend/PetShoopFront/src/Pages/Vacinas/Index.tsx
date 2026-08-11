@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCrud } from "../../Hooks/useCrud";
-import { vacinasApi } from "../../Services/api";
-import type { Vacina, CreateVacinaDto } from "../../Types";
+import { vacinasApi, petsApi } from "../../Services/api";
+import type { Vacina, CreateVacinaDto, Pet } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
 
@@ -9,6 +9,7 @@ export function VacinasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Vacina | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [pets, setPets] = useState<Pet[]>([]);
   const [formData, setFormData] = useState<CreateVacinaDto>({
     petId: "",
     nome: "",
@@ -23,6 +24,10 @@ export function VacinasPage() {
     updateFn: vacinasApi.update,
     deleteFn: vacinasApi.delete,
   });
+
+  useEffect(() => {
+    petsApi.list().then(setPets).catch(() => setPets([]));
+  }, []);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -75,7 +80,7 @@ export function VacinasPage() {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
-              <th className="px-6 py-3 font-medium text-slate-300">Pet ID</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Pet</th>
               <th className="px-6 py-3 font-medium text-slate-300">Nome</th>
               <th className="px-6 py-3 font-medium text-slate-300">Fabricante</th>
               <th className="px-6 py-3 font-medium text-slate-300">Data Aplicação</th>
@@ -91,8 +96,8 @@ export function VacinasPage() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-800/30">
-                  <td className="px-6 py-4 text-white">{item.petId}</td>
-                  <td className="px-6 py-4 text-slate-300">{item.nome}</td>
+                  <td className="px-6 py-4 text-slate-300">{item.petNome || "-"}</td>
+                  <td className="px-6 py-4 text-white">{item.nome}</td>
                   <td className="px-6 py-4 text-slate-300">{item.fabricante}</td>
                   <td className="px-6 py-4 text-slate-300">{item.dataAplicacao}</td>
                   <td className="px-6 py-4 text-slate-300">{item.proximaDose}</td>
@@ -112,8 +117,13 @@ export function VacinasPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Vacina" : "Nova Vacina"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet ID</label>
-            <input required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet</label>
+            <select required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+              <option value="">Selecione</option>
+              {pets.map((pet) => (
+                <option key={pet.id} value={pet.id}>{pet.nome}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Nome da Vacina</label>

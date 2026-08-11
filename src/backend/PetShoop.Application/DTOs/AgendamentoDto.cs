@@ -24,5 +24,9 @@ public class AgendamentoDto
     [EnumDataType(typeof(StatusAgendamento), ErrorMessage = "Status do agendamento inválido.")]
     public StatusAgendamento Status { get; set; }
 
+    public string? PetNome { get; set; }
+    public string? ServicoNome { get; set; }
+    public string? FuncionarioNome { get; set; }
+
     public string Observacoes { get; set; } = string.Empty;
 }

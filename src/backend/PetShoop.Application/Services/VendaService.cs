@@ -8,16 +8,28 @@ namespace PetShoop.Application.Services;
 public class VendaService : IVendaService
 {
     private readonly IVendaRepository _vendaRepository;
+    private readonly IClienteService _clienteService;
 
-    public VendaService(IVendaRepository vendaRepository)
+    public VendaService(IVendaRepository vendaRepository, IClienteService clienteService)
     {
         _vendaRepository = vendaRepository;
+        _clienteService = clienteService;
     }
 
     public async Task<IEnumerable<VendaDto>> GetVendas()
     {
         var vendas = await _vendaRepository.GetVendasAsync();
-        return vendas.ToVendaDtoList();
+        var vendaDtos = vendas.ToVendaDtoList();
+
+        var clientes = await _clienteService.GetClientes();
+        var clienteMap = clientes.ToDictionary(c => c.ClienteId, c => c.Nome);
+
+        foreach (var dto in vendaDtos)
+        {
+            dto.ClienteNome = clienteMap.GetValueOrDefault(dto.ClienteId);
+        }
+
+        return vendaDtos;
     }
 
     public async Task<VendaDto> GetById(Guid? id)
@@ -29,6 +41,9 @@ public class VendaService : IVendaService
         {
             throw new InvalidOperationException("Venda não encontrada.");
         }
+
+        var cliente = await _clienteService.GetById(vendaDto.ClienteId);
+        vendaDto.ClienteNome = cliente?.Nome;
 
         return vendaDto;
     }

@@ -6,7 +6,7 @@ namespace PetShoop.Application.Interfaces;
 
 public interface IVacinaService
 {
-    Task<IEnumerable<VacinaDto>> GetPets();
+    Task<IEnumerable<VacinaDto>> GetVacinas();
     Task<VacinaDto> GetById(Guid? id);
     Task Add(VacinaDto vacinaDto);
     Task Update(VacinaDto vacinaDto);

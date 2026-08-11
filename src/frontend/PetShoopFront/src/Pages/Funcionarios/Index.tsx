@@ -138,7 +138,9 @@ export function FuncionariosPage() {
                 <option value="">Selecione</option>
                 <option value="Veterinario">Veterinário</option>
                 <option value="Atendente">Atendente</option>
+                <option value="Tosador">Tosador</option>
                 <option value="Banhista">Banhista</option>
+                <option value="Gerente">Gerente</option>
                 <option value="Administrador">Administrador</option>
               </select>
             </div>

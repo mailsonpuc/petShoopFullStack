@@ -8,16 +8,39 @@ namespace PetShoop.Application.Services;
 public class ItemVendaService : IItemVendaService
 {
     private readonly IItemVendaRepository _itemVendaRepository;
+    private readonly IProdutoService _produtoService;
+    private readonly IVendaService _vendaService;
 
-    public ItemVendaService(IItemVendaRepository itemVendaRepository)
+    public ItemVendaService(IItemVendaRepository itemVendaRepository, IProdutoService produtoService, IVendaService vendaService)
     {
         _itemVendaRepository = itemVendaRepository;
+        _produtoService = produtoService;
+        _vendaService = vendaService;
     }
 
     public async Task<IEnumerable<ItemVendaDto>> GetItensVendas()
     {
         var itensVenda = await _itemVendaRepository.GetItensVendasAsync();
-        return itensVenda.ToItemVendaDtoList();
+        var itemVendaDtos = itensVenda.ToItemVendaDtoList();
+
+        var produtos = await _produtoService.GetProdutos();
+        var produtoMap = produtos.ToDictionary(p => p.ProdutoId, p => p.Nome);
+
+        var vendas = await _vendaService.GetVendas();
+        var vendaMap = vendas.ToDictionary(v => v.VendaId, v => v);
+        var clienteMap = vendas.Where(v => v.ClienteId != Guid.Empty).ToDictionary(v => v.VendaId, v => v.ClienteNome);
+
+        foreach (var dto in itemVendaDtos)
+        {
+            dto.ProdutoNome = produtoMap.GetValueOrDefault(dto.ProdutoId);
+            dto.ClienteNome = clienteMap.GetValueOrDefault(dto.VendaId);
+            if (vendaMap.TryGetValue(dto.VendaId, out var vendaDto))
+            {
+                dto.VendaInfo = $"Venda em {vendaDto.DataVenda:dd/MM/yyyy HH:mm}";
+            }
+        }
+
+        return itemVendaDtos;
     }
 
     public async Task<ItemVendaDto> GetById(Guid? id)
@@ -28,6 +51,16 @@ public class ItemVendaService : IItemVendaService
         if (itemVendaDto is null)
         {
             throw new InvalidOperationException("Item de venda não encontrado.");
+        }
+
+        var produto = await _produtoService.GetById(itemVendaDto.ProdutoId);
+        itemVendaDto.ProdutoNome = produto?.Nome;
+
+        var venda = await _vendaService.GetById(itemVendaDto.VendaId);
+        if (venda != null)
+        {
+            itemVendaDto.VendaInfo = $"Venda em {venda.DataVenda:dd/MM/yyyy HH:mm}";
+            itemVendaDto.ClienteNome = venda.ClienteNome;
         }
 
         return itemVendaDto;

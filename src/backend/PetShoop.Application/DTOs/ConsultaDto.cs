@@ -13,7 +13,7 @@ public class ConsultaDto
     public Guid FuncionarioId { get; set; }
 
     [Required(ErrorMessage = "Data da consulta é obrigatória.")]
-    [DataType(DataType.DateTime, ErrorMessage = "Informe uma data válida.")]
+    [DataType(DataType.DateTime, ErrorMessage = "Informe uma data e hora válidas.")]
     public DateTime DataConsulta { get; set; }
 
     [Required(ErrorMessage = "Peso é obrigatório.")]
@@ -31,4 +31,7 @@ public class ConsultaDto
     [Required(ErrorMessage = "Prescrição é obrigatória.")]
     [StringLength(1000, ErrorMessage = "Prescrição deve ter no máximo 1000 caracteres.")]
     public string Prescricao { get; set; } = string.Empty;
+
+    public string? PetNome { get; set; }
+    public string? FuncionarioNome { get; set; }
 }

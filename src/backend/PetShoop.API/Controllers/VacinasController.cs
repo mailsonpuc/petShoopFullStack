@@ -21,7 +21,7 @@ public class VacinasController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VacinaDto>>> Get()
     {
-        var vacinas = await _vacinaService.GetPets();
+        var vacinas = await _vacinaService.GetVacinas();
         return Ok(vacinas);
     }
 

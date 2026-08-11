@@ -29,6 +29,7 @@ export interface Pet {
   porte: string;
   observacoes: string;
   clienteId: string;
+  clienteNome?: string;
 }
 
 export interface CreatePetDto {
@@ -107,6 +108,9 @@ export interface Agendamento {
   dataHora: string;
   status: string;
   observacoes: string;
+  petNome?: string;
+  servicoNome?: string;
+  funcionarioNome?: string;
 }
 
 export interface CreateAgendamentoDto {
@@ -127,6 +131,8 @@ export interface Consulta {
   temperatura: number;
   diagnostico: string;
   prescricao: string;
+  petNome?: string;
+  funcionarioNome?: string;
 }
 
 export interface CreateConsultaDto {
@@ -146,6 +152,7 @@ export interface Vacina {
   fabricante: string;
   dataAplicacao: string;
   proximaDose: string;
+  petNome?: string;
 }
 
 export interface CreateVacinaDto {
@@ -162,6 +169,8 @@ export interface Prontuario {
   funcionarioId: string;
   dataRegistro: string;
   descricao: string;
+  petNome?: string;
+  funcionarioNome?: string;
 }
 
 export interface CreateProntuarioDto {
@@ -177,6 +186,7 @@ export interface Venda {
   dataVenda: string;
   valorTotal: number;
   formaPagamento: string;
+  clienteNome?: string;
 }
 
 export interface CreateVendaDto {
@@ -192,6 +202,9 @@ export interface ItemVenda {
   produtoId: string;
   quantidade: number;
   valorUnitario: number;
+  produtoNome?: string;
+  vendaInfo?: string;
+  clienteNome?: string;
 }
 
 export interface CreateItemVendaDto {

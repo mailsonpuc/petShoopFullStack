@@ -10,16 +10,28 @@ namespace PetShoop.Application.Services;
 public class PetService : IPetService
 {
     private readonly IPetRepository _petRepository;
+    private readonly IClienteService _clienteService;
 
-    public PetService(IPetRepository petRepository)
+    public PetService(IPetRepository petRepository, IClienteService clienteService)
     {
         _petRepository = petRepository;
+        _clienteService = clienteService;
     }
 
     public async Task<IEnumerable<PetDto>> GetPets()
     {
         var pets = await _petRepository.GetPetsAsync();
-        return pets.ToPetDtoList();
+        var petDtos = pets.ToPetDtoList();
+
+        var clientes = await _clienteService.GetClientes();
+        var clienteMap = clientes.ToDictionary(c => c.ClienteId, c => c.Nome);
+
+        foreach (var dto in petDtos)
+        {
+            dto.ClienteNome = clienteMap.GetValueOrDefault(dto.ClienteId);
+        }
+
+        return petDtos;
     }
 
     public async Task<PetDto> GetById(Guid? id)
@@ -31,6 +43,9 @@ public class PetService : IPetService
         {
             throw new InvalidOperationException("Pet não encontrado.");
         }
+
+        var cliente = await _clienteService.GetById(petDto.ClienteId);
+        petDto.ClienteNome = cliente?.Nome;
 
         return petDto;
     }

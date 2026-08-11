@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCrud } from "../../Hooks/useCrud";
-import { vendasApi } from "../../Services/api";
-import type { Venda, CreateVendaDto } from "../../Types";
+import { vendasApi, clientesApi } from "../../Services/api";
+import type { Venda, CreateVendaDto, Cliente } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
 
@@ -9,6 +9,7 @@ export function VendasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Venda | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formData, setFormData] = useState<CreateVendaDto>({
     clienteId: "",
     dataVenda: "",
@@ -22,6 +23,10 @@ export function VendasPage() {
     updateFn: vendasApi.update,
     deleteFn: vendasApi.delete,
   });
+
+  useEffect(() => {
+    clientesApi.list().then(setClientes).catch(() => setClientes([]));
+  }, []);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -73,7 +78,7 @@ export function VendasPage() {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
-              <th className="px-6 py-3 font-medium text-slate-300">Cliente ID</th>
+              <th className="px-6 py-3 font-medium text-slate-300">Cliente</th>
               <th className="px-6 py-3 font-medium text-slate-300">Data Venda</th>
               <th className="px-6 py-3 font-medium text-slate-300">Valor Total</th>
               <th className="px-6 py-3 font-medium text-slate-300">Forma Pagamento</th>
@@ -88,7 +93,7 @@ export function VendasPage() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-800/30">
-                  <td className="px-6 py-4 text-white">{item.clienteId}</td>
+                  <td className="px-6 py-4 text-white">{item.clienteNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.dataVenda}</td>
                   <td className="px-6 py-4 text-slate-300">R$ {item.valorTotal.toFixed(2)}</td>
                   <td className="px-6 py-4 text-slate-300">{item.formaPagamento}</td>
@@ -108,8 +113,13 @@ export function VendasPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Venda" : "Nova Venda"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-300">Cliente ID</label>
-            <input required value={formData.clienteId} onChange={(e) => setFormData({ ...formData, clienteId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-300">Cliente</label>
+            <select required value={formData.clienteId} onChange={(e) => setFormData({ ...formData, clienteId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+              <option value="">Selecione</option>
+              {clientes.map((cliente) => (
+                <option key={cliente.id} value={cliente.id}>{cliente.nome}</option>
+              ))}
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
