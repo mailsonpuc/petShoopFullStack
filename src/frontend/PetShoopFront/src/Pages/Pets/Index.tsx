@@ -16,18 +16,20 @@ export function PetsPage() {
     raca: "",
     sexo: "",
     dataDeNascimento: "",
-    peso: 0,
+    peso: 0.01,
     cor: "",
     porte: "",
     observacoes: "",
     clienteId: "",
+    clienteNome: "",
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Pet>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Pet, "petId", CreatePetDto>({
     fetchFn: petsApi.list,
     createFn: petsApi.create,
     updateFn: petsApi.update,
     deleteFn: petsApi.delete,
+    idKey: "petId",
   });
 
   useEffect(() => {
@@ -42,11 +44,12 @@ export function PetsPage() {
       raca: "",
       sexo: "",
       dataDeNascimento: "",
-      peso: 0,
+      peso: 0.01,
       cor: "",
       porte: "",
       observacoes: "",
       clienteId: "",
+      clienteNome: "",
     });
     setIsModalOpen(true);
   };
@@ -64,14 +67,20 @@ export function PetsPage() {
       porte: pet.porte,
       observacoes: pet.observacoes,
       clienteId: pet.clienteId,
+      clienteNome: pet.clienteNome || "",
     });
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.nome || !formData.especie || !formData.raca || !formData.sexo || !formData.dataDeNascimento || !formData.cor || !formData.porte || !formData.clienteId || formData.peso <= 0) {
+      return;
+    }
+
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.petId, formData);
     } else {
       await createItem(formData);
     }
@@ -117,7 +126,7 @@ export function PetsPage() {
               <tr><td colSpan={7} className="px-6 py-8 text-center text-slate-400">Nenhum pet encontrado</td></tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.petId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-white">{item.nome}</td>
                   <td className="px-6 py-4 text-slate-300">{item.especie}</td>
                   <td className="px-6 py-4 text-slate-300">{item.raca}</td>
@@ -127,7 +136,7 @@ export function PetsPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.petId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>
@@ -196,10 +205,17 @@ export function PetsPage() {
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Cliente</label>
-            <select required value={formData.clienteId} onChange={(e) => setFormData({ ...formData, clienteId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
+            <select required value={formData.clienteId} onChange={(e) => {
+              const cliente = clientes.find((c) => c.clienteId === e.target.value);
+              setFormData({
+                ...formData,
+                clienteId: e.target.value,
+                clienteNome: cliente?.nome || "",
+              });
+            }} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
               <option value="">Selecione</option>
               {clientes.map((cliente) => (
-                <option key={cliente.id} value={cliente.id}>{cliente.nome}</option>
+                <option key={cliente.clienteId} value={cliente.clienteId}>{cliente.nome}</option>
               ))}
             </select>
           </div>

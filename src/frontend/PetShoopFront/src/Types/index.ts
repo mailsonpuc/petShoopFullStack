@@ -1,5 +1,5 @@
 export interface Cliente {
-  id: string;
+  clienteId: string;
   nome: string;
   cpf: string;
   email: string;
@@ -18,7 +18,7 @@ export interface CreateClienteDto {
 }
 
 export interface Pet {
-  id: string;
+  petId: string;
   nome: string;
   especie: string;
   raca: string;
@@ -43,10 +43,11 @@ export interface CreatePetDto {
   porte: string;
   observacoes: string;
   clienteId: string;
+  clienteNome?: string;
 }
 
 export interface Funcionario {
-  id: string;
+  funcionarioId: string;
   nome: string;
   cpf: string;
   email: string;
@@ -67,7 +68,7 @@ export interface CreateFuncionarioDto {
 }
 
 export interface Produto {
-  id: string;
+  produtoId: string;
   nome: string;
   descricao: string;
   categoria: string;
@@ -86,7 +87,7 @@ export interface CreateProdutoDto {
 }
 
 export interface Servico {
-  id: string;
+  servicoId: string;
   nome: string;
   descricao: string;
   preco: number;
@@ -101,7 +102,7 @@ export interface CreateServicoDto {
 }
 
 export interface Agendamento {
-  id: string;
+  agendamentoId: string;
   petId: string;
   servicoId: string;
   funcionarioId: string;
@@ -123,7 +124,7 @@ export interface CreateAgendamentoDto {
 }
 
 export interface Consulta {
-  id: string;
+  consultaId: string;
   petId: string;
   funcionarioId: string;
   dataConsulta: string;
@@ -146,7 +147,7 @@ export interface CreateConsultaDto {
 }
 
 export interface Vacina {
-  id: string;
+  vacinaId: string;
   petId: string;
   nome: string;
   fabricante: string;
@@ -164,7 +165,7 @@ export interface CreateVacinaDto {
 }
 
 export interface Prontuario {
-  id: string;
+  prontuarioId: string;
   petId: string;
   funcionarioId: string;
   dataRegistro: string;
@@ -181,7 +182,7 @@ export interface CreateProntuarioDto {
 }
 
 export interface Venda {
-  id: string;
+  vendaId: string;
   clienteId: string;
   dataVenda: string;
   valorTotal: number;
@@ -197,7 +198,7 @@ export interface CreateVendaDto {
 }
 
 export interface ItemVenda {
-  id: string;
+  itemVendaId: string;
   vendaId: string;
   produtoId: string;
   quantidade: number;

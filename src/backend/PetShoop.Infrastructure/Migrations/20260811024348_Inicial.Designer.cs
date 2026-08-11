@@ -12,8 +12,8 @@ using PetShoop.Infrastructure.Context;
 namespace PetShoop.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260809050007_TokenJWT")]
-    partial class TokenJWT
+    [Migration("20260811024348_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

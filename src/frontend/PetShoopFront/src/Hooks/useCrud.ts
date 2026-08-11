@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 
-interface UseCrudOptions<T> {
+interface UseCrudOptions<T extends Record<string, any>, TIdKey extends keyof T = "id", TCreate = Omit<T, TIdKey>> {
   fetchFn: () => Promise<T[]>;
-  createFn: (data: Omit<T, "id">) => Promise<T>;
-  updateFn: (id: string, data: Omit<T, "id">) => Promise<T>;
+  createFn: (data: TCreate) => Promise<T>;
+  updateFn: (id: string, data: TCreate) => Promise<T>;
   deleteFn: (id: string) => Promise<void>;
+  idKey?: TIdKey;
 }
 
-export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
+export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = "id", TCreate = Omit<T, TIdKey>>(options: UseCrudOptions<T, TIdKey, TCreate>) {
   const [items, setItems] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const idField = options.idKey ?? "id";
 
   const loadItems = useCallback(async () => {
     try {
@@ -25,21 +28,21 @@ export function useCrud<T extends { id: string }>(options: UseCrudOptions<T>) {
     }
   }, [options.fetchFn]);
 
-  const createItem = async (data: Omit<T, "id">) => {
+  const createItem = async (data: TCreate) => {
     const newItem = await options.createFn(data);
     setItems((prev) => [...prev, newItem]);
     return newItem;
   };
 
-  const updateItem = async (id: string, data: Omit<T, "id">) => {
+  const updateItem = async (id: string, data: TCreate) => {
     const updated = await options.updateFn(id, data);
-    setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
+    setItems((prev) => prev.map((item) => (item[idField] === id ? updated : item)));
     return updated;
   };
 
   const deleteItem = async (id: string) => {
     await options.deleteFn(id);
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prev) => prev.filter((item) => item[idField] !== id));
   };
 
   useEffect(() => {

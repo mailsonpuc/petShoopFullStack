@@ -21,11 +21,12 @@ export function AgendamentosPage() {
     observacoes: "",
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Agendamento>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Agendamento, "agendamentoId">({
     fetchFn: agendamentosApi.list,
     createFn: agendamentosApi.create,
     updateFn: agendamentosApi.update,
     deleteFn: agendamentosApi.delete,
+    idKey: "agendamentoId",
   });
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export function AgendamentosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.agendamentoId, formData);
     } else {
       await createItem(formData);
     }
@@ -84,7 +85,7 @@ export function AgendamentosPage() {
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
 
-      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hagendamentoIdden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -96,14 +97,14 @@ export function AgendamentosPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divagendamentoIde-y divagendamentoIde-slate-800">
             {isLoading ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Nenhum agendamento encontrado</td></tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.agendamentoId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-slate-300">{item.petNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.servicoNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.funcionarioNome || "-"}</td>
@@ -112,7 +113,7 @@ export function AgendamentosPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.agendamentoId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>
@@ -124,13 +125,13 @@ export function AgendamentosPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Agendamento" : "Novo Agendamento"}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="gragendamentoId gragendamentoId-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet</label>
               <select required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {pets.map((pet) => (
-                  <option key={pet.id} value={pet.id}>{pet.nome}</option>
+                  <option key={pet.petId} value={pet.petId}>{pet.nome}</option>
                 ))}
               </select>
             </div>
@@ -139,7 +140,7 @@ export function AgendamentosPage() {
               <select required value={formData.servicoId} onChange={(e) => setFormData({ ...formData, servicoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {servicos.map((servico) => (
-                  <option key={servico.id} value={servico.id}>{servico.nome}</option>
+                  <option key={servico.servicoId} value={servico.servicoId}>{servico.nome}</option>
                 ))}
               </select>
             </div>
@@ -149,11 +150,11 @@ export function AgendamentosPage() {
             <select required value={formData.funcionarioId} onChange={(e) => setFormData({ ...formData, funcionarioId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
               <option value="">Selecione</option>
               {funcionarios.map((funcionario) => (
-                <option key={funcionario.id} value={funcionario.id}>{funcionario.nome}</option>
+                  <option key={funcionario.funcionarioId} value={funcionario.funcionarioId}>{funcionario.nome}</option>
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="gragendamentoId gragendamentoId-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Data/Hora</label>
               <input required type="datetime-local" value={formData.dataHora} onChange={(e) => setFormData({ ...formData, dataHora: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
@@ -164,7 +165,7 @@ export function AgendamentosPage() {
                 <option value="Agendado">Agendado</option>
                 <option value="Confirmado">Confirmado</option>
                 <option value="Cancelado">Cancelado</option>
-                <option value="Concluido">Concluído</option>
+                <option value="ConcluagendamentoIdo">Concluído</option>
               </select>
             </div>
           </div>

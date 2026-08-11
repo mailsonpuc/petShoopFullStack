@@ -18,11 +18,12 @@ export function ProdutosPage() {
     quantidadeEmEstoque: 0,
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Produto>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Produto, "produtoId">({
     fetchFn: produtosApi.list,
     createFn: produtosApi.create,
     updateFn: produtosApi.update,
     deleteFn: produtosApi.delete,
+    idKey: "produtoId",
   });
 
   const openCreate = () => {
@@ -47,7 +48,7 @@ export function ProdutosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.produtoId, formData);
     } else {
       await createItem(formData);
     }
@@ -92,7 +93,7 @@ export function ProdutosPage() {
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Nenhum produto encontrado</td></tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.produtoId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-white">{item.nome}</td>
                   <td className="px-6 py-4 text-slate-300">{item.categoria}</td>
                   <td className="px-6 py-4 text-slate-300">{item.marca}</td>
@@ -101,7 +102,7 @@ export function ProdutosPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.produtoId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>

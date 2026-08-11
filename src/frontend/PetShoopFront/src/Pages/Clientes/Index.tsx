@@ -18,11 +18,12 @@ export function ClientesPage() {
     endereco: "",
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Cliente>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Cliente, "clienteId">({
     fetchFn: clientesApi.list,
     createFn: clientesApi.create,
     updateFn: clientesApi.update,
     deleteFn: clientesApi.delete,
+    idKey: "clienteId",
   });
 
   const openCreate = () => {
@@ -54,7 +55,7 @@ export function ClientesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.clienteId, formData);
     } else {
       await createItem(formData);
     }
@@ -85,7 +86,7 @@ export function ClientesPage() {
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
 
-      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hclienteIdden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -96,7 +97,7 @@ export function ClientesPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divclienteIde-y divclienteIde-slate-800">
             {isLoading ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td>
@@ -107,7 +108,7 @@ export function ClientesPage() {
               </tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.clienteId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-white">{item.nome}</td>
                   <td className="px-6 py-4 text-slate-300">{item.cpf}</td>
                   <td className="px-6 py-4 text-slate-300">{item.email}</td>
@@ -115,7 +116,7 @@ export function ClientesPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.clienteId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>

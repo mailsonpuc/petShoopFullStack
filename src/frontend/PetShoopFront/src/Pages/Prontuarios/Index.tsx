@@ -18,11 +18,12 @@ export function ProntuariosPage() {
     descricao: "",
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Prontuario>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Prontuario, "prontuarioId">({
     fetchFn: prontuariosApi.list,
     createFn: prontuariosApi.create,
     updateFn: prontuariosApi.update,
     deleteFn: prontuariosApi.delete,
+    idKey: "prontuarioId",
   });
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export function ProntuariosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.prontuarioId, formData);
     } else {
       await createItem(formData);
     }
@@ -78,7 +79,7 @@ export function ProntuariosPage() {
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
 
-      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hprontuarioIdden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -89,14 +90,14 @@ export function ProntuariosPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divprontuarioIde-y divprontuarioIde-slate-800">
             {isLoading ? (
               <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
               <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Nenhum prontuário encontrado</td></tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.prontuarioId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-slate-300">{item.petNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.funcionarioNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.dataRegistro}</td>
@@ -104,7 +105,7 @@ export function ProntuariosPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.prontuarioId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>
@@ -116,13 +117,13 @@ export function ProntuariosPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Prontuário" : "Novo Prontuário"}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grprontuarioId grprontuarioId-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet</label>
               <select required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {pets.map((pet) => (
-                  <option key={pet.id} value={pet.id}>{pet.nome}</option>
+                  <option key={pet.petId} value={pet.petId}>{pet.nome}</option>
                 ))}
               </select>
             </div>
@@ -131,7 +132,7 @@ export function ProntuariosPage() {
               <select required value={formData.funcionarioId} onChange={(e) => setFormData({ ...formData, funcionarioId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {funcionarios.map((funcionario) => (
-                  <option key={funcionario.id} value={funcionario.id}>{funcionario.nome}</option>
+                  <option key={funcionario.funcionarioId} value={funcionario.funcionarioId}>{funcionario.nome}</option>
                 ))}
               </select>
             </div>

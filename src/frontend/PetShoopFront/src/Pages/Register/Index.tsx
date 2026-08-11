@@ -1,16 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../Contexts/AuthContext";
 
-export function Login() {
+export function Register() {
   const [formData, setFormData] = useState({
     userName: "",
+    email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -19,10 +18,15 @@ export function Login() {
     setError(null);
 
     try {
-      await login(formData);
-      navigate("/dashboard");
+      await fetch("http://localhost:5100/api/v1/Auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      navigate("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao fazer login");
+      setError(err instanceof Error ? err.message : "Erro ao criar conta");
     } finally {
       setIsLoading(false);
     }
@@ -35,14 +39,13 @@ export function Login() {
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 font-bold text-white shadow-lg shadow-blue-500/30">
             <Link to="/" className="flex items-center gap-2 text-white no-underline hover:text-slate-100">
               <span>P</span>
-
             </Link>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            Acesse sua conta
+            Criar conta
           </h1>
           <p className="mt-2 text-sm text-slate-400">
-            Insira suas credenciais para continuar
+            Preencha os dados para se cadastrar
           </p>
         </div>
 
@@ -64,6 +67,21 @@ export function Login() {
               value={formData.userName}
               onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
               placeholder="Digite seu usuário"
+              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder-slate-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-300">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="seu@email.com"
               className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder-slate-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -100,17 +118,15 @@ export function Login() {
             disabled={isLoading}
             className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/35 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50"
           >
-            {isLoading ? "Entrando..." : "Entrar"}
+            {isLoading ? "Criando conta..." : "Criar conta"}
           </button>
         </form>
 
         <p className="mt-8 text-center text-xs text-slate-400">
-          Não tem uma conta?{" "}
-
-        <Link to="/register" className="font-medium text-blue-400 no-underline hover:text-blue-300">
-            Cadastre-se
+          Já tem uma conta?{" "}
+          <Link to="/login" className="font-medium text-blue-400 no-underline hover:text-blue-300">
+            Faça login
           </Link>
-
         </p>
       </div>
     </div>

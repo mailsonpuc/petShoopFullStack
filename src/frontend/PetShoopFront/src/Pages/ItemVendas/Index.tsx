@@ -18,11 +18,12 @@ export function ItemVendasPage() {
     valorUnitario: 0,
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<ItemVenda>({
+  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<ItemVenda, "itemVendaId">({
     fetchFn: itemVendasApi.list,
     createFn: itemVendasApi.create,
     updateFn: itemVendasApi.update,
     deleteFn: itemVendasApi.delete,
+    idKey: "itemVendaId",
   });
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export function ItemVendasPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingItem) {
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.itemVendaId, formData);
     } else {
       await createItem(formData);
     }
@@ -97,7 +98,7 @@ export function ItemVendasPage() {
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Nenhum item encontrado</td></tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30">
+                <tr key={item.itemVendaId} className="hover:bg-slate-800/30">
                   <td className="px-6 py-4 text-white">{item.vendaInfo || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.clienteNome || "-"}</td>
                   <td className="px-6 py-4 text-slate-300">{item.produtoNome || "-"}</td>
@@ -106,7 +107,7 @@ export function ItemVendasPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.id)} className="text-red-400 hover:text-red-300">Excluir</button>
+                      <button onClick={() => setDeleteId(item.itemVendaId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>
@@ -124,7 +125,7 @@ export function ItemVendasPage() {
               <select required value={formData.vendaId} onChange={(e) => setFormData({ ...formData, vendaId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {vendas.map((venda) => (
-                  <option key={venda.id} value={venda.id}>{venda.clienteNome || venda.id} - {new Date(venda.dataVenda).toLocaleString()}</option>
+                  <option key={venda.vendaId} value={venda.vendaId}>{venda.clienteNome || venda.vendaId} - {new Date(venda.dataVenda).toLocaleString()}</option>
                 ))}
               </select>
             </div>
@@ -133,7 +134,7 @@ export function ItemVendasPage() {
               <select required value={formData.produtoId} onChange={(e) => setFormData({ ...formData, produtoId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
                 <option value="">Selecione</option>
                 {produtos.map((produto) => (
-                  <option key={produto.id} value={produto.id}>{produto.nome}</option>
+                  <option key={produto.produtoId} value={produto.produtoId}>{produto.nome}</option>
                 ))}
               </select>
             </div>

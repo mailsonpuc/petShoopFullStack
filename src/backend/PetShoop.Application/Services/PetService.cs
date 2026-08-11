@@ -64,12 +64,29 @@ public class PetService : IPetService
 
     public async Task Update(PetDto petDto)
     {
-        var pet = petDto.ToPet();
-
-        if (pet is null)
+        if (petDto is null)
         {
             throw new ArgumentNullException(nameof(petDto));
         }
+
+        var pet = await _petRepository.GetByIdAsync(petDto.PetId);
+
+        if (pet is null)
+        {
+            throw new InvalidOperationException("Pet não encontrado.");
+        }
+
+        pet.Update(
+            petDto.Nome,
+            petDto.Especie,
+            petDto.Raca,
+            petDto.Sexo,
+            petDto.DataDeNascimento,
+            petDto.Peso,
+            petDto.Cor,
+            petDto.Porte,
+            petDto.Observacoes,
+            petDto.ClienteId);
 
         await _petRepository.UpdateAsync(pet);
     }

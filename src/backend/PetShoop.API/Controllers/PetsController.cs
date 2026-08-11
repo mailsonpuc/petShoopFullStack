@@ -42,6 +42,13 @@ public class PetsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
+            foreach (var kvp in ModelState)
+            {
+                foreach (var err in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"ModelState error key={kvp.Key} msg={err.ErrorMessage} ex={err.Exception}");
+                }
+            }
             return BadRequest(ModelState);
         }
 
@@ -53,6 +60,18 @@ public class PetsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] PetDto petDto)
     {
+        if (!ModelState.IsValid)
+        {
+            foreach (var kvp in ModelState)
+            {
+                foreach (var err in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"ModelState error key={kvp.Key} msg={err.ErrorMessage} ex={err.Exception}");
+                }
+            }
+            return BadRequest(ModelState);
+        }
+
         if (id != petDto.PetId)
         {
             return BadRequest();
