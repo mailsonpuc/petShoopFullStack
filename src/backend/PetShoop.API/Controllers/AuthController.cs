@@ -9,6 +9,8 @@ using PetShoop.Infrastructure.Identity.Services;
 
 namespace PetShoop.API.Controllers;
 
+[Route("api/v1/[controller]")]
+[ApiController]
 public class AuthController : ControllerBase
 {
     private readonly ITokenService _tokenService;
