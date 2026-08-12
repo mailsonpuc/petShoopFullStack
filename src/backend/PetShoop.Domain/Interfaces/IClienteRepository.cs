@@ -1,3 +1,4 @@
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Entities;
 
 namespace PetShoop.Domain.Interfaces;
@@ -11,4 +12,5 @@ public interface IClienteRepository
     Task<Cliente> RemoveAsync(Cliente cliente);
     Task<bool> HasPetsAsync(Guid clienteId);
     Task<bool> HasVendasAsync(Guid clienteId);
+    Task<PagedList<Cliente>> GetClientesPagedAsync(int pageNumber, int pageSize);
 }

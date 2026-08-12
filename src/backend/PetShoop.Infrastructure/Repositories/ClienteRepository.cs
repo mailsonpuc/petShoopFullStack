@@ -1,4 +1,5 @@
 
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
 using PetShoop.Infrastructure.Context;
@@ -30,6 +31,18 @@ public class ClienteRepository : IClienteRepository
     public async Task<IEnumerable<Cliente>> GetClientesAsync()
     {
         return await _context.Clientes.AsNoTracking().ToListAsync();
+    }
+
+    //paginaçao
+    public async Task<PagedList<Cliente>> GetClientesPagedAsync(int pageNumber, int pageSize)
+    {
+        var count = await _context.Clientes.CountAsync();
+        var items = await _context.Clientes.AsNoTracking()
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedList<Cliente>(items, count, pageNumber, pageSize);
     }
 
     public async Task<Cliente> RemoveAsync(Cliente cliente)

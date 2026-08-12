@@ -1,6 +1,7 @@
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Interfaces;
 using PetShoop.Domain.Validation;
 
@@ -72,5 +73,14 @@ public class ClienteService : IClienteService
         }
 
         await _clienteRepository.RemoveAsync(cliente);
+    }
+
+    //paginaçao
+    public async Task<PagedList<ClienteDto>> GetClientesPaged(int pageNumber, int pageSize)
+    {
+        var pagedClientes = await _clienteRepository.GetClientesPagedAsync(pageNumber, pageSize);
+        var clientesDto = pagedClientes.ToClienteDtoList().ToList();
+
+        return new PagedList<ClienteDto>(clientesDto, pagedClientes.TotalCount, pageNumber, pageSize);
     }
 }
