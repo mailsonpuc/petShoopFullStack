@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { useCrud } from "../../Hooks/useCrud";
+import { useState, useEffect } from "react";
 import { clientesApi } from "../../Services/api";
 import type { Cliente, CreateClienteDto } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export function ClientesPage() {
+  const [items, setItems] = useState<Cliente[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Cliente | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -18,13 +27,25 @@ export function ClientesPage() {
     endereco: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Cliente, "clienteId">({
-    fetchFn: clientesApi.list,
-    createFn: clientesApi.create,
-    updateFn: clientesApi.update,
-    deleteFn: clientesApi.delete,
-    idKey: "clienteId",
-  });
+  const loadClientes = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await clientesApi.getPaged(pageNumber, pageSize);
+      setItems(response.data);
+      setTotalPages(response.pagination.totalPages);
+      setTotalCount(response.pagination.totalCount);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao carregar clientes";
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadClientes();
+  }, [pageNumber]);
 
   const openCreate = () => {
     setEditingItem(null);
@@ -54,24 +75,35 @@ export function ClientesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.clienteId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await clientesApi.update(editingItem.clienteId, formData);
+      } else {
+        await clientesApi.create(formData);
+      }
+      setIsModalOpen(false);
+      loadClientes();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao salvar cliente";
+      setError(message);
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {
     if (deleteId) {
       try {
-        await deleteItem(deleteId);
+        await clientesApi.delete(deleteId);
         setDeleteId(null);
-      } catch {
-        // erro já tratado no hook
+        loadClientes();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Erro ao excluir cliente";
+        setError(message);
       }
     }
   };
+
+  const startItem = items.length > 0 ? (pageNumber - 1) * pageSize + 1 : 0;
+  const endItem = Math.min(pageNumber * pageSize, totalCount);
 
   return (
     <div className="space-y-6">
@@ -89,9 +121,8 @@ export function ClientesPage() {
       </div>
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
-      {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
-      <div className="overflow-hclienteIdden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -102,7 +133,7 @@ export function ClientesPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divclienteIde-y divclienteIde-slate-800">
+          <tbody className="divide-y divide-slate-800">
             {isLoading ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td>
@@ -131,6 +162,33 @@ export function ClientesPage() {
         </table>
       </div>
 
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-slate-400">
+          Mostrando {startItem} a {endItem} de {totalCount} clientes
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
+            disabled={pageNumber === 1}
+            className="flex items-center gap-1 rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <FaChevronLeft className="h-4 w-4" />
+            Voltar
+          </button>
+          <span className="flex items-center px-3 text-sm text-slate-400">
+            Página {pageNumber} de {totalPages}
+          </span>
+          <button
+            onClick={() => setPageNumber((p) => Math.min(totalPages, p + 1))}
+            disabled={pageNumber === totalPages || totalPages === 0}
+            className="flex items-center gap-1 rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Avançar
+            <FaChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Cliente" : "Novo Cliente"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -145,13 +203,12 @@ export function ClientesPage() {
               value={formData.cpf}
 
               onChange={(e) => {
-                // Remove tudo que não for dígito numérico
                 const onlyNumbers = e.target.value.replace(/\D/g, "");
                 setFormData({ ...formData, cpf: onlyNumbers });
               }}
               className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
-          
+
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Email</label>
             <input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="exemplo@email.com" maxLength={100} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />

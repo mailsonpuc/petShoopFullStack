@@ -45,7 +45,7 @@ public class ClientesController : ControllerBase
     [HttpGet("paginacao")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IEnumerable<ClienteDto>>> Paginacao([FromQuery] ClienteParameters clienteParameters)
+    public async Task<ActionResult> Paginacao([FromQuery] ClienteParameters clienteParameters)
     {
         var clientes = await _clienteService.GetClientesPaged(clienteParameters.PageNumber, clienteParameters.PageSize);
 
@@ -60,7 +60,7 @@ public class ClientesController : ControllerBase
         };
 
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
-        return Ok(clientes);
+        return Ok(new { data = clientes, pagination = metadata });
     }
 
 

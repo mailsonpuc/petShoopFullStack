@@ -55,6 +55,14 @@ export const clientesApi = {
     return response.data;
   },
 
+  getPaged: async (pageNumber: number, pageSize: number): Promise<{ data: Cliente[]; pagination: { totalCount: number; pageSize: number; currentPage: number; totalPages: number; hasNextPage: boolean; hasPreviousPage: boolean } }> => {
+    const response = await api.get("/v1/Clientes/paginacao", {
+      headers: getAuthHeaders(),
+      params: { pageNumber, pageSize },
+    });
+    return { data: response.data.data, pagination: response.data.pagination };
+  },
+
   getById: async (id: string): Promise<Cliente> => {
     const response = await api.get(`/v1/Clientes/${id}`, {
       headers: getAuthHeaders(),
