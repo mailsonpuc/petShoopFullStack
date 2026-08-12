@@ -9,4 +9,5 @@ public interface IVendaRepository
     Task<Venda> CreateAsync(Venda venda);
     Task<Venda> UpdateAsync(Venda venda);
     Task<Venda> RemoveAsync(Venda venda);
+    Task<bool> HasItensVendaAsync(Guid vendaId);
 }

@@ -3,6 +3,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -84,6 +85,13 @@ public class FuncionarioService : IFuncionarioService
         if (funcionario is null)
         {
             throw new InvalidOperationException("Funcionário não encontrado.");
+        }
+
+        if (await _funcionarioRepository.HasAgendamentosAsync(funcionario.FuncionarioId) ||
+            await _funcionarioRepository.HasConsultasAsync(funcionario.FuncionarioId) ||
+            await _funcionarioRepository.HasProntuariosAsync(funcionario.FuncionarioId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir o funcionário porque existem agendamentos, consultas ou prontuários vinculados a ele.");
         }
 
         await _funcionarioRepository.RemoveAsync(funcionario);

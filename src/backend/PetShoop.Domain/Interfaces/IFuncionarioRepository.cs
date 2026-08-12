@@ -9,4 +9,7 @@ public interface IFuncionarioRepository
     Task<Funcionario> CreateAsync(Funcionario funcionario);
     Task<Funcionario> UpdateAsync(Funcionario funcionario);
     Task<Funcionario> RemoveAsync(Funcionario funcionario);
+    Task<bool> HasAgendamentosAsync(Guid funcionarioId);
+    Task<bool> HasConsultasAsync(Guid funcionarioId);
+    Task<bool> HasProntuariosAsync(Guid funcionarioId);
 }

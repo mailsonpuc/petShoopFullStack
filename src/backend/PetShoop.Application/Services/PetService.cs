@@ -4,6 +4,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -94,6 +95,19 @@ public class PetService : IPetService
     public async Task Remove(Guid? id)
     {
         var pet = await _petRepository.GetByIdAsync(id);
+        if (pet is null)
+        {
+            throw new InvalidOperationException("Pet não encontrado.");
+        }
+
+        if (await _petRepository.HasAgendamentosAsync(pet.PetId) ||
+            await _petRepository.HasConsultasAsync(pet.PetId) ||
+            await _petRepository.HasProntuariosAsync(pet.PetId) ||
+            await _petRepository.HasVacinasAsync(pet.PetId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir o pet porque existem agendamentos, consultas, prontuários ou vacinas vinculados a ele.");
+        }
+
         await _petRepository.RemoveAsync(pet);
     }
 }

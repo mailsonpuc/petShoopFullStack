@@ -18,7 +18,7 @@ export function ClientesPage() {
     endereco: "",
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Cliente, "clienteId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Cliente, "clienteId">({
     fetchFn: clientesApi.list,
     createFn: clientesApi.create,
     updateFn: clientesApi.update,
@@ -64,8 +64,12 @@ export function ClientesPage() {
 
   const handleDelete = async () => {
     if (deleteId) {
-      await deleteItem(deleteId);
-      setDeleteId(null);
+      try {
+        await deleteItem(deleteId);
+        setDeleteId(null);
+      } catch {
+        // erro já tratado no hook
+      }
     }
   };
 
@@ -85,6 +89,7 @@ export function ClientesPage() {
       </div>
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
+      {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
       <div className="overflow-hclienteIdden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">

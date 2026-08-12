@@ -44,4 +44,9 @@ public class VendaRepository : IVendaRepository
         await _context.SaveChangesAsync();
         return venda;
     }
+
+    public async Task<bool> HasItensVendaAsync(Guid vendaId)
+    {
+        return await _context.ItensVendas.AnyAsync(iv => iv.VendaId == vendaId);
+    }
 }

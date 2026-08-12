@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -80,6 +81,11 @@ public class ServicoService : IServicoService
         if (servico is null)
         {
             throw new InvalidOperationException("Serviço não encontrado.");
+        }
+
+        if (await _servicoRepository.HasAgendamentosAsync(servico.ServicoId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir o serviço porque existem agendamentos vinculados a ele.");
         }
 
         await _servicoRepository.RemoveAsync(servico);

@@ -9,4 +9,5 @@ public interface IServicoRepository
     Task<Servico> CreateAsync(Servico servico);
     Task<Servico> UpdateAsync(Servico servico);
     Task<Servico> RemoveAsync(Servico servico);
+    Task<bool> HasAgendamentosAsync(Guid servicoId);
 }

@@ -12,6 +12,7 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
   const [items, setItems] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const idField = options.idKey ?? "id";
 
@@ -19,6 +20,7 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
     try {
       setIsLoading(true);
       setError(null);
+      setDeleteError(null);
       const data = await options.fetchFn();
       setItems(data);
     } catch (err) {
@@ -41,8 +43,14 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
   };
 
   const deleteItem = async (id: string) => {
-    await options.deleteFn(id);
-    setItems((prev) => prev.filter((item) => item[idField] !== id));
+    try {
+      setDeleteError(null);
+      await options.deleteFn(id);
+      setItems((prev) => prev.filter((item) => item[idField] !== id));
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Erro ao excluir item");
+      throw err;
+    }
   };
 
   useEffect(() => {
@@ -53,6 +61,7 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
     items,
     isLoading,
     error,
+    deleteError,
     reload: loadItems,
     createItem,
     updateItem,

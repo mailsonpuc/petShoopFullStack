@@ -44,4 +44,24 @@ public class PetRepository : IPetRepository
         await _context.SaveChangesAsync();
         return pet;
     }
+
+    public async Task<bool> HasAgendamentosAsync(Guid petId)
+    {
+        return await _context.Agendamentos.AnyAsync(a => a.PetId == petId);
+    }
+
+    public async Task<bool> HasConsultasAsync(Guid petId)
+    {
+        return await _context.Consultas.AnyAsync(c => c.PetId == petId);
+    }
+
+    public async Task<bool> HasProntuariosAsync(Guid petId)
+    {
+        return await _context.Prontuarios.AnyAsync(p => p.PetId == petId);
+    }
+
+    public async Task<bool> HasVacinasAsync(Guid petId)
+    {
+        return await _context.Vacinas.AnyAsync(v => v.PetId == petId);
+    }
 }

@@ -44,4 +44,19 @@ public class FuncionarioRepository : IFuncionarioRepository
         await _context.SaveChangesAsync();
         return funcionario;
     }
+
+    public async Task<bool> HasAgendamentosAsync(Guid funcionarioId)
+    {
+        return await _context.Agendamentos.AnyAsync(a => a.FuncionarioId == funcionarioId);
+    }
+
+    public async Task<bool> HasConsultasAsync(Guid funcionarioId)
+    {
+        return await _context.Consultas.AnyAsync(c => c.FuncionarioId == funcionarioId);
+    }
+
+    public async Task<bool> HasProntuariosAsync(Guid funcionarioId)
+    {
+        return await _context.Prontuarios.AnyAsync(p => p.FuncionarioId == funcionarioId);
+    }
 }

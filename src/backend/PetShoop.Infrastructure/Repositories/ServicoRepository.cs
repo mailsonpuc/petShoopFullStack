@@ -44,4 +44,9 @@ public class ServicoRepository : IServicoRepository
         await _context.SaveChangesAsync();
         return servico;
     }
+
+    public async Task<bool> HasAgendamentosAsync(Guid servicoId)
+    {
+        return await _context.Agendamentos.AnyAsync(a => a.ServicoId == servicoId);
+    }
 }

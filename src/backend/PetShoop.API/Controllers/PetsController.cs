@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.API.Controllers;
 
@@ -93,13 +94,20 @@ public class PetsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<PetDto>> Delete(Guid id)
     {
-        var petDto = await _petService.GetById(id);
-        if (petDto == null)
+        try
         {
-            return NotFound();
-        }
+            var petDto = await _petService.GetById(id);
+            if (petDto == null)
+            {
+                return NotFound();
+            }
 
-        await _petService.Remove(id);
-        return Ok(petDto);
+            await _petService.Remove(id);
+            return Ok(petDto);
+        }
+        catch (DomainExceptionValidation ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 }

@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -82,6 +83,11 @@ public class ProdutoService : IProdutoService
         if (produto is null)
         {
             throw new InvalidOperationException("Produto não encontrado.");
+        }
+
+        if (await _produtoRepository.HasItensVendaAsync(produto.ProdutoId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir o produto porque existem itens de venda vinculados a ele.");
         }
 
         await _produtoRepository.RemoveAsync(produto);

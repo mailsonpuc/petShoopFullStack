@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -60,6 +61,16 @@ public class ClienteService : IClienteService
     public async Task Remove(Guid? id)
     {
         var cliente = await _clienteRepository.GetByIdAsync(id);
+        if (cliente is null)
+        {
+            throw new InvalidOperationException("Cliente não encontrado.");
+        }
+
+        if (await _clienteRepository.HasPetsAsync(cliente.ClienteId) || await _clienteRepository.HasVendasAsync(cliente.ClienteId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir o cliente porque existem pets ou vendas vinculados a ele.");
+        }
+
         await _clienteRepository.RemoveAsync(cliente);
     }
 }

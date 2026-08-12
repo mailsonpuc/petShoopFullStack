@@ -9,4 +9,6 @@ public interface IClienteRepository
     Task<Cliente> CreateAsync(Cliente cliente);
     Task<Cliente> UpdateAsync(Cliente cliente);
     Task<Cliente> RemoveAsync(Cliente cliente);
+    Task<bool> HasPetsAsync(Guid clienteId);
+    Task<bool> HasVendasAsync(Guid clienteId);
 }

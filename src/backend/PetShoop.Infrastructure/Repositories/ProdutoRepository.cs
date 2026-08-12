@@ -44,4 +44,9 @@ public class ProdutoRepository : IProdutoRepository
         await _context.SaveChangesAsync();
         return produto;
     }
+
+    public async Task<bool> HasItensVendaAsync(Guid produtoId)
+    {
+        return await _context.ItensVendas.AnyAsync(iv => iv.ProdutoId == produtoId);
+    }
 }

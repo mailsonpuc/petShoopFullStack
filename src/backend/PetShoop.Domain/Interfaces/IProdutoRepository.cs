@@ -9,4 +9,5 @@ public interface IProdutoRepository
     Task<Produto> CreateAsync(Produto produto);
     Task<Produto> UpdateAsync(Produto produto);
     Task<Produto> RemoveAsync(Produto produto);
+    Task<bool> HasItensVendaAsync(Guid produtoId);
 }

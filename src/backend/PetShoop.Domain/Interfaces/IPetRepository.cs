@@ -9,4 +9,8 @@ public interface IPetRepository
     Task<Pet> CreateAsync(Pet pet);
     Task<Pet> UpdateAsync(Pet pet);
     Task<Pet> RemoveAsync(Pet pet);
+    Task<bool> HasAgendamentosAsync(Guid petId);
+    Task<bool> HasConsultasAsync(Guid petId);
+    Task<bool> HasProntuariosAsync(Guid petId);
+    Task<bool> HasVacinasAsync(Guid petId);
 }

@@ -18,7 +18,7 @@ export function ProdutosPage() {
     quantidadeEmEstoque: 0,
   });
 
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useCrud<Produto, "produtoId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Produto, "produtoId">({
     fetchFn: produtosApi.list,
     createFn: produtosApi.create,
     updateFn: produtosApi.update,
@@ -57,8 +57,12 @@ export function ProdutosPage() {
 
   const handleDelete = async () => {
     if (deleteId) {
-      await deleteItem(deleteId);
-      setDeleteId(null);
+      try {
+        await deleteItem(deleteId);
+        setDeleteId(null);
+      } catch {
+        // erro já tratado no hook
+      }
     }
   };
 
@@ -73,6 +77,7 @@ export function ProdutosPage() {
       </div>
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
+      {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
       <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
@@ -102,7 +107,7 @@ export function ProdutosPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(item)} className="text-blue-400 hover:text-blue-300">Editar</button>
-                      <button onClick={() => setDeleteId(item.produtoId)} className="text-red-400 hover:text-red-300">Excluir</button>
+                       <button onClick={() => setDeleteId(item.produtoId)} className="text-red-400 hover:text-red-300">Excluir</button>
                     </div>
                   </td>
                 </tr>

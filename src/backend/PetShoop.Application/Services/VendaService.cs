@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
 
@@ -95,6 +96,11 @@ public class VendaService : IVendaService
         if (venda is null)
         {
             throw new InvalidOperationException("Venda não encontrada.");
+        }
+
+        if (await _vendaRepository.HasItensVendaAsync(venda.VendaId))
+        {
+            throw new DomainExceptionValidation("Não é possível excluir a venda porque existem itens de venda vinculados a ela.");
         }
 
         await _vendaRepository.RemoveAsync(venda);

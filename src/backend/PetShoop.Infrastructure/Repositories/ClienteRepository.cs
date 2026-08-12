@@ -45,4 +45,14 @@ public class ClienteRepository : IClienteRepository
         await _context.SaveChangesAsync();
         return cliente;
     }
+
+    public async Task<bool> HasPetsAsync(Guid clienteId)
+    {
+        return await _context.Pets.AnyAsync(p => p.ClienteId == clienteId);
+    }
+
+    public async Task<bool> HasVendasAsync(Guid clienteId)
+    {
+        return await _context.Vendas.AnyAsync(v => v.ClienteId == clienteId);
+    }
 }
