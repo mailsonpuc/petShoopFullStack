@@ -27,13 +27,17 @@ public static class ProdutoDTOMappingExtensions
         if (produtoDto is null)
             return null;
 
-        return new Produto(
+        var produto = new Produto(
             produtoDto.Nome,
             produtoDto.Descricao,
             produtoDto.Categoria,
             produtoDto.Marca,
             produtoDto.Preco,
             produtoDto.QuantidadeEmEstoque);
+
+        produto.SetProdutoId(produtoDto.ProdutoId);
+
+        return produto;
     }
 
     public static IEnumerable<ProdutoDto> ToProdutoDtoList(this IEnumerable<Produto> produtos)

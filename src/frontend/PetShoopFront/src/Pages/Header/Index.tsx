@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const menuItems = [
   { path: "/dashboard", label: "Dashboard" },
@@ -13,6 +14,7 @@ const menuItems = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, logout, user } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -29,28 +31,41 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-sm font-medium transition-colors ${
-                isActive(item.path)
-                  ? "text-blue-400"
-                  : "text-slate-300 hover:text-white"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {isAuthenticated &&
+            menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-sm font-medium transition-colors ${
+                  isActive(item.path)
+                    ? "text-blue-400"
+                    : "text-slate-300 hover:text-white"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          <Link
-            to="/login"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/35 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-          >
-            Entrar
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm text-slate-400">{user?.userName || user?.email}</span>
+              <button
+                onClick={logout}
+                className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/35 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+            >
+              Entrar
+            </Link>
+          )}
         </div>
 
         <button
@@ -69,7 +84,7 @@ export function Header() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+                d="M6 18L18 6M6 6l18 18"
               />
             ) : (
               <path
@@ -86,31 +101,45 @@ export function Header() {
       {isMenuOpen && (
         <div className="border-b border-slate-800 bg-slate-900 px-6 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
-            {menuItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMenuOpen(false)}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? "text-blue-400"
-                    : "text-slate-300 hover:text-white"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {isAuthenticated &&
+              menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`text-sm font-medium transition-colors ${
+                    isActive(item.path)
+                      ? "text-blue-400"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
             <hr className="border-slate-800" />
-            <Link
-              to="/login"
-              onClick={() => setIsMenuOpen(false)}
-              className="rounded-lg bg-blue-600 py-2.5 text-center text-sm font-semibold text-white shadow-md shadow-blue-600/25 hover:bg-blue-500"
-            >
-              Entrar
-            </Link>
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMenuOpen(false);
+                }}
+                className="rounded-lg bg-slate-800 py-2.5 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white"
+              >
+                Sair
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="rounded-lg bg-blue-600 py-2.5 text-center text-sm font-semibold text-white shadow-md shadow-blue-600/25 hover:bg-blue-500"
+              >
+                Entrar
+              </Link>
+            )}
           </nav>
         </div>
       )}
     </header>
   );
 }
+

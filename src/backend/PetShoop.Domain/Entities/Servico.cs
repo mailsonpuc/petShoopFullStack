@@ -24,6 +24,11 @@ public sealed class Servico
         ValidateDomain(nome, descricao, preco, duracaoEmMinutos);
     }
 
+    public void SetServicoId(Guid servicoId)
+    {
+        ServicoId = servicoId;
+    }
+
     private void ValidateDomain(string nome, string descricao, decimal preco, int duracaoEmMinutos)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "Nome inválido. Nome é obrigatório");

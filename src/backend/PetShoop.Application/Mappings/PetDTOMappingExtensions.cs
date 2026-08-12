@@ -35,7 +35,7 @@ public static class PetDTOMappingExtensions
     {
         if (petDto is null) return null;
 
-        return new Pet(
+        var pet = new Pet(
             petDto.Nome,
             petDto.Especie,
             petDto.Raca,
@@ -46,6 +46,10 @@ public static class PetDTOMappingExtensions
             petDto.Porte,
             petDto.Observacoes,
             petDto.ClienteId);
+
+        pet.SetPetId(petDto.PetId);
+
+        return pet;
     }
 
 

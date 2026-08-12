@@ -232,3 +232,15 @@ export interface ApiError {
   message: string;
   statusCode: number;
 }
+
+export interface Dashboard {
+  totalClientes: number;
+  totalPets: number;
+  totalFuncionarios: number;
+  totalProdutos: number;
+  totalAgendamentos: number;
+  totalVendas: number;
+  receitaTotal: number;
+  agendamentosHoje: number;
+  agendamentosPendentes: number;
+}

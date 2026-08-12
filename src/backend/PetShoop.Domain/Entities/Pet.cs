@@ -33,6 +33,11 @@ public sealed class Pet
         ValidateDomain(nome, especie, raca, sexo, dataDeNascimento, peso, cor, porte, observacoes, clienteId);
     }
 
+    public void SetPetId(Guid petId)
+    {
+        PetId = petId;
+    }
+
     private void ValidateDomain(string nome, EspeciePet especie, string raca, SexoPet sexo, DateTime dataDeNascimento, decimal peso, string cor, PortePet porte, string observacoes, Guid clienteId)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "Nome inválido. Nome é obrigatório");

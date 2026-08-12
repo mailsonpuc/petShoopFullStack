@@ -25,11 +25,15 @@ public static class ProntuarioDTOMappingExtensions
         if (prontuarioDto is null)
             return null;
 
-        return new Prontuario(
+        var prontuario = new Prontuario(
             prontuarioDto.PetId,
             prontuarioDto.FuncionarioId,
             prontuarioDto.DataRegistro,
             prontuarioDto.Descricao);
+
+        prontuario.SetProntuarioId(prontuarioDto.ProntuarioId);
+
+        return prontuario;
     }
 
     public static IEnumerable<ProntuarioDto> ToProntuarioDtoList(this IEnumerable<Prontuario> prontuarios)

@@ -64,6 +64,13 @@ public class VacinasController : ControllerBase
         return Ok(vacinaDto);
     }
 
+    /// <summary>
+    /// Somente Admin pode apagar.
+    /// </summary>
+    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
+    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<VacinaDto>> Delete(Guid id)
     {

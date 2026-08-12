@@ -26,6 +26,11 @@ public sealed class ItemVenda
         ValidateDomain(vendaId, produtoId, quantidade, valorUnitario);
     }
 
+    public void SetItemVendaId(Guid itemVendaId)
+    {
+        ItemVendaId = itemVendaId;
+    }
+
     private void ValidateDomain(Guid vendaId, Guid produtoId, int quantidade, decimal valorUnitario)
     {
         DomainExceptionValidation.When(vendaId == Guid.Empty, "Venda inválida. Venda é obrigatória");

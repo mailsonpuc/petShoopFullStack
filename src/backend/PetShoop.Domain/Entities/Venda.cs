@@ -29,6 +29,11 @@ public sealed class Venda
         ValidateDomain(clienteId, dataVenda, valorTotal, formaPagamento);
     }
 
+    public void SetVendaId(Guid vendaId)
+    {
+        VendaId = vendaId;
+    }
+
     private void ValidateDomain(Guid clienteId, DateTime dataVenda, decimal valorTotal, FormaPagamento formaPagamento)
     {
         DomainExceptionValidation.When(clienteId == Guid.Empty, "Cliente inválido. Cliente é obrigatório");

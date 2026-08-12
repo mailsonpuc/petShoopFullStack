@@ -26,6 +26,11 @@ public sealed class Prontuario
         ValidateDomain(petId, funcionarioId, dataRegistro, descricao);
     }
 
+    public void SetProntuarioId(Guid prontuarioId)
+    {
+        ProntuarioId = prontuarioId;
+    }
+
     private void ValidateDomain(Guid petId, Guid funcionarioId, DateTime dataRegistro, string descricao)
     {
         DomainExceptionValidation.When(petId == Guid.Empty, "Pet inválido. Pet é obrigatório");

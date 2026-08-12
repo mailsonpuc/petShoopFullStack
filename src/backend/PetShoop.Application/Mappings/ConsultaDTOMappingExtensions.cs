@@ -28,7 +28,7 @@ public static class ConsultaDTOMappingExtensions
         if (consultaDto is null)
             return null;
 
-        return new Consulta(
+        var consulta = new Consulta(
             consultaDto.PetId,
             consultaDto.FuncionarioId,
             consultaDto.DataConsulta,
@@ -36,6 +36,10 @@ public static class ConsultaDTOMappingExtensions
             consultaDto.Temperatura,
             consultaDto.Diagnostico,
             consultaDto.Prescricao);
+
+        consulta.SetConsultaId(consultaDto.ConsultaId);
+
+        return consulta;
     }
 
     public static IEnumerable<ConsultaDto> ToConsultaDtoList(this IEnumerable<Consulta> consultas)

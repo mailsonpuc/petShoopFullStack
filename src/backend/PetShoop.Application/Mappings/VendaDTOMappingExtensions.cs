@@ -25,11 +25,15 @@ public static class VendaDTOMappingExtensions
         if (vendaDto is null)
             return null;
 
-        return new Venda(
+        var venda = new Venda(
             vendaDto.ClienteId,
             vendaDto.DataVenda,
             vendaDto.ValorTotal,
             vendaDto.FormaPagamento);
+
+        venda.SetVendaId(vendaDto.VendaId);
+
+        return venda;
     }
 
     public static IEnumerable<VendaDto> ToVendaDtoList(this IEnumerable<Venda> vendas)

@@ -130,19 +130,30 @@ export function ClientesPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Nome</label>
-            <input required value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <input required value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} placeholder="Nome completo do cliente" maxLength={100} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">CPF</label>
-            <input required value={formData.cpf} onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <input required
+              placeholder="00000000000 (somente números)"
+              maxLength={11}
+              value={formData.cpf}
+
+              onChange={(e) => {
+                // Remove tudo que não for dígito numérico
+                const onlyNumbers = e.target.value.replace(/\D/g, "");
+                setFormData({ ...formData, cpf: onlyNumbers });
+              }}
+              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
+          
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Email</label>
-            <input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="exemplo@email.com" maxLength={100} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Telefone</label>
-            <input required value={formData.telefone} onChange={(e) => setFormData({ ...formData, telefone: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <input required value={formData.telefone} onChange={(e) => setFormData({ ...formData, telefone: e.target.value })} placeholder="11999999999" maxLength={11} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Data de Nascimento</label>
@@ -150,7 +161,7 @@ export function ClientesPage() {
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Endereço</label>
-            <input required value={formData.endereco} onChange={(e) => setFormData({ ...formData, endereco: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
+            <input required value={formData.endereco} onChange={(e) => setFormData({ ...formData, endereco: e.target.value })} placeholder="Rua, número, bairro, cidade" maxLength={200} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={() => setIsModalOpen(false)} className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800">Cancelar</button>

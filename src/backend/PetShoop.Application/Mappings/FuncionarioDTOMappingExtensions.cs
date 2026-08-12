@@ -28,7 +28,7 @@ public static class FuncionarioDTOMappingExtensions
         if (funcionarioDto is null)
             return null;
 
-        return new Funcionario(
+        var funcionario = new Funcionario(
             funcionarioDto.Nome,
             funcionarioDto.Cpf,
             funcionarioDto.Email,
@@ -36,6 +36,10 @@ public static class FuncionarioDTOMappingExtensions
             funcionarioDto.Cargo,
             funcionarioDto.Salario,
             funcionarioDto.DataAdmissao);
+
+        funcionario.SetFuncionarioId(funcionarioDto.FuncionarioId);
+
+        return funcionario;
     }
 
     public static IEnumerable<FuncionarioDto> ToFuncionarioDtoList(this IEnumerable<Funcionario> funcionarios)

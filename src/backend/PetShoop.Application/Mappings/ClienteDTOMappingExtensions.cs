@@ -30,13 +30,17 @@ public static class ClienteDTOMappingExtensions
     {
         if (clienteDto is null) return null;
 
-        return new Cliente(
+        var cliente = new Cliente(
             clienteDto.Nome,
             clienteDto.Cpf,
             clienteDto.Email,
             clienteDto.Telefone,
             clienteDto.DataDeNascimento,
             clienteDto.Endereco);
+
+        cliente.SetClienteId(clienteDto.ClienteId);
+
+        return cliente;
     }
 
 

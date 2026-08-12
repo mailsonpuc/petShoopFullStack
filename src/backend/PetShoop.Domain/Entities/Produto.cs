@@ -27,6 +27,11 @@ public sealed class Produto
         ValidateDomain(nome, descricao, categoria, marca, preco, quantidadeEmEstoque);
     }
 
+    public void SetProdutoId(Guid produtoId)
+    {
+        ProdutoId = produtoId;
+    }
+
     private void ValidateDomain(string nome, string descricao, CategoriaProduto categoria, string marca, decimal preco, int quantidadeEmEstoque)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "Nome inválido. Nome é obrigatório");

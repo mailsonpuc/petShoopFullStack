@@ -28,6 +28,11 @@ public sealed class Agendamento
         ValidateDomain(petId, servicoId, funcionarioId, dataHora, status, observacoes);
     }
 
+    public void SetAgendamentoId(Guid agendamentoId)
+    {
+        AgendamentoId = agendamentoId;
+    }
+
     private void ValidateDomain(Guid petId, Guid servicoId, Guid funcionarioId, DateTime dataHora, StatusAgendamento status, string observacoes)
     {
         DomainExceptionValidation.When(petId == Guid.Empty, "Pet inválido. Pet é obrigatório");

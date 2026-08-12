@@ -27,6 +27,11 @@ public sealed class Vacina
         ValidateDomain(petId, nome, fabricante, dataAplicacao, proximaDose);
     }
 
+    public void SetVacinaId(Guid vacinaId)
+    {
+        VacinaId = vacinaId;
+    }
+
     private void ValidateDomain(Guid petId, string nome, string fabricante, DateTime dataAplicacao, DateTime proximaDose)
     {
         DomainExceptionValidation.When(petId == Guid.Empty, "Pet inválido. Pet é obrigatório");

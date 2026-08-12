@@ -30,6 +30,11 @@ public sealed class Consulta
         ValidateDomain(petId, funcionarioId, dataConsulta, peso, temperatura, diagnostico, prescricao);
     }
 
+    public void SetConsultaId(Guid consultaId)
+    {
+        ConsultaId = consultaId;
+    }
+
     private void ValidateDomain(Guid petId, Guid funcionarioId, DateTime dataConsulta, decimal peso, decimal temperatura, string diagnostico, string prescricao)
     {
         DomainExceptionValidation.When(petId == Guid.Empty, "Pet inválido. Pet é obrigatório");

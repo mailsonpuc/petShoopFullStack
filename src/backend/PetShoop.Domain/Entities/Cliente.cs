@@ -30,6 +30,11 @@ public sealed class Cliente
         ValidateDomain(nome, cpf, email, telefone, dataDeNascimento, endereco);
     }
 
+    public void SetClienteId(Guid clienteId)
+    {
+        ClienteId = clienteId;
+    }
+
 
     private void ValidateDomain(string nome, string cpf, string email, string telefone, DateTime dataDeNascimento, string endereco)
     {

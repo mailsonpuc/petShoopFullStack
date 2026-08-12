@@ -24,6 +24,7 @@ import type {
   CreateItemVendaDto,
   LoginRequest,
   LoginResponse,
+  Dashboard,
 } from "../Types";
 
 const getAuthHeaders = () => {
@@ -439,5 +440,14 @@ export const itemVendasApi = {
     await api.delete(`/v1/ItemVendas/${id}`, {
       headers: getAuthHeaders(),
     });
+  },
+};
+
+export const dashboardApi = {
+  get: async (): Promise<Dashboard> => {
+    const response = await api.get("/v1/dashboard", {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
   },
 };

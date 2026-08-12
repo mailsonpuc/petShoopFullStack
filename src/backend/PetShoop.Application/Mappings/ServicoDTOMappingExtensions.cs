@@ -26,11 +26,15 @@ public static class ServicoDTOMappingExtensions
         if (servicoDto is null)
             return null;
 
-        return new Servico(
+        var servico = new Servico(
             servicoDto.Nome,
             servicoDto.Descricao,
             servicoDto.Preco,
             servicoDto.DuracaoEmMinutos);
+
+        servico.SetServicoId(servicoDto.ServicoId);
+
+        return servico;
     }
 
     public static IEnumerable<ServicoDto> ToServicoDtoList(this IEnumerable<Servico> servicos)

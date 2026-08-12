@@ -27,11 +27,15 @@ public static class ItemVendaDTOMappingExtensions
         if (itemVendaDto is null)
             return null;
 
-        return new ItemVenda(
+        var itemVenda = new ItemVenda(
             itemVendaDto.VendaId,
             itemVendaDto.ProdutoId,
             itemVendaDto.Quantidade,
             itemVendaDto.ValorUnitario);
+
+        itemVenda.SetItemVendaId(itemVendaDto.ItemVendaId);
+
+        return itemVenda;
     }
 
     public static IEnumerable<ItemVendaDto> ToItemVendaDtoList(this IEnumerable<ItemVenda> itensVenda)

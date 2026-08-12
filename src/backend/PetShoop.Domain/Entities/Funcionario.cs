@@ -27,6 +27,11 @@ public sealed class Funcionario
         ValidateDomain(nome, cpf, email, telefone, cargo, salario, dataAdmissao);
     }
 
+    public void SetFuncionarioId(Guid funcionarioId)
+    {
+        FuncionarioId = funcionarioId;
+    }
+
     private void ValidateDomain(string nome, string cpf, string email, string telefone, CargoFuncionario cargo, decimal salario, DateTime dataAdmissao)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "Nome inválido. Nome é obrigatório");

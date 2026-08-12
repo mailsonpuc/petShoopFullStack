@@ -63,6 +63,14 @@ public class ProntuariosController : ControllerBase
         return Ok(prontuarioDto);
     }
 
+
+    /// <summary>
+    /// Somente Admin pode apagar.
+    /// </summary>
+    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
+    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <response code="401">Usuário não autenticado.</response>
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ProntuarioDto>> Delete(Guid id)
     {

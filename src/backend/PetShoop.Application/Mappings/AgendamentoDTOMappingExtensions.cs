@@ -26,13 +26,17 @@ public static class AgendamentoDTOMappingExtensions
     {
         if (agendamentoDto is null) return null;
 
-        return new Agendamento(
+        var agendamento = new Agendamento(
             agendamentoDto.PetId,
             agendamentoDto.ServicoId,
             agendamentoDto.FuncionarioId,
             agendamentoDto.DataHora,
             agendamentoDto.Status,
             agendamentoDto.Observacoes);
+
+        agendamento.SetAgendamentoId(agendamentoDto.AgendamentoId);
+
+        return agendamento;
     }
 
     public static IEnumerable<AgendamentoDto> ToAgendamentoDtoList(this IEnumerable<Agendamento> agendamentos)

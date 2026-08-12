@@ -27,12 +27,16 @@ public static class VacinaDTOMappingExtensions
     {
         if (vacinaDto is null) return null;
 
-        return new Vacina(
+        var vacina = new Vacina(
             vacinaDto.PetId,
             vacinaDto.Nome,
             vacinaDto.Fabricante,
             vacinaDto.DataAplicacao,
             vacinaDto.ProximaDose);
+
+        vacina.SetVacinaId(vacinaDto.VacinaId);
+
+        return vacina;
     }
 
 
