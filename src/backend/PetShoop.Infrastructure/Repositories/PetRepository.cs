@@ -21,9 +21,12 @@ public class PetRepository : IPetRepository
         return pet;
     }
 
-    public async Task<Pet> GetByIdAsync(Guid? id)
+    public async Task<Pet?> GetByIdAsync(Guid? id)
     {
-        return (await _context.Pets.AsNoTracking().SingleOrDefaultAsync(p => p.PetId == id))!;
+        if (id == null)
+            return null;
+
+        return await _context.Pets.AsNoTracking().SingleOrDefaultAsync(p => p.PetId == id);
     }
 
     public async Task<IEnumerable<Pet>> GetPetsAsync()

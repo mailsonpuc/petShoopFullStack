@@ -31,7 +31,10 @@ public static class ProntuarioDTOMappingExtensions
             prontuarioDto.DataRegistro,
             prontuarioDto.Descricao);
 
-        prontuario.SetProntuarioId(prontuarioDto.ProntuarioId);
+        if (prontuarioDto.ProntuarioId != Guid.Empty)
+        {
+            prontuario.SetProntuarioId(prontuarioDto.ProntuarioId);
+        }
 
         return prontuario;
     }

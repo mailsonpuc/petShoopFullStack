@@ -30,14 +30,15 @@ public class ClientesController : ControllerBase
     [HttpGet("{id}", Name = "GetCliente")]
     public async Task<ActionResult<ClienteDto>> Get(Guid id)
     {
-        var cliente = await _clienteService.GetById(id);
-
-        if (cliente == null)
+        try
+        {
+            var cliente = await _clienteService.GetById(id);
+            return Ok(cliente);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(cliente);
     }
 
 
@@ -84,14 +85,17 @@ public class ClientesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ClienteDto clienteDto)
     {
-        if (id != clienteDto.ClienteId)
+        clienteDto.ClienteId = id;
+
+        try
         {
-            return BadRequest();
+            await _clienteService.Update(clienteDto);
+            return Ok(clienteDto);
         }
-
-        await _clienteService.Update(clienteDto);
-
-        return Ok(clienteDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -108,13 +112,12 @@ public class ClientesController : ControllerBase
         try
         {
             var clienteDto = await _clienteService.GetById(id);
-            if (clienteDto == null)
-            {
-                return NotFound();
-            }
-
             await _clienteService.Remove(id);
             return Ok(clienteDto);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
         }
         catch (DomainExceptionValidation ex)
         {

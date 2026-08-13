@@ -67,7 +67,7 @@ export function ServicosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">Serviços</h2>
-          <p className="mt-1 text-sm text-slate-400">Gerenciar serviços oferecservicoIdos</p>
+          <p className="mt-1 text-sm text-slate-400">Gerenciar serviços oferecidos</p>
         </div>
         <button onClick={openCreate} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-600/25 hover:bg-blue-500">Novo Serviço</button>
       </div>
@@ -75,7 +75,7 @@ export function ServicosPage() {
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
       {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
-      <div className="overflow-hservicoIdden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -86,7 +86,7 @@ export function ServicosPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divservicoIde-y divservicoIde-slate-800">
+          <tbody className="divide-y divide-slate-800">
             {isLoading ? (
               <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
@@ -121,7 +121,7 @@ export function ServicosPage() {
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Descrição</label>
             <textarea value={formData.descricao} onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" rows={2} />
           </div>
-          <div className="grservicoId grservicoId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Preço</label>
               <input required type="number" step="0.01" value={formData.preco} onChange={(e) => setFormData({ ...formData, preco: parseFloat(e.target.value) })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />

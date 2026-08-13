@@ -32,7 +32,10 @@ public static class ServicoDTOMappingExtensions
             servicoDto.Preco,
             servicoDto.DuracaoEmMinutos);
 
-        servico.SetServicoId(servicoDto.ServicoId);
+        if (servicoDto.ServicoId != Guid.Empty)
+        {
+            servico.SetServicoId(servicoDto.ServicoId);
+        }
 
         return servico;
     }

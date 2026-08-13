@@ -28,14 +28,15 @@ public class VacinasController : ControllerBase
     [HttpGet("{id}", Name = "GetVacina")]
     public async Task<ActionResult<VacinaDto>> Get(Guid id)
     {
-        var vacina = await _vacinaService.GetById(id);
-
-        if (vacina == null)
+        try
+        {
+            var vacina = await _vacinaService.GetById(id);
+            return Ok(vacina);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(vacina);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class VacinasController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] VacinaDto vacinaDto)
     {
-        if (id != vacinaDto.VacinaId)
+        vacinaDto.VacinaId = id;
+
+        try
         {
-            return BadRequest();
+            await _vacinaService.Update(vacinaDto);
+            return Ok(vacinaDto);
         }
-
-        await _vacinaService.Update(vacinaDto);
-
-        return Ok(vacinaDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
     /// <summary>
@@ -74,14 +78,16 @@ public class VacinasController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<VacinaDto>> Delete(Guid id)
     {
-        var vacinaDto = await _vacinaService.GetById(id);
-        if (vacinaDto == null)
+        try
+        {
+            var vacinaDto = await _vacinaService.GetById(id);
+            await _vacinaService.Remove(id);
+            return Ok(vacinaDto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        await _vacinaService.Remove(id);
-        return Ok(vacinaDto);
     }
 
 }

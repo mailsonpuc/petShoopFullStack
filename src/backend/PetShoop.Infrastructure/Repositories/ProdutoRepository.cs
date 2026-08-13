@@ -21,9 +21,12 @@ public class ProdutoRepository : IProdutoRepository
         return produto;
     }
 
-    public async Task<Produto> GetByIdAsync(Guid? id)
+    public async Task<Produto?> GetByIdAsync(Guid? id)
     {
-        return (await _context.Produtos.AsNoTracking().SingleOrDefaultAsync(p => p.ProdutoId == id))!;
+        if (id == null)
+            return null;
+
+        return await _context.Produtos.AsNoTracking().SingleOrDefaultAsync(p => p.ProdutoId == id);
     }
 
     public async Task<IEnumerable<Produto>> GetProdutosAsync()

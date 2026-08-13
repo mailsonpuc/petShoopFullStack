@@ -26,9 +26,12 @@ export function ProdutosPage() {
     idKey: "produtoId",
   });
 
+  const [formError, setFormError] = useState<string | null>(null);
+
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ nome: "", descricao: "", categoria: "", marca: "", preco: 0, quantidadeEmEstoque: 0 });
+    setFormError(null);
     setIsModalOpen(true);
   };
 
@@ -42,17 +45,23 @@ export function ProdutosPage() {
       preco: produto.preco,
       quantidadeEmEstoque: produto.quantidadeEmEstoque,
     });
+    setFormError(null);
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.produtoId, formData);
-    } else {
-      await createItem(formData);
+    setFormError(null);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.produtoId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Erro ao salvar produto");
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {
@@ -118,6 +127,7 @@ export function ProdutosPage() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Produto" : "Novo Produto"}>
+        {formError && <div className="mb-4 rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{formError}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Nome</label>

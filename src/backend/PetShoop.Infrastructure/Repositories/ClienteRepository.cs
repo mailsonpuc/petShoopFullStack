@@ -23,9 +23,12 @@ public class ClienteRepository : IClienteRepository
         return cliente;
     }
 
-    public async Task<Cliente> GetByIdAsync(Guid? id)
+    public async Task<Cliente?> GetByIdAsync(Guid? id)
     {
-        return (await _context.Clientes.AsNoTracking().SingleOrDefaultAsync(c => c.ClienteId == id))!;
+        if (id == null)
+            return null;
+
+        return await _context.Clientes.AsNoTracking().SingleOrDefaultAsync(c => c.ClienteId == id);
     }
 
     public async Task<IEnumerable<Cliente>> GetClientesAsync()

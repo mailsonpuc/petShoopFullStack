@@ -21,9 +21,12 @@ public class ServicoRepository : IServicoRepository
         return servico;
     }
 
-    public async Task<Servico> GetByIdAsync(Guid? id)
+    public async Task<Servico?> GetByIdAsync(Guid? id)
     {
-        return (await _context.Servicos.AsNoTracking().SingleOrDefaultAsync(s => s.ServicoId == id))!;
+        if (id == null)
+            return null;
+
+        return await _context.Servicos.AsNoTracking().SingleOrDefaultAsync(s => s.ServicoId == id);
     }
 
     public async Task<IEnumerable<Servico>> GetServicosAsync()

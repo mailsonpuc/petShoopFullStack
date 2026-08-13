@@ -47,7 +47,10 @@ public static class PetDTOMappingExtensions
             petDto.Observacoes,
             petDto.ClienteId);
 
-        pet.SetPetId(petDto.PetId);
+        if (petDto.PetId != Guid.Empty)
+        {
+            pet.SetPetId(petDto.PetId);
+        }
 
         return pet;
     }

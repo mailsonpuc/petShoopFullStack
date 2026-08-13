@@ -31,7 +31,10 @@ public static class VendaDTOMappingExtensions
             vendaDto.ValorTotal,
             vendaDto.FormaPagamento);
 
-        venda.SetVendaId(vendaDto.VendaId);
+        if (vendaDto.VendaId != Guid.Empty)
+        {
+            venda.SetVendaId(vendaDto.VendaId);
+        }
 
         return venda;
     }

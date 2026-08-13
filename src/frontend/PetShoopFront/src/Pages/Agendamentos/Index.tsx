@@ -90,7 +90,7 @@ export function AgendamentosPage() {
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
       {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
-      <div className="overflow-hagendamentoIdden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -102,7 +102,7 @@ export function AgendamentosPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divagendamentoIde-y divagendamentoIde-slate-800">
+          <tbody className="divide-y divide-slate-800">
             {isLoading ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
@@ -130,7 +130,7 @@ export function AgendamentosPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Agendamento" : "Novo Agendamento"}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="gragendamentoId gragendamentoId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Pet</label>
               <select required value={formData.petId} onChange={(e) => setFormData({ ...formData, petId: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white">
@@ -159,7 +159,7 @@ export function AgendamentosPage() {
               ))}
             </select>
           </div>
-          <div className="gragendamentoId gragendamentoId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Data/Hora</label>
               <input required type="datetime-local" value={formData.dataHora} onChange={(e) => setFormData({ ...formData, dataHora: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
@@ -170,7 +170,7 @@ export function AgendamentosPage() {
                 <option value="Agendado">Agendado</option>
                 <option value="Confirmado">Confirmado</option>
                 <option value="Cancelado">Cancelado</option>
-                <option value="ConcluagendamentoIdo">Concluído</option>
+                <option value="Concluído">Concluído</option>
               </select>
             </div>
           </div>

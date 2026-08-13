@@ -28,14 +28,15 @@ public class ConsultasController : ControllerBase
     [HttpGet("{id}", Name = "GetConsulta")]
     public async Task<ActionResult<ConsultaDto>> Get(Guid id)
     {
-        var consulta = await _consultaService.GetById(id);
-
-        if (consulta == null)
+        try
+        {
+            var consulta = await _consultaService.GetById(id);
+            return Ok(consulta);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(consulta);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class ConsultasController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ConsultaDto consultaDto)
     {
-        if (id != consultaDto.ConsultaId)
+        consultaDto.ConsultaId = id;
+
+        try
         {
-            return BadRequest();
+            await _consultaService.Update(consultaDto);
+            return Ok(consultaDto);
         }
-
-        await _consultaService.Update(consultaDto);
-
-        return Ok(consultaDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -75,13 +79,15 @@ public class ConsultasController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<ConsultaDto>> Delete(Guid id)
     {
-        var consultaDto = await _consultaService.GetById(id);
-        if (consultaDto == null)
+        try
+        {
+            var consultaDto = await _consultaService.GetById(id);
+            await _consultaService.Remove(id);
+            return Ok(consultaDto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        await _consultaService.Remove(id);
-        return Ok(consultaDto);
     }
 }

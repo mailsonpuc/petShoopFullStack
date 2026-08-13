@@ -28,14 +28,15 @@ public class FuncionariosController : ControllerBase
     [HttpGet("{id}", Name = "GetFuncionario")]
     public async Task<ActionResult<FuncionarioDto>> Get(Guid id)
     {
-        var funcionario = await _funcionarioService.GetById(id);
-
-        if (funcionario == null)
+        try
+        {
+            var funcionario = await _funcionarioService.GetById(id);
+            return Ok(funcionario);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(funcionario);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class FuncionariosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] FuncionarioDto funcionarioDto)
     {
-        if (id != funcionarioDto.FuncionarioId)
+        funcionarioDto.FuncionarioId = id;
+
+        try
         {
-            return BadRequest();
+            await _funcionarioService.Update(funcionarioDto);
+            return Ok(funcionarioDto);
         }
-
-        await _funcionarioService.Update(funcionarioDto);
-
-        return Ok(funcionarioDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -78,13 +82,12 @@ public class FuncionariosController : ControllerBase
         try
         {
             var funcionarioDto = await _funcionarioService.GetById(id);
-            if (funcionarioDto == null)
-            {
-                return NotFound();
-            }
-
             await _funcionarioService.Remove(id);
             return Ok(funcionarioDto);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
         }
         catch (DomainExceptionValidation ex)
         {

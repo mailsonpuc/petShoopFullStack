@@ -28,14 +28,15 @@ public class ProdutosController : ControllerBase
     [HttpGet("{id}", Name = "GetProduto")]
     public async Task<ActionResult<ProdutoDto>> Get(Guid id)
     {
-        var produto = await _produtoService.GetById(id);
-
-        if (produto == null)
+        try
+        {
+            var produto = await _produtoService.GetById(id);
+            return Ok(produto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(produto);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class ProdutosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ProdutoDto produtoDto)
     {
-        if (id != produtoDto.ProdutoId)
+        produtoDto.ProdutoId = id;
+
+        try
         {
-            return BadRequest();
+            await _produtoService.Update(produtoDto);
+            return Ok(produtoDto);
         }
-
-        await _produtoService.Update(produtoDto);
-
-        return Ok(produtoDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
     /// <summary>
@@ -77,13 +81,12 @@ public class ProdutosController : ControllerBase
         try
         {
             var produtoDto = await _produtoService.GetById(id);
-            if (produtoDto == null)
-            {
-                return NotFound();
-            }
-
             await _produtoService.Remove(id);
             return Ok(produtoDto);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
         }
         catch (DomainExceptionValidation ex)
         {

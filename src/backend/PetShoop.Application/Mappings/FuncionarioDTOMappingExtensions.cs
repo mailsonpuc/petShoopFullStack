@@ -37,7 +37,10 @@ public static class FuncionarioDTOMappingExtensions
             funcionarioDto.Salario,
             funcionarioDto.DataAdmissao);
 
-        funcionario.SetFuncionarioId(funcionarioDto.FuncionarioId);
+        if (funcionarioDto.FuncionarioId != Guid.Empty)
+        {
+            funcionario.SetFuncionarioId(funcionarioDto.FuncionarioId);
+        }
 
         return funcionario;
     }

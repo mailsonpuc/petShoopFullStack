@@ -27,14 +27,15 @@ public class ProntuariosController : ControllerBase
     [HttpGet("{id}", Name = "GetProntuario")]
     public async Task<ActionResult<ProntuarioDto>> Get(Guid id)
     {
-        var prontuario = await _prontuarioService.GetById(id);
-
-        if (prontuario == null)
+        try
+        {
+            var prontuario = await _prontuarioService.GetById(id);
+            return Ok(prontuario);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(prontuario);
     }
 
     [HttpPost]
@@ -53,14 +54,17 @@ public class ProntuariosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ProntuarioDto prontuarioDto)
     {
-        if (id != prontuarioDto.ProntuarioId)
+        prontuarioDto.ProntuarioId = id;
+
+        try
         {
-            return BadRequest();
+            await _prontuarioService.Update(prontuarioDto);
+            return Ok(prontuarioDto);
         }
-
-        await _prontuarioService.Update(prontuarioDto);
-
-        return Ok(prontuarioDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -74,13 +78,15 @@ public class ProntuariosController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<ProntuarioDto>> Delete(Guid id)
     {
-        var prontuarioDto = await _prontuarioService.GetById(id);
-        if (prontuarioDto == null)
+        try
+        {
+            var prontuarioDto = await _prontuarioService.GetById(id);
+            await _prontuarioService.Remove(id);
+            return Ok(prontuarioDto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        await _prontuarioService.Remove(id);
-        return Ok(prontuarioDto);
     }
 }

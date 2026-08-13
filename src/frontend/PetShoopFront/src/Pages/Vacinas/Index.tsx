@@ -82,7 +82,7 @@ export function VacinasPage() {
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
       {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
-      <div className="overflow-hvacinaIdden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -94,7 +94,7 @@ export function VacinasPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divvacinaIde-y divvacinaIde-slate-800">
+          <tbody className="divide-y divide-slate-800">
             {isLoading ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
@@ -139,7 +139,7 @@ export function VacinasPage() {
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Fabricante</label>
             <input required value={formData.fabricante} onChange={(e) => setFormData({ ...formData, fabricante: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
-          <div className="grvacinaId grvacinaId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Data Aplicação</label>
               <input required type="datetime-local" value={formData.dataAplicacao} onChange={(e) => setFormData({ ...formData, dataAplicacao: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />

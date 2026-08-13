@@ -28,14 +28,15 @@ public class VendasController : ControllerBase
     [HttpGet("{id}", Name = "GetVenda")]
     public async Task<ActionResult<VendaDto>> Get(Guid id)
     {
-        var venda = await _vendaService.GetById(id);
-
-        if (venda == null)
+        try
+        {
+            var venda = await _vendaService.GetById(id);
+            return Ok(venda);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(venda);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class VendasController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] VendaDto vendaDto)
     {
-        if (id != vendaDto.VendaId)
+        vendaDto.VendaId = id;
+
+        try
         {
-            return BadRequest();
+            await _vendaService.Update(vendaDto);
+            return Ok(vendaDto);
         }
-
-        await _vendaService.Update(vendaDto);
-
-        return Ok(vendaDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
     /// <summary>
@@ -77,17 +81,12 @@ public class VendasController : ControllerBase
         try
         {
             var vendaDto = await _vendaService.GetById(id);
-            if (vendaDto == null)
-            {
-                return NotFound();
-            }
-
             await _vendaService.Remove(id);
             return Ok(vendaDto);
         }
-        catch (DomainExceptionValidation ex)
+        catch (InvalidOperationException)
         {
-            return Conflict(new { message = ex.Message });
+            return NotFound();
         }
     }
 }

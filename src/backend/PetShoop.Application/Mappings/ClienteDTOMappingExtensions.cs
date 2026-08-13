@@ -38,7 +38,10 @@ public static class ClienteDTOMappingExtensions
             clienteDto.DataDeNascimento,
             clienteDto.Endereco);
 
-        cliente.SetClienteId(clienteDto.ClienteId);
+        if (clienteDto.ClienteId != Guid.Empty)
+        {
+            cliente.SetClienteId(clienteDto.ClienteId);
+        }
 
         return cliente;
     }

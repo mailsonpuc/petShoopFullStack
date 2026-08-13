@@ -34,7 +34,10 @@ public static class VacinaDTOMappingExtensions
             vacinaDto.DataAplicacao,
             vacinaDto.ProximaDose);
 
-        vacina.SetVacinaId(vacinaDto.VacinaId);
+        if (vacinaDto.VacinaId != Guid.Empty)
+        {
+            vacina.SetVacinaId(vacinaDto.VacinaId);
+        }
 
         return vacina;
     }

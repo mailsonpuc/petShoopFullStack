@@ -27,14 +27,15 @@ public class ItemVendasController : ControllerBase
     [HttpGet("{id}", Name = "GetItemVenda")]
     public async Task<ActionResult<ItemVendaDto>> Get(Guid id)
     {
-        var itemVenda = await _itemVendaService.GetById(id);
-
-        if (itemVenda == null)
+        try
+        {
+            var itemVenda = await _itemVendaService.GetById(id);
+            return Ok(itemVenda);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(itemVenda);
     }
 
     [HttpPost]
@@ -53,14 +54,17 @@ public class ItemVendasController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ItemVendaDto itemVendaDto)
     {
-        if (id != itemVendaDto.ItemVendaId)
+        itemVendaDto.ItemVendaId = id;
+
+        try
         {
-            return BadRequest();
+            await _itemVendaService.Update(itemVendaDto);
+            return Ok(itemVendaDto);
         }
-
-        await _itemVendaService.Update(itemVendaDto);
-
-        return Ok(itemVendaDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -74,13 +78,15 @@ public class ItemVendasController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<ItemVendaDto>> Delete(Guid id)
     {
-        var itemVendaDto = await _itemVendaService.GetById(id);
-        if (itemVendaDto == null)
+        try
+        {
+            var itemVendaDto = await _itemVendaService.GetById(id);
+            await _itemVendaService.Remove(id);
+            return Ok(itemVendaDto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        await _itemVendaService.Remove(id);
-        return Ok(itemVendaDto);
     }
 }

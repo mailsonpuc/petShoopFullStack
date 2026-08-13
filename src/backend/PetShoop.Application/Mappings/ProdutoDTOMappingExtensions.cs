@@ -35,7 +35,10 @@ public static class ProdutoDTOMappingExtensions
             produtoDto.Preco,
             produtoDto.QuantidadeEmEstoque);
 
-        produto.SetProdutoId(produtoDto.ProdutoId);
+        if (produtoDto.ProdutoId != Guid.Empty)
+        {
+            produto.SetProdutoId(produtoDto.ProdutoId);
+        }
 
         return produto;
     }

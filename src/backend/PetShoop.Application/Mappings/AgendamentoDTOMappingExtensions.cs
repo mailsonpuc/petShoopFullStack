@@ -34,7 +34,10 @@ public static class AgendamentoDTOMappingExtensions
             agendamentoDto.Status,
             agendamentoDto.Observacoes);
 
-        agendamento.SetAgendamentoId(agendamentoDto.AgendamentoId);
+        if (agendamentoDto.AgendamentoId != Guid.Empty)
+        {
+            agendamento.SetAgendamentoId(agendamentoDto.AgendamentoId);
+        }
 
         return agendamento;
     }

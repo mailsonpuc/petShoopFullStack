@@ -37,7 +37,10 @@ public static class ConsultaDTOMappingExtensions
             consultaDto.Diagnostico,
             consultaDto.Prescricao);
 
-        consulta.SetConsultaId(consultaDto.ConsultaId);
+        if (consultaDto.ConsultaId != Guid.Empty)
+        {
+            consulta.SetConsultaId(consultaDto.ConsultaId);
+        }
 
         return consulta;
     }

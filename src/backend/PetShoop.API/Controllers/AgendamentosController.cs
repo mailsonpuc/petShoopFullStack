@@ -33,14 +33,15 @@ public class AgendamentosController : ControllerBase
     [HttpGet("{id}", Name = "GetAgendamento")]
     public async Task<ActionResult<AgendamentoDto>> Get(Guid id)
     {
-        var agendamento = await _agendamentoService.GetById(id);
-
-        if (agendamento == null)
+        try
+        {
+            var agendamento = await _agendamentoService.GetById(id);
+            return Ok(agendamento);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(agendamento);
     }
 
     [HttpPost]
@@ -59,14 +60,17 @@ public class AgendamentosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] AgendamentoDto agendamentoDto)
     {
-        if (id != agendamentoDto.AgendamentoId)
+        agendamentoDto.AgendamentoId = id;
+
+        try
         {
-            return BadRequest();
+            await _agendamentoService.Update(agendamentoDto);
+            return Ok(agendamentoDto);
         }
-
-        await _agendamentoService.Update(agendamentoDto);
-
-        return Ok(agendamentoDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -80,13 +84,15 @@ public class AgendamentosController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<AgendamentoDto>> Delete(Guid id)
     {
-        var agendamentoDto = await _agendamentoService.GetById(id);
-        if (agendamentoDto == null)
+        try
+        {
+            var agendamentoDto = await _agendamentoService.GetById(id);
+            await _agendamentoService.Remove(id);
+            return Ok(agendamentoDto);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        await _agendamentoService.Remove(id);
-        return Ok(agendamentoDto);
     }
 }

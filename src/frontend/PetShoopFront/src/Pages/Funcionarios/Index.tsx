@@ -81,7 +81,7 @@ export function FuncionariosPage() {
       {error && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{error}</div>}
       {deleteError && <div className="rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{deleteError}</div>}
 
-      <div className="overflow-hfuncionarioIdden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-800 bg-slate-800/50">
             <tr>
@@ -92,7 +92,7 @@ export function FuncionariosPage() {
               <th className="px-6 py-3 font-medium text-slate-300">Ações</th>
             </tr>
           </thead>
-          <tbody className="divfuncionarioIde-y divfuncionarioIde-slate-800">
+          <tbody className="divide-y divide-slate-800">
             {isLoading ? (
               <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Carregando...</td></tr>
             ) : items.length === 0 ? (
@@ -123,7 +123,7 @@ export function FuncionariosPage() {
             <label className="mb-1.5 block text-sm font-medium text-slate-300">Nome</label>
             <input required value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
           </div>
-          <div className="grfuncionarioId grfuncionarioId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">CPF</label>
               <input required value={formData.cpf} onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
@@ -133,7 +133,7 @@ export function FuncionariosPage() {
               <input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
             </div>
           </div>
-          <div className="grfuncionarioId grfuncionarioId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Telefone</label>
               <input required value={formData.telefone} onChange={(e) => setFormData({ ...formData, telefone: e.target.value })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />
@@ -151,7 +151,7 @@ export function FuncionariosPage() {
               </select>
             </div>
           </div>
-          <div className="grfuncionarioId grfuncionarioId-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-300">Salário</label>
               <input required type="number" step="0.01" value={formData.salario} onChange={(e) => setFormData({ ...formData, salario: parseFloat(e.target.value) })} className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white" />

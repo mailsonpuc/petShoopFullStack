@@ -28,14 +28,15 @@ public class ServicosController : ControllerBase
     [HttpGet("{id}", Name = "GetServico")]
     public async Task<ActionResult<ServicoDto>> Get(Guid id)
     {
-        var servico = await _servicoService.GetById(id);
-
-        if (servico == null)
+        try
+        {
+            var servico = await _servicoService.GetById(id);
+            return Ok(servico);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(servico);
     }
 
     [HttpPost]
@@ -54,14 +55,17 @@ public class ServicosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] ServicoDto servicoDto)
     {
-        if (id != servicoDto.ServicoId)
+        servicoDto.ServicoId = id;
+
+        try
         {
-            return BadRequest();
+            await _servicoService.Update(servicoDto);
+            return Ok(servicoDto);
         }
-
-        await _servicoService.Update(servicoDto);
-
-        return Ok(servicoDto);
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
 
@@ -78,17 +82,12 @@ public class ServicosController : ControllerBase
         try
         {
             var servicoDto = await _servicoService.GetById(id);
-            if (servicoDto == null)
-            {
-                return NotFound();
-            }
-
             await _servicoService.Remove(id);
             return Ok(servicoDto);
         }
-        catch (DomainExceptionValidation ex)
+        catch (InvalidOperationException)
         {
-            return Conflict(new { message = ex.Message });
+            return NotFound();
         }
     }
 }

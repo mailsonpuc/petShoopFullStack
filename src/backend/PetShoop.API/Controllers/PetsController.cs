@@ -28,14 +28,15 @@ public class PetsController : ControllerBase
     [HttpGet("{id}", Name = "GetPet")]
     public async Task<ActionResult<PetDto>> Get(Guid id)
     {
-        var pet = await _petService.GetById(id);
-
-        if (pet == null)
+        try
+        {
+            var pet = await _petService.GetById(id);
+            return Ok(pet);
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        return Ok(pet);
     }
 
     [HttpPost]
@@ -61,26 +62,17 @@ public class PetsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(Guid id, [FromBody] PetDto petDto)
     {
-        if (!ModelState.IsValid)
+        petDto.PetId = id;
+
+        try
         {
-            foreach (var kvp in ModelState)
-            {
-                foreach (var err in kvp.Value.Errors)
-                {
-                    Console.WriteLine($"ModelState error key={kvp.Key} msg={err.ErrorMessage} ex={err.Exception}");
-                }
-            }
-            return BadRequest(ModelState);
+            await _petService.Update(petDto);
+            return Ok(petDto);
         }
-
-        if (id != petDto.PetId)
+        catch (InvalidOperationException)
         {
-            return BadRequest();
+            return NotFound();
         }
-
-        await _petService.Update(petDto);
-
-        return Ok(petDto);
     }
 
 
@@ -97,13 +89,12 @@ public class PetsController : ControllerBase
         try
         {
             var petDto = await _petService.GetById(id);
-            if (petDto == null)
-            {
-                return NotFound();
-            }
-
             await _petService.Remove(id);
             return Ok(petDto);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
         }
         catch (DomainExceptionValidation ex)
         {

@@ -33,7 +33,10 @@ public static class ItemVendaDTOMappingExtensions
             itemVendaDto.Quantidade,
             itemVendaDto.ValorUnitario);
 
-        itemVenda.SetItemVendaId(itemVendaDto.ItemVendaId);
+        if (itemVendaDto.ItemVendaId != Guid.Empty)
+        {
+            itemVenda.SetItemVendaId(itemVendaDto.ItemVendaId);
+        }
 
         return itemVenda;
     }

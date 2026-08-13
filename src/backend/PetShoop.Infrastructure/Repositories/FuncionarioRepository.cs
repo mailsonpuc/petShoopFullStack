@@ -21,9 +21,12 @@ public class FuncionarioRepository : IFuncionarioRepository
         return funcionario;
     }
 
-    public async Task<Funcionario> GetByIdAsync(Guid? id)
+    public async Task<Funcionario?> GetByIdAsync(Guid? id)
     {
-        return (await _context.Funcionarios.AsNoTracking().SingleOrDefaultAsync(f => f.FuncionarioId == id))!;
+        if (id == null)
+            return null;
+
+        return await _context.Funcionarios.AsNoTracking().SingleOrDefaultAsync(f => f.FuncionarioId == id);
     }
 
     public async Task<IEnumerable<Funcionario>> GetFuncionariosAsync()
