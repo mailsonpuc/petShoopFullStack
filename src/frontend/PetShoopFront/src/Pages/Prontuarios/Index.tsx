@@ -18,7 +18,7 @@ export function ProntuariosPage() {
     descricao: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Prontuario, "prontuarioId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Prontuario, "prontuarioId">({
     fetchFn: prontuariosApi.list,
     createFn: prontuariosApi.create,
     updateFn: prontuariosApi.update,
@@ -36,6 +36,7 @@ export function ProntuariosPage() {
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ petId: "", funcionarioId: "", dataRegistro: "", descricao: "" });
+    clearError();
     setIsModalOpen(true);
   };
 
@@ -44,20 +45,25 @@ export function ProntuariosPage() {
     setFormData({
       petId: prontuario.petId,
       funcionarioId: prontuario.funcionarioId,
-      dataRegistro: prontuario.dataRegistro.split(".")[0].replace("T", " "),
+      dataRegistro: prontuario.dataRegistro.slice(0, 16),
       descricao: prontuario.descricao,
     });
+    clearError();
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.prontuarioId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.prontuarioId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // erro já exibido no estado error
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {

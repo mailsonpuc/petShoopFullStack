@@ -21,7 +21,7 @@ export function ConsultasPage() {
     prescricao: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Consulta, "consultaId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Consulta, "consultaId">({
     fetchFn: consultasApi.list,
     createFn: consultasApi.create,
     updateFn: consultasApi.update,
@@ -39,6 +39,7 @@ export function ConsultasPage() {
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ petId: "", funcionarioId: "", dataConsulta: "", peso: 0, temperatura: 0, diagnostico: "", prescricao: "" });
+    clearError();
     setIsModalOpen(true);
   };
 
@@ -47,23 +48,28 @@ export function ConsultasPage() {
     setFormData({
       petId: consulta.petId,
       funcionarioId: consulta.funcionarioId,
-      dataConsulta: consulta.dataConsulta.split(".")[0].replace("T", " "),
+      dataConsulta: consulta.dataConsulta.slice(0, 16),
       peso: consulta.peso,
       temperatura: consulta.temperatura,
       diagnostico: consulta.diagnostico,
       prescricao: consulta.prescricao,
     });
+    clearError();
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.consultaId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.consultaId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // erro já exibido no estado error
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {

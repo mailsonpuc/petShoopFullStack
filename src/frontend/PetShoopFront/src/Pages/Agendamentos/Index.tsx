@@ -21,7 +21,7 @@ export function AgendamentosPage() {
     observacoes: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Agendamento, "agendamentoId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Agendamento, "agendamentoId">({
     fetchFn: agendamentosApi.list,
     createFn: agendamentosApi.create,
     updateFn: agendamentosApi.update,
@@ -40,6 +40,7 @@ export function AgendamentosPage() {
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ petId: "", servicoId: "", funcionarioId: "", dataHora: "", status: "Agendado", observacoes: "" });
+    clearError();
     setIsModalOpen(true);
   };
 
@@ -49,21 +50,26 @@ export function AgendamentosPage() {
       petId: agendamento.petId,
       servicoId: agendamento.servicoId,
       funcionarioId: agendamento.funcionarioId,
-      dataHora: agendamento.dataHora.split(".")[0].replace("T", " "),
+      dataHora: agendamento.dataHora.slice(0, 16),
       status: agendamento.status,
       observacoes: agendamento.observacoes,
     });
+    clearError();
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.agendamentoId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.agendamentoId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // erro já exibido no estado error
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {
@@ -170,7 +176,7 @@ export function AgendamentosPage() {
                 <option value="Agendado">Agendado</option>
                 <option value="Confirmado">Confirmado</option>
                 <option value="Cancelado">Cancelado</option>
-                <option value="Concluído">Concluído</option>
+                <option value="Concluido">Concluído</option>
               </select>
             </div>
           </div>

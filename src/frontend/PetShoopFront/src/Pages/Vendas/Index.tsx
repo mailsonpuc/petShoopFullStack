@@ -17,7 +17,7 @@ export function VendasPage() {
     formaPagamento: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Venda, "vendaId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Venda, "vendaId">({
     fetchFn: vendasApi.list,
     createFn: vendasApi.create,
     updateFn: vendasApi.update,
@@ -32,6 +32,7 @@ export function VendasPage() {
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ clienteId: "", dataVenda: "", valorTotal: 0, formaPagamento: "" });
+    clearError();
     setIsModalOpen(true);
   };
 
@@ -39,21 +40,26 @@ export function VendasPage() {
     setEditingItem(venda);
     setFormData({
       clienteId: venda.clienteId,
-      dataVenda: venda.dataVenda.split(".")[0].replace("T", " "),
+      dataVenda: venda.dataVenda.slice(0, 16),
       valorTotal: venda.valorTotal,
       formaPagamento: venda.formaPagamento,
     });
+    clearError();
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.vendaId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.vendaId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // erro já exibido no estado error
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {

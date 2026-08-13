@@ -16,6 +16,8 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
 
   const idField = options.idKey ?? "id";
 
+  const clearError = useCallback(() => setError(null), []);
+
   const loadItems = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -31,15 +33,25 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
   }, [options.fetchFn]);
 
   const createItem = async (data: TCreate) => {
-    const newItem = await options.createFn(data);
-    setItems((prev) => [...prev, newItem]);
-    return newItem;
+    try {
+      const newItem = await options.createFn(data);
+      setItems((prev) => [...prev, newItem]);
+      return newItem;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao criar item");
+      throw err;
+    }
   };
 
   const updateItem = async (id: string, data: TCreate) => {
-    const updated = await options.updateFn(id, data);
-    setItems((prev) => prev.map((item) => (item[idField] === id ? updated : item)));
-    return updated;
+    try {
+      const updated = await options.updateFn(id, data);
+      setItems((prev) => prev.map((item) => (item[idField] === id ? updated : item)));
+      return updated;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao atualizar item");
+      throw err;
+    }
   };
 
   const deleteItem = async (id: string) => {
@@ -66,5 +78,6 @@ export function useCrud<T extends Record<string, any>, TIdKey extends keyof T = 
     createItem,
     updateItem,
     deleteItem,
+    clearError,
   };
 }

@@ -18,7 +18,7 @@ export function VacinasPage() {
     proximaDose: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Vacina, "vacinaId">({
+  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Vacina, "vacinaId">({
     fetchFn: vacinasApi.list,
     createFn: vacinasApi.create,
     updateFn: vacinasApi.update,
@@ -33,6 +33,7 @@ export function VacinasPage() {
   const openCreate = () => {
     setEditingItem(null);
     setFormData({ petId: "", nome: "", fabricante: "", dataAplicacao: "", proximaDose: "" });
+    clearError();
     setIsModalOpen(true);
   };
 
@@ -42,20 +43,25 @@ export function VacinasPage() {
       petId: vacina.petId,
       nome: vacina.nome,
       fabricante: vacina.fabricante,
-      dataAplicacao: vacina.dataAplicacao.split(".")[0].replace("T", " "),
-      proximaDose: vacina.proximaDose.split(".")[0].replace("T", " "),
+      dataAplicacao: vacina.dataAplicacao.slice(0, 16),
+      proximaDose: vacina.proximaDose.slice(0, 16),
     });
+    clearError();
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      await updateItem(editingItem.vacinaId, formData);
-    } else {
-      await createItem(formData);
+    try {
+      if (editingItem) {
+        await updateItem(editingItem.vacinaId, formData);
+      } else {
+        await createItem(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // erro já exibido no estado error
     }
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {
