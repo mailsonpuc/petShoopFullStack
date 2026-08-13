@@ -6,18 +6,18 @@ namespace PetShoop.CrossCutting;
 public static class DependencyInjectionCors
 {
     public static IServiceCollection AddInfrastructureCors(
-                this IServiceCollection services,
-                IConfiguration configuration)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        // Política global que permite qualquer origem, método e cabeçalho.
-        // Caso deseje restringir, carregue valores de "configuration" e ajuste aqui.
         services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll",
-                policy => policy
-                    .AllowAnyOrigin()
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:5173")
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader();
+            });
         });
 
         return services;

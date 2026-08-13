@@ -17,6 +17,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Dependency Injection
 builder.Services.AddInfrastructureAPI(builder.Configuration);
 
+// permitir apenas senhas fortes
+builder.Services.AddInfrastructureIdentity(builder.Configuration);
+
 // JWT
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
@@ -43,7 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
