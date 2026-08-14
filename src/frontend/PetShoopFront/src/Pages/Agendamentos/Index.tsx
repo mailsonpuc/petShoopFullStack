@@ -4,6 +4,7 @@ import { agendamentosApi, petsApi, servicosApi, funcionariosApi } from "../../Se
 import type { Agendamento, CreateAgendamentoDto, Pet, Servico, Funcionario } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function AgendamentosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,8 +22,9 @@ export function AgendamentosPage() {
     observacoes: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Agendamento, "agendamentoId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem, clearError } = useCrud<Agendamento, "agendamentoId">({
     fetchFn: agendamentosApi.list,
+    fetchPagedFn: agendamentosApi.getPaged,
     createFn: agendamentosApi.create,
     updateFn: agendamentosApi.update,
     deleteFn: agendamentosApi.delete,
@@ -133,6 +135,8 @@ export function AgendamentosPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="agendamentos" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Agendamento" : "Novo Agendamento"}>
         <form onSubmit={handleSubmit} className="space-y-4">

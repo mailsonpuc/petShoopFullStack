@@ -25,11 +25,21 @@ import type {
   LoginRequest,
   LoginResponse,
   Dashboard,
+  PagedResponse,
 } from "../Types";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("accessToken");
   return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+const getPaged = async <T,>(endpoint: string, pageNumber: number, pageSize: number): Promise<PagedResponse<T>> => {
+  const response = await api.get(`${endpoint}/paginacao`, {
+    headers: getAuthHeaders(),
+    params: { pageNumber, pageSize },
+  });
+
+  return { data: response.data.data, pagination: response.data.pagination };
 };
 
 export const authApi = {
@@ -55,13 +65,8 @@ export const clientesApi = {
     return response.data;
   },
 
-  getPaged: async (pageNumber: number, pageSize: number): Promise<{ data: Cliente[]; pagination: { totalCount: number; pageSize: number; currentPage: number; totalPages: number; hasNextPage: boolean; hasPreviousPage: boolean } }> => {
-    const response = await api.get("/v1/Clientes/paginacao", {
-      headers: getAuthHeaders(),
-      params: { pageNumber, pageSize },
-    });
-    return { data: response.data.data, pagination: response.data.pagination };
-  },
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Cliente>> =>
+    getPaged<Cliente>("/v1/Clientes", pageNumber, pageSize),
 
   getById: async (id: string): Promise<Cliente> => {
     const response = await api.get(`/v1/Clientes/${id}`, {
@@ -99,6 +104,9 @@ export const petsApi = {
     return response.data;
   },
 
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Pet>> =>
+    getPaged<Pet>("/v1/Pets", pageNumber, pageSize),
+
   getById: async (id: string): Promise<Pet> => {
     const response = await api.get(`/v1/Pets/${id}`, {
       headers: getAuthHeaders(),
@@ -134,6 +142,9 @@ export const funcionariosApi = {
     });
     return response.data;
   },
+
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Funcionario>> =>
+    getPaged<Funcionario>("/v1/Funcionarios", pageNumber, pageSize),
 
   getById: async (id: string): Promise<Funcionario> => {
     const response = await api.get(`/v1/Funcionarios/${id}`, {
@@ -171,6 +182,9 @@ export const produtosApi = {
     return response.data;
   },
 
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Produto>> =>
+    getPaged<Produto>("/v1/Produtos", pageNumber, pageSize),
+
   getById: async (id: string): Promise<Produto> => {
     const response = await api.get(`/v1/Produtos/${id}`, {
       headers: getAuthHeaders(),
@@ -206,6 +220,9 @@ export const servicosApi = {
     });
     return response.data;
   },
+
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Servico>> =>
+    getPaged<Servico>("/v1/Servicos", pageNumber, pageSize),
 
   getById: async (id: string): Promise<Servico> => {
     const response = await api.get(`/v1/Servicos/${id}`, {
@@ -243,6 +260,9 @@ export const agendamentosApi = {
     return response.data;
   },
 
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Agendamento>> =>
+    getPaged<Agendamento>("/v1/Agendamentos", pageNumber, pageSize),
+
   getById: async (id: string): Promise<Agendamento> => {
     const response = await api.get(`/v1/Agendamentos/${id}`, {
       headers: getAuthHeaders(),
@@ -278,6 +298,9 @@ export const consultasApi = {
     });
     return response.data;
   },
+
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Consulta>> =>
+    getPaged<Consulta>("/v1/Consultas", pageNumber, pageSize),
 
   getById: async (id: string): Promise<Consulta> => {
     const response = await api.get(`/v1/Consultas/${id}`, {
@@ -315,6 +338,9 @@ export const vacinasApi = {
     return response.data;
   },
 
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Vacina>> =>
+    getPaged<Vacina>("/v1/Vacinas", pageNumber, pageSize),
+
   getById: async (id: string): Promise<Vacina> => {
     const response = await api.get(`/v1/Vacinas/${id}`, {
       headers: getAuthHeaders(),
@@ -350,6 +376,9 @@ export const prontuariosApi = {
     });
     return response.data;
   },
+
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Prontuario>> =>
+    getPaged<Prontuario>("/v1/Prontuarios", pageNumber, pageSize),
 
   getById: async (id: string): Promise<Prontuario> => {
     const response = await api.get(`/v1/Prontuarios/${id}`, {
@@ -387,6 +416,9 @@ export const vendasApi = {
     return response.data;
   },
 
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<Venda>> =>
+    getPaged<Venda>("/v1/Vendas", pageNumber, pageSize),
+
   getById: async (id: string): Promise<Venda> => {
     const response = await api.get(`/v1/Vendas/${id}`, {
       headers: getAuthHeaders(),
@@ -422,6 +454,9 @@ export const itemVendasApi = {
     });
     return response.data;
   },
+
+  getPaged: (pageNumber: number, pageSize: number): Promise<PagedResponse<ItemVenda>> =>
+    getPaged<ItemVenda>("/v1/ItemVendas", pageNumber, pageSize),
 
   getById: async (id: string): Promise<ItemVenda> => {
     const response = await api.get(`/v1/ItemVendas/${id}`, {

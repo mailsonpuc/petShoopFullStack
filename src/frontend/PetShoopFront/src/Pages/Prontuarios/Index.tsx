@@ -4,6 +4,7 @@ import { prontuariosApi, petsApi, funcionariosApi } from "../../Services/api";
 import type { Prontuario, CreateProntuarioDto, Pet, Funcionario } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function ProntuariosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,8 +19,9 @@ export function ProntuariosPage() {
     descricao: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Prontuario, "prontuarioId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem, clearError } = useCrud<Prontuario, "prontuarioId">({
     fetchFn: prontuariosApi.list,
+    fetchPagedFn: prontuariosApi.getPaged,
     createFn: prontuariosApi.create,
     updateFn: prontuariosApi.update,
     deleteFn: prontuariosApi.delete,
@@ -125,6 +127,8 @@ export function ProntuariosPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="prontuários" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Prontuário" : "Novo Prontuário"}>
         <form onSubmit={handleSubmit} className="space-y-4">

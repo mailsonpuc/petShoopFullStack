@@ -4,6 +4,7 @@ import { vendasApi, clientesApi } from "../../Services/api";
 import type { Venda, CreateVendaDto, Cliente } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function VendasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,8 +18,9 @@ export function VendasPage() {
     formaPagamento: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Venda, "vendaId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem, clearError } = useCrud<Venda, "vendaId">({
     fetchFn: vendasApi.list,
+    fetchPagedFn: vendasApi.getPaged,
     createFn: vendasApi.create,
     updateFn: vendasApi.update,
     deleteFn: vendasApi.delete,
@@ -121,6 +123,8 @@ export function VendasPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="vendas" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Venda" : "Nova Venda"}>
         <form onSubmit={handleSubmit} className="space-y-4">

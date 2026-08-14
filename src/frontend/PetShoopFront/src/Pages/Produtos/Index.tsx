@@ -4,6 +4,7 @@ import { produtosApi } from "../../Services/api";
 import type { Produto, CreateProdutoDto } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function ProdutosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,8 +19,9 @@ export function ProdutosPage() {
     quantidadeEmEstoque: 0,
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Produto, "produtoId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem } = useCrud<Produto, "produtoId">({
     fetchFn: produtosApi.list,
+    fetchPagedFn: produtosApi.getPaged,
     createFn: produtosApi.create,
     updateFn: produtosApi.update,
     deleteFn: produtosApi.delete,
@@ -125,6 +127,8 @@ export function ProdutosPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="produtos" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Produto" : "Novo Produto"}>
         {formError && <div className="mb-4 rounded-lg border border-red-800 bg-red-950/50 p-3 text-sm text-red-400">{formError}</div>}

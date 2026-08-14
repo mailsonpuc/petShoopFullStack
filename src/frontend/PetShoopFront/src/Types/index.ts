@@ -233,6 +233,20 @@ export interface ApiError {
   statusCode: number;
 }
 
+export interface PaginationMetadata {
+  totalCount: number;
+  pageSize: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PagedResponse<T> {
+  data: T[];
+  pagination: PaginationMetadata;
+}
+
 export interface Dashboard {
   totalClientes: number;
   totalPets: number;

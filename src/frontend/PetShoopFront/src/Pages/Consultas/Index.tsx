@@ -4,6 +4,7 @@ import { consultasApi, petsApi, funcionariosApi } from "../../Services/api";
 import type { Consulta, CreateConsultaDto, Pet, Funcionario } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function ConsultasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,8 +22,9 @@ export function ConsultasPage() {
     prescricao: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Consulta, "consultaId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem, clearError } = useCrud<Consulta, "consultaId">({
     fetchFn: consultasApi.list,
+    fetchPagedFn: consultasApi.getPaged,
     createFn: consultasApi.create,
     updateFn: consultasApi.update,
     deleteFn: consultasApi.delete,
@@ -133,6 +135,8 @@ export function ConsultasPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="consultas" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Consulta" : "Nova Consulta"}>
         <form onSubmit={handleSubmit} className="space-y-4">

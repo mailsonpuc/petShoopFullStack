@@ -4,6 +4,7 @@ import { servicosApi } from "../../Services/api";
 import type { Servico, CreateServicoDto } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function ServicosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,8 +17,9 @@ export function ServicosPage() {
     duracaoEmMinutos: 0,
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Servico, "servicoId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem } = useCrud<Servico, "servicoId">({
     fetchFn: servicosApi.list,
+    fetchPagedFn: servicosApi.getPaged,
     createFn: servicosApi.create,
     updateFn: servicosApi.update,
     deleteFn: servicosApi.delete,
@@ -110,6 +112,8 @@ export function ServicosPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="serviços" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Serviço" : "Novo Serviço"}>
         <form onSubmit={handleSubmit} className="space-y-4">

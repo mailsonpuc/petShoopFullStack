@@ -4,6 +4,7 @@ import { vacinasApi, petsApi } from "../../Services/api";
 import type { Vacina, CreateVacinaDto, Pet } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function VacinasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,8 +19,9 @@ export function VacinasPage() {
     proximaDose: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem, clearError } = useCrud<Vacina, "vacinaId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem, clearError } = useCrud<Vacina, "vacinaId">({
     fetchFn: vacinasApi.list,
+    fetchPagedFn: vacinasApi.getPaged,
     createFn: vacinasApi.create,
     updateFn: vacinasApi.update,
     deleteFn: vacinasApi.delete,
@@ -125,6 +127,8 @@ export function VacinasPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="vacinas" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Vacina" : "Nova Vacina"}>
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -4,6 +4,7 @@ import { itemVendasApi, produtosApi, vendasApi } from "../../Services/api";
 import type { ItemVenda, CreateItemVendaDto, Produto, Venda } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function ItemVendasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,8 +19,9 @@ export function ItemVendasPage() {
     valorUnitario: 0,
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<ItemVenda, "itemVendaId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem } = useCrud<ItemVenda, "itemVendaId">({
     fetchFn: itemVendasApi.list,
+    fetchPagedFn: itemVendasApi.getPaged,
     createFn: itemVendasApi.create,
     updateFn: itemVendasApi.update,
     deleteFn: itemVendasApi.delete,
@@ -121,6 +123,8 @@ export function ItemVendasPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="itens" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Item de Venda" : "Novo Item de Venda"}>
         <form onSubmit={handleSubmit} className="space-y-4">

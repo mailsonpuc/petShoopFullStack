@@ -4,6 +4,7 @@ import { petsApi, clientesApi } from "../../Services/api";
 import type { Pet, CreatePetDto, Cliente } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function PetsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,8 +25,9 @@ export function PetsPage() {
     clienteNome: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Pet, "petId", CreatePetDto>({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem } = useCrud<Pet, "petId", CreatePetDto>({
     fetchFn: petsApi.list,
+    fetchPagedFn: petsApi.getPaged,
     createFn: petsApi.create,
     updateFn: petsApi.update,
     deleteFn: petsApi.delete,
@@ -150,6 +152,8 @@ export function PetsPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="pets" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Pet" : "Novo Pet"}>
         <form onSubmit={handleSubmit} className="space-y-4">

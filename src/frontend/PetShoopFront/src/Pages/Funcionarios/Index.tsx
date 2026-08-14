@@ -4,6 +4,7 @@ import { funcionariosApi } from "../../Services/api";
 import type { Funcionario, CreateFuncionarioDto } from "../../Types";
 import { Modal } from "../../Components/Modal";
 import { ConfirmDialog } from "../../Components/ConfirmDialog";
+import { PaginationControls } from "../../Components/PaginationControls";
 
 export function FuncionariosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,8 +20,9 @@ export function FuncionariosPage() {
     dataAdmissao: "",
   });
 
-  const { items, isLoading, error, deleteError, createItem, updateItem, deleteItem } = useCrud<Funcionario, "funcionarioId">({
+  const { items, isLoading, error, deleteError, pageNumber, pageSize, pagination, setPageNumber, createItem, updateItem, deleteItem } = useCrud<Funcionario, "funcionarioId">({
     fetchFn: funcionariosApi.list,
+    fetchPagedFn: funcionariosApi.getPaged,
     createFn: funcionariosApi.create,
     updateFn: funcionariosApi.update,
     deleteFn: funcionariosApi.delete,
@@ -116,6 +118,8 @@ export function FuncionariosPage() {
           </tbody>
         </table>
       </div>
+
+      <PaginationControls label="funcionários" pageNumber={pageNumber} pageSize={pageSize} totalCount={pagination.totalCount} totalPages={pagination.totalPages} setPageNumber={setPageNumber} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? "Editar Funcionário" : "Novo Funcionário"}>
         <form onSubmit={handleSubmit} className="space-y-4">
