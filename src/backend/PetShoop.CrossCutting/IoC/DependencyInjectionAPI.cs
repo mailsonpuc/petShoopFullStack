@@ -10,6 +10,7 @@ using PetShoop.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using PetShoop.Infrastructure.Identity.Interfaces;
 using PetShoop.Infrastructure.Identity.Services;
+using PetShoop.Infrastructure.HealthChecks;
 
 namespace PetShoop.CrossCutting.IoC;
 
@@ -62,6 +63,8 @@ public static class DependencyInjectionAPI
         services.AddScoped<IItemVendaRepository, ItemVendaRepository>();
         services.AddScoped<IItemVendaService, ItemVendaService>();
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         //Prontuario
         services.AddScoped<IProntuarioRepository, ProntuarioRepository>();
         services.AddScoped<IProntuarioService, ProntuarioService>();
@@ -85,12 +88,32 @@ public static class DependencyInjectionAPI
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 6;
+            options.Password.RequiredUniqueChars = 1;
+
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            options.User.RequireUniqueEmail = false;
+        });
+
         // ===============================
         // SERVIÇO DE AUTENTICAÇÃO
         // ===============================
         services.AddScoped<IAuthenticate, AuthenticateService>();
         services.AddScoped<ITokenService, TokenService>();
 
+        services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>("database");
 
         return services;
     }

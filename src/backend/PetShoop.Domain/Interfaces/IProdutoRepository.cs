@@ -11,5 +11,6 @@ public interface IProdutoRepository
     Task<Produto> UpdateAsync(Produto produto);
     Task<Produto> RemoveAsync(Produto produto);
     Task<bool> HasItensVendaAsync(Guid produtoId);
+    Task DebitStockAsync(Guid produtoId, int quantidade);
     Task<PagedList<Produto>> GetProdutosPagedAsync(int pageNumber, int pageSize);
 }

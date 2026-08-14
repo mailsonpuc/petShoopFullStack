@@ -10,5 +10,6 @@ public interface IItemVendaRepository
     Task<ItemVenda> CreateAsync(ItemVenda itemVenda);
     Task<ItemVenda> UpdateAsync(ItemVenda itemVenda);
     Task<ItemVenda> RemoveAsync(ItemVenda itemVenda);
+    Task<decimal> GetTotalAsync(Guid vendaId);
     Task<PagedList<ItemVenda>> GetItensVendasPagedAsync(int pageNumber, int pageSize);
 }

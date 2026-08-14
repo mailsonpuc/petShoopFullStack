@@ -58,4 +58,14 @@ public class VendaRepository : IVendaRepository
     {
         return await _context.ItensVendas.AnyAsync(iv => iv.VendaId == vendaId);
     }
+
+    public async Task RecalcularTotalAsync(Guid vendaId, decimal total)
+    {
+        var venda = await _context.Vendas.FirstOrDefaultAsync(v => v.VendaId == vendaId);
+        if (venda != null)
+        {
+            venda.Update(venda.ClienteId, venda.DataVenda, total, venda.FormaPagamento);
+            await _context.SaveChangesAsync();
+        }
+    }
 }

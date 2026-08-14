@@ -11,12 +11,16 @@ public class ItemVendaService : IItemVendaService
     private readonly IItemVendaRepository _itemVendaRepository;
     private readonly IProdutoService _produtoService;
     private readonly IVendaService _vendaService;
+    private readonly IVendaRepository _vendaRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ItemVendaService(IItemVendaRepository itemVendaRepository, IProdutoService produtoService, IVendaService vendaService)
+    public ItemVendaService(IItemVendaRepository itemVendaRepository, IProdutoService produtoService, IVendaService vendaService, IVendaRepository vendaRepository, IUnitOfWork unitOfWork)
     {
         _itemVendaRepository = itemVendaRepository;
         _produtoService = produtoService;
         _vendaService = vendaService;
+        _vendaRepository = vendaRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<IEnumerable<ItemVendaDto>> GetItensVendas()
@@ -106,7 +110,25 @@ public class ItemVendaService : IItemVendaService
             throw new ArgumentNullException(nameof(itemVendaDto));
         }
 
-        await _itemVendaRepository.CreateAsync(itemVenda);
+        await _vendaService.GetById(itemVendaDto.VendaId);
+        await _produtoService.GetById(itemVendaDto.ProdutoId);
+
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            await _itemVendaRepository.CreateAsync(itemVenda);
+            await _produtoService.AtualizarEstoqueAsync(itemVendaDto.ProdutoId, itemVendaDto.Quantidade);
+
+            var novoTotal = await _itemVendaRepository.GetTotalAsync(itemVendaDto.VendaId);
+            await _vendaRepository.RecalcularTotalAsync(itemVendaDto.VendaId, novoTotal);
+
+            await _unitOfWork.CommitAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task Update(ItemVendaDto itemVendaDto)

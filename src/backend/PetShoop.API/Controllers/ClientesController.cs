@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
-using PetShoop.Domain.Validation;
 using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
@@ -30,15 +29,8 @@ public class ClientesController : ControllerBase
     [HttpGet("{id}", Name = "GetCliente")]
     public async Task<ActionResult<ClienteDto>> Get(Guid id)
     {
-        try
-        {
-            var cliente = await _clienteService.GetById(id);
-            return Ok(cliente);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var cliente = await _clienteService.GetById(id);
+        return Ok(cliente);
     }
 
 
@@ -86,42 +78,24 @@ public class ClientesController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] ClienteDto clienteDto)
     {
         clienteDto.ClienteId = id;
-
-        try
-        {
-            await _clienteService.Update(clienteDto);
-            return Ok(clienteDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _clienteService.Update(clienteDto);
+        return Ok(clienteDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O cliente excluído.</returns>
+    /// <response code="200">Cliente excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ClienteDto>> Delete(Guid id)
     {
-        try
-        {
-            var clienteDto = await _clienteService.GetById(id);
-            await _clienteService.Remove(id);
-            return Ok(clienteDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
-        catch (DomainExceptionValidation ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
+        var clienteDto = await _clienteService.GetById(id);
+        await _clienteService.Remove(id);
+        return Ok(clienteDto);
     }
 }

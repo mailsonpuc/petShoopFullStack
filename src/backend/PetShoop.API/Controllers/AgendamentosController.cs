@@ -35,15 +35,8 @@ public class AgendamentosController : ControllerBase
     [HttpGet("{id}", Name = "GetAgendamento")]
     public async Task<ActionResult<AgendamentoDto>> Get(Guid id)
     {
-        try
-        {
-            var agendamento = await _agendamentoService.GetById(id);
-            return Ok(agendamento);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var agendamento = await _agendamentoService.GetById(id);
+        return Ok(agendamento);
     }
 
     //paginaçao agendamentos
@@ -85,38 +78,24 @@ public class AgendamentosController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] AgendamentoDto agendamentoDto)
     {
         agendamentoDto.AgendamentoId = id;
-
-        try
-        {
-            await _agendamentoService.Update(agendamentoDto);
-            return Ok(agendamentoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _agendamentoService.Update(agendamentoDto);
+        return Ok(agendamentoDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O agendamento excluído.</returns>
+    /// <response code="200">Agendamento excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<AgendamentoDto>> Delete(Guid id)
     {
-        try
-        {
-            var agendamentoDto = await _agendamentoService.GetById(id);
-            await _agendamentoService.Remove(id);
-            return Ok(agendamentoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var agendamentoDto = await _agendamentoService.GetById(id);
+        await _agendamentoService.Remove(id);
+        return Ok(agendamentoDto);
     }
 }

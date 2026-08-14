@@ -101,4 +101,17 @@ public class ProdutoService : IProdutoService
 
         await _produtoRepository.RemoveAsync(produto);
     }
+
+    public async Task AtualizarEstoqueAsync(Guid produtoId, int quantidade)
+    {
+        var produto = await _produtoRepository.GetByIdAsync(produtoId);
+
+        if (produto is null)
+        {
+            throw new InvalidOperationException("Produto não encontrado.");
+        }
+
+        produto.DebitStock(quantidade);
+        await _produtoRepository.UpdateAsync(produto);
+    }
 }

@@ -1,6 +1,7 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
 using PetShoop.Domain.Pagination;
+using PetShoop.Domain.Validation;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,5 +58,22 @@ public class ProdutoRepository : IProdutoRepository
     public async Task<bool> HasItensVendaAsync(Guid produtoId)
     {
         return await _context.ItensVendas.AnyAsync(iv => iv.ProdutoId == produtoId);
+    }
+
+    public async Task DebitStockAsync(Guid produtoId, int quantidade)
+    {
+        var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.ProdutoId == produtoId);
+        if (produto == null)
+        {
+            throw new InvalidOperationException("Produto não encontrado.");
+        }
+
+        if (produto.QuantidadeEmEstoque < quantidade)
+        {
+            throw new DomainExceptionValidation($"Estoque insuficiente para o produto {produto.Nome}. Disponível: {produto.QuantidadeEmEstoque}, solicitado: {quantidade}.");
+        }
+
+        produto.DebitStock(quantidade);
+        await _context.SaveChangesAsync();
     }
 }

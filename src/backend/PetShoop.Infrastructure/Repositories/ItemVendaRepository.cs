@@ -53,4 +53,11 @@ public class ItemVendaRepository : IItemVendaRepository
         await _context.SaveChangesAsync();
         return itemVenda;
     }
+
+    public async Task<decimal> GetTotalAsync(Guid vendaId)
+    {
+        return await _context.ItensVendas
+            .Where(iv => iv.VendaId == vendaId)
+            .SumAsync(iv => iv.Quantidade * iv.ValorUnitario);
+    }
 }

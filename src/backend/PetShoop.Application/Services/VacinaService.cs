@@ -75,6 +75,8 @@ public class VacinaService : IVacinaService
             throw new ArgumentNullException(nameof(vacinaDto));
         }
 
+        await _petService.GetById(vacinaDto.PetId);
+
         await _vacinaRepository.CreateAsync(vacina);
     }
 

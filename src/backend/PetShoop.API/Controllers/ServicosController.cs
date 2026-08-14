@@ -30,15 +30,8 @@ public class ServicosController : ControllerBase
     [HttpGet("{id}", Name = "GetServico")]
     public async Task<ActionResult<ServicoDto>> Get(Guid id)
     {
-        try
-        {
-            var servico = await _servicoService.GetById(id);
-            return Ok(servico);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var servico = await _servicoService.GetById(id);
+        return Ok(servico);
     }
 
     //paginaçao servicos
@@ -80,38 +73,24 @@ public class ServicosController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] ServicoDto servicoDto)
     {
         servicoDto.ServicoId = id;
-
-        try
-        {
-            await _servicoService.Update(servicoDto);
-            return Ok(servicoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _servicoService.Update(servicoDto);
+        return Ok(servicoDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O serviço excluído.</returns>
+    /// <response code="200">Serviço excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ServicoDto>> Delete(Guid id)
     {
-        try
-        {
-            var servicoDto = await _servicoService.GetById(id);
-            await _servicoService.Remove(id);
-            return Ok(servicoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var servicoDto = await _servicoService.GetById(id);
+        await _servicoService.Remove(id);
+        return Ok(servicoDto);
     }
 }

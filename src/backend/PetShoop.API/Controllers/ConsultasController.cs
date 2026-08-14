@@ -30,15 +30,8 @@ public class ConsultasController : ControllerBase
     [HttpGet("{id}", Name = "GetConsulta")]
     public async Task<ActionResult<ConsultaDto>> Get(Guid id)
     {
-        try
-        {
-            var consulta = await _consultaService.GetById(id);
-            return Ok(consulta);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var consulta = await _consultaService.GetById(id);
+        return Ok(consulta);
     }
 
     //paginaçao consultas
@@ -80,38 +73,24 @@ public class ConsultasController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] ConsultaDto consultaDto)
     {
         consultaDto.ConsultaId = id;
-
-        try
-        {
-            await _consultaService.Update(consultaDto);
-            return Ok(consultaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _consultaService.Update(consultaDto);
+        return Ok(consultaDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>A consulta excluída.</returns>
+    /// <response code="200">Consulta excluída com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ConsultaDto>> Delete(Guid id)
     {
-        try
-        {
-            var consultaDto = await _consultaService.GetById(id);
-            await _consultaService.Remove(id);
-            return Ok(consultaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var consultaDto = await _consultaService.GetById(id);
+        await _consultaService.Remove(id);
+        return Ok(consultaDto);
     }
 }

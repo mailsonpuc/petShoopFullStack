@@ -92,6 +92,9 @@ public class ProntuarioService : IProntuarioService
             throw new ArgumentNullException(nameof(prontuarioDto));
         }
 
+        await _petService.GetById(prontuarioDto.PetId);
+        await _funcionarioService.GetById(prontuarioDto.FuncionarioId);
+
         await _prontuarioRepository.CreateAsync(prontuario);
     }
 

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
+using PetShoop.API.Middleware;
 using PetShoop.CrossCutting;
 using PetShoop.CrossCutting.IoC;
 
@@ -17,9 +18,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Dependency Injection
 builder.Services.AddInfrastructureAPI(builder.Configuration);
 
-// permitir apenas senhas fortes
-builder.Services.AddInfrastructureIdentity(builder.Configuration);
-
 // JWT
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
@@ -31,6 +29,8 @@ builder.Services.AddInfrastructureCors(builder.Configuration);
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -50,6 +50,8 @@ app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 

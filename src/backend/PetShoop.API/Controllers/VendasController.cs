@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
-using PetShoop.Domain.Validation;
 using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
@@ -30,15 +29,8 @@ public class VendasController : ControllerBase
     [HttpGet("{id}", Name = "GetVenda")]
     public async Task<ActionResult<VendaDto>> Get(Guid id)
     {
-        try
-        {
-            var venda = await _vendaService.GetById(id);
-            return Ok(venda);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var venda = await _vendaService.GetById(id);
+        return Ok(venda);
     }
 
     //paginaçao vendas
@@ -80,37 +72,23 @@ public class VendasController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] VendaDto vendaDto)
     {
         vendaDto.VendaId = id;
-
-        try
-        {
-            await _vendaService.Update(vendaDto);
-            return Ok(vendaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _vendaService.Update(vendaDto);
+        return Ok(vendaDto);
     }
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>A venda excluída.</returns>
+    /// <response code="200">Venda excluída com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<VendaDto>> Delete(Guid id)
     {
-        try
-        {
-            var vendaDto = await _vendaService.GetById(id);
-            await _vendaService.Remove(id);
-            return Ok(vendaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var vendaDto = await _vendaService.GetById(id);
+        await _vendaService.Remove(id);
+        return Ok(vendaDto);
     }
 }

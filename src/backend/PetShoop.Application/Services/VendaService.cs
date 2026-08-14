@@ -80,6 +80,8 @@ public class VendaService : IVendaService
             throw new ArgumentNullException(nameof(vendaDto));
         }
 
+        await _clienteService.GetById(vendaDto.ClienteId);
+
         await _vendaRepository.CreateAsync(venda);
     }
 

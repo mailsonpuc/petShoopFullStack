@@ -11,5 +11,6 @@ public interface IVendaRepository
     Task<Venda> UpdateAsync(Venda venda);
     Task<Venda> RemoveAsync(Venda venda);
     Task<bool> HasItensVendaAsync(Guid vendaId);
+    Task RecalcularTotalAsync(Guid vendaId, decimal total);
     Task<PagedList<Venda>> GetVendasPagedAsync(int pageNumber, int pageSize);
 }

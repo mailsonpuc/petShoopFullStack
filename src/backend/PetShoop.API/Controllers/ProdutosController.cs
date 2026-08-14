@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
-using PetShoop.Domain.Validation;
 using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
@@ -30,15 +29,8 @@ public class ProdutosController : ControllerBase
     [HttpGet("{id}", Name = "GetProduto")]
     public async Task<ActionResult<ProdutoDto>> Get(Guid id)
     {
-        try
-        {
-            var produto = await _produtoService.GetById(id);
-            return Ok(produto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var produto = await _produtoService.GetById(id);
+        return Ok(produto);
     }
 
     //paginaçao produtos
@@ -80,41 +72,23 @@ public class ProdutosController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] ProdutoDto produtoDto)
     {
         produtoDto.ProdutoId = id;
-
-        try
-        {
-            await _produtoService.Update(produtoDto);
-            return Ok(produtoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _produtoService.Update(produtoDto);
+        return Ok(produtoDto);
     }
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O produto excluído.</returns>
+    /// <response code="200">Produto excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ProdutoDto>> Delete(Guid id)
     {
-        try
-        {
-            var produtoDto = await _produtoService.GetById(id);
-            await _produtoService.Remove(id);
-            return Ok(produtoDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
-        catch (DomainExceptionValidation ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
+        var produtoDto = await _produtoService.GetById(id);
+        await _produtoService.Remove(id);
+        return Ok(produtoDto);
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
-using PetShoop.Domain.Validation;
 using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
@@ -30,15 +29,8 @@ public class FuncionariosController : ControllerBase
     [HttpGet("{id}", Name = "GetFuncionario")]
     public async Task<ActionResult<FuncionarioDto>> Get(Guid id)
     {
-        try
-        {
-            var funcionario = await _funcionarioService.GetById(id);
-            return Ok(funcionario);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var funcionario = await _funcionarioService.GetById(id);
+        return Ok(funcionario);
     }
 
     //paginaçao funcionarios
@@ -80,42 +72,24 @@ public class FuncionariosController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] FuncionarioDto funcionarioDto)
     {
         funcionarioDto.FuncionarioId = id;
-
-        try
-        {
-            await _funcionarioService.Update(funcionarioDto);
-            return Ok(funcionarioDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _funcionarioService.Update(funcionarioDto);
+        return Ok(funcionarioDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O funcionário excluído.</returns>
+    /// <response code="200">Funcionário excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<FuncionarioDto>> Delete(Guid id)
     {
-        try
-        {
-            var funcionarioDto = await _funcionarioService.GetById(id);
-            await _funcionarioService.Remove(id);
-            return Ok(funcionarioDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
-        catch (DomainExceptionValidation ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
+        var funcionarioDto = await _funcionarioService.GetById(id);
+        await _funcionarioService.Remove(id);
+        return Ok(funcionarioDto);
     }
 }

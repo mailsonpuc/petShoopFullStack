@@ -11,4 +11,5 @@ public interface IProdutoService
     Task Update(ProdutoDto produtoDto);
     Task Remove(Guid? id);
     Task<PagedList<ProdutoDto>> GetProdutosPaged(int pageNumber, int pageSize);
+    Task AtualizarEstoqueAsync(Guid produtoId, int quantidade);
 }

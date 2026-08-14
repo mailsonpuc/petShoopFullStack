@@ -102,6 +102,10 @@ public class AgendamentoService : IAgendamentoService
             throw new ArgumentNullException(nameof(agendamentoDto));
         }
 
+        await _petService.GetById(agendamentoDto.PetId);
+        await _servicoService.GetById(agendamentoDto.ServicoId);
+        await _funcionarioService.GetById(agendamentoDto.FuncionarioId);
+
         await _agendamentoRepository.CreateAsync(agendamento);
     }
 

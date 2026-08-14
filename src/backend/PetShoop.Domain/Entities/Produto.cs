@@ -32,6 +32,13 @@ public sealed class Produto
         ProdutoId = produtoId;
     }
 
+    public void DebitStock(int quantidade)
+    {
+        DomainExceptionValidation.When(quantidade <= 0, "Quantidade inválida. Quantidade deve ser maior que zero");
+        DomainExceptionValidation.When(QuantidadeEmEstoque < quantidade, "Estoque insuficiente.");
+        QuantidadeEmEstoque -= quantidade;
+    }
+
     private void ValidateDomain(string nome, string descricao, CategoriaProduto categoria, string marca, decimal preco, int quantidadeEmEstoque)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "Nome inválido. Nome é obrigatório");

@@ -30,15 +30,8 @@ public class VacinasController : ControllerBase
     [HttpGet("{id}", Name = "GetVacina")]
     public async Task<ActionResult<VacinaDto>> Get(Guid id)
     {
-        try
-        {
-            var vacina = await _vacinaService.GetById(id);
-            return Ok(vacina);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var vacina = await _vacinaService.GetById(id);
+        return Ok(vacina);
     }
 
     //paginaçao vacinas
@@ -80,38 +73,24 @@ public class VacinasController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] VacinaDto vacinaDto)
     {
         vacinaDto.VacinaId = id;
-
-        try
-        {
-            await _vacinaService.Update(vacinaDto);
-            return Ok(vacinaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _vacinaService.Update(vacinaDto);
+        return Ok(vacinaDto);
     }
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>A vacina excluída.</returns>
+    /// <response code="200">Vacina excluída com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<VacinaDto>> Delete(Guid id)
     {
-        try
-        {
-            var vacinaDto = await _vacinaService.GetById(id);
-            await _vacinaService.Remove(id);
-            return Ok(vacinaDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var vacinaDto = await _vacinaService.GetById(id);
+        await _vacinaService.Remove(id);
+        return Ok(vacinaDto);
     }
 
 }

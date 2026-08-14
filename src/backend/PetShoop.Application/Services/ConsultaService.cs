@@ -92,6 +92,9 @@ public class ConsultaService : IConsultaService
             throw new ArgumentNullException(nameof(consultaDto));
         }
 
+        await _petService.GetById(consultaDto.PetId);
+        await _funcionarioService.GetById(consultaDto.FuncionarioId);
+
         await _consultaRepository.CreateAsync(consulta);
     }
 

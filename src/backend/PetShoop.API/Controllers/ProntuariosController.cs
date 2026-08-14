@@ -29,15 +29,8 @@ public class ProntuariosController : ControllerBase
     [HttpGet("{id}", Name = "GetProntuario")]
     public async Task<ActionResult<ProntuarioDto>> Get(Guid id)
     {
-        try
-        {
-            var prontuario = await _prontuarioService.GetById(id);
-            return Ok(prontuario);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var prontuario = await _prontuarioService.GetById(id);
+        return Ok(prontuario);
     }
 
     //paginaçao prontuarios
@@ -79,38 +72,24 @@ public class ProntuariosController : ControllerBase
     public async Task<ActionResult> Put(Guid id, [FromBody] ProntuarioDto prontuarioDto)
     {
         prontuarioDto.ProntuarioId = id;
-
-        try
-        {
-            await _prontuarioService.Update(prontuarioDto);
-            return Ok(prontuarioDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        await _prontuarioService.Update(prontuarioDto);
+        return Ok(prontuarioDto);
     }
 
 
     /// <summary>
     /// Somente Admin pode apagar.
     /// </summary>
-    /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
-    /// <response code="200">Retorna a lista de agendamentos.</response>
+    /// <returns>O prontuário excluído.</returns>
+    /// <response code="200">Prontuário excluído com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
+    /// <response code="403">Apenas administradores podem excluir.</response>
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ProntuarioDto>> Delete(Guid id)
     {
-        try
-        {
-            var prontuarioDto = await _prontuarioService.GetById(id);
-            await _prontuarioService.Remove(id);
-            return Ok(prontuarioDto);
-        }
-        catch (InvalidOperationException)
-        {
-            return NotFound();
-        }
+        var prontuarioDto = await _prontuarioService.GetById(id);
+        await _prontuarioService.Remove(id);
+        return Ok(prontuarioDto);
     }
 }

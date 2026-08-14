@@ -77,6 +77,8 @@ public class PetService : IPetService
             throw new ArgumentNullException(nameof(petDto));
         }
 
+        await _clienteService.GetById(petDto.ClienteId);
+
         await _petRepository.CreateAsync(pet);
     }
 
