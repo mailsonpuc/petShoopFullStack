@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class FuncionarioRepository : IFuncionarioRepository
     public async Task<IEnumerable<Funcionario>> GetFuncionariosAsync()
     {
         return await _context.Funcionarios.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<Funcionario>> GetFuncionariosPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<Funcionario>.ToPagedListAsync(_context.Funcionarios.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<Funcionario> RemoveAsync(Funcionario funcionario)

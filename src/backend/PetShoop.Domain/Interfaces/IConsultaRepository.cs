@@ -1,4 +1,5 @@
 using PetShoop.Domain.Entities;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Domain.Interfaces;
 
@@ -9,4 +10,5 @@ public interface IConsultaRepository
     Task<Consulta> CreateAsync(Consulta consulta);
     Task<Consulta> UpdateAsync(Consulta consulta);
     Task<Consulta> RemoveAsync(Consulta consulta);
+    Task<PagedList<Consulta>> GetConsultasPagedAsync(int pageNumber, int pageSize);
 }

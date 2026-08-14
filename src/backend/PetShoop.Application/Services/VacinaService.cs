@@ -3,6 +3,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Application.Services;
 
@@ -31,6 +32,22 @@ public class VacinaService : IVacinaService
         }
 
         return vacinaDtos;
+    }
+
+    public async Task<PagedList<VacinaDto>> GetVacinasPaged(int pageNumber, int pageSize)
+    {
+        var pagedVacinas = await _vacinaRepository.GetVacinasPagedAsync(pageNumber, pageSize);
+        var vacinaDtos = pagedVacinas.ToVacinaDtoList().ToList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        foreach (var dto in vacinaDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+        }
+
+        return new PagedList<VacinaDto>(vacinaDtos, pagedVacinas.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<VacinaDto> GetById(Guid? id)

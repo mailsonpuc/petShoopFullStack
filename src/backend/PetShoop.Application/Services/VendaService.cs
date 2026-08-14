@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
@@ -31,6 +32,22 @@ public class VendaService : IVendaService
         }
 
         return vendaDtos;
+    }
+
+    public async Task<PagedList<VendaDto>> GetVendasPaged(int pageNumber, int pageSize)
+    {
+        var pagedVendas = await _vendaRepository.GetVendasPagedAsync(pageNumber, pageSize);
+        var vendaDtos = pagedVendas.ToVendaDtoList().ToList();
+
+        var clientes = await _clienteService.GetClientes();
+        var clienteMap = clientes.ToDictionary(c => c.ClienteId, c => c.Nome);
+
+        foreach (var dto in vendaDtos)
+        {
+            dto.ClienteNome = clienteMap.GetValueOrDefault(dto.ClienteId);
+        }
+
+        return new PagedList<VendaDto>(vendaDtos, pagedVendas.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<VendaDto> GetById(Guid? id)

@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
@@ -19,6 +20,14 @@ public class ServicoService : IServicoService
     {
         var servicos = await _servicoRepository.GetServicosAsync();
         return servicos.ToServicoDtoList();
+    }
+
+    public async Task<PagedList<ServicoDto>> GetServicosPaged(int pageNumber, int pageSize)
+    {
+        var pagedServicos = await _servicoRepository.GetServicosPagedAsync(pageNumber, pageSize);
+        var servicosDto = pagedServicos.ToServicoDtoList().ToList();
+
+        return new PagedList<ServicoDto>(servicosDto, pagedServicos.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<ServicoDto> GetById(Guid? id)

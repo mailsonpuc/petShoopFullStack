@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Application.Services;
 
@@ -36,6 +37,26 @@ public class ProntuarioService : IProntuarioService
         }
 
         return prontuarioDtos;
+    }
+
+    public async Task<PagedList<ProntuarioDto>> GetProntuariosPaged(int pageNumber, int pageSize)
+    {
+        var pagedProntuarios = await _prontuarioRepository.GetProntuariosPagedAsync(pageNumber, pageSize);
+        var prontuarioDtos = pagedProntuarios.ToProntuarioDtoList().ToList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        var funcionarios = await _funcionarioService.GetFuncionarios();
+        var funcionarioMap = funcionarios.ToDictionary(f => f.FuncionarioId, f => f.Nome);
+
+        foreach (var dto in prontuarioDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+            dto.FuncionarioNome = funcionarioMap.GetValueOrDefault(dto.FuncionarioId);
+        }
+
+        return new PagedList<ProntuarioDto>(prontuarioDtos, pagedProntuarios.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<ProntuarioDto> GetById(Guid? id)

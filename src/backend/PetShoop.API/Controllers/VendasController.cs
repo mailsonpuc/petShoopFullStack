@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
+using PetShoop.CrossCutting.Pagination;
 using PetShoop.Domain.Validation;
+using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
 
@@ -37,6 +39,28 @@ public class VendasController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    //paginaçao vendas
+    [HttpGet("paginacao")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult> Paginacao([FromQuery] VendaParameters vendaParameters)
+    {
+        var vendas = await _vendaService.GetVendasPaged(vendaParameters.PageNumber, vendaParameters.PageSize);
+
+        var metadata = new
+        {
+            vendas.TotalCount,
+            vendas.PageSize,
+            vendas.CurrentPage,
+            vendas.TotalPages,
+            vendas.HasNextPage,
+            vendas.HasPreviousPage
+        };
+
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+        return Ok(new { data = vendas, pagination = metadata });
     }
 
     [HttpPost]

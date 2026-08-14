@@ -4,6 +4,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Application.Services;
 
@@ -44,6 +45,30 @@ public class AgendamentoService : IAgendamentoService
         }
 
         return agendamentoDtos;
+    }
+
+    public async Task<PagedList<AgendamentoDto>> GetAgendamentosPaged(int pageNumber, int pageSize)
+    {
+        var pagedAgendamentos = await _agendamentoRepository.GetAgendamentosPagedAsync(pageNumber, pageSize);
+        var agendamentoDtos = pagedAgendamentos.ToAgendamentoDtoList().ToList();
+
+        var pets = await _petService.GetPets();
+        var petMap = pets.ToDictionary(p => p.PetId, p => p.Nome);
+
+        var servicos = await _servicoService.GetServicos();
+        var servicoMap = servicos.ToDictionary(s => s.ServicoId, s => s.Nome);
+
+        var funcionarios = await _funcionarioService.GetFuncionarios();
+        var funcionarioMap = funcionarios.ToDictionary(f => f.FuncionarioId, f => f.Nome);
+
+        foreach (var dto in agendamentoDtos)
+        {
+            dto.PetNome = petMap.GetValueOrDefault(dto.PetId);
+            dto.ServicoNome = servicoMap.GetValueOrDefault(dto.ServicoId);
+            dto.FuncionarioNome = funcionarioMap.GetValueOrDefault(dto.FuncionarioId);
+        }
+
+        return new PagedList<AgendamentoDto>(agendamentoDtos, pagedAgendamentos.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<AgendamentoDto> GetById(Guid? id)

@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class ConsultaRepository : IConsultaRepository
     public async Task<IEnumerable<Consulta>> GetConsultasAsync()
     {
         return await _context.Consultas.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<Consulta>> GetConsultasPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<Consulta>.ToPagedListAsync(_context.Consultas.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<Consulta> RemoveAsync(Consulta consulta)

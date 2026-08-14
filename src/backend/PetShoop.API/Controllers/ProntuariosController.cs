@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
+using PetShoop.CrossCutting.Pagination;
+using System.Text.Json;
 
 namespace PetShoop.API.Controllers;
 
@@ -36,6 +38,28 @@ public class ProntuariosController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    //paginaçao prontuarios
+    [HttpGet("paginacao")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult> Paginacao([FromQuery] ProntuarioParameters prontuarioParameters)
+    {
+        var prontuarios = await _prontuarioService.GetProntuariosPaged(prontuarioParameters.PageNumber, prontuarioParameters.PageSize);
+
+        var metadata = new
+        {
+            prontuarios.TotalCount,
+            prontuarios.PageSize,
+            prontuarios.CurrentPage,
+            prontuarios.TotalPages,
+            prontuarios.HasNextPage,
+            prontuarios.HasPreviousPage
+        };
+
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+        return Ok(new { data = prontuarios, pagination = metadata });
     }
 
     [HttpPost]

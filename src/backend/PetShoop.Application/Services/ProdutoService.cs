@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
@@ -19,6 +20,14 @@ public class ProdutoService : IProdutoService
     {
         var produtos = await _produtoRepository.GetProdutosAsync();
         return produtos.ToProdutoDtoList();
+    }
+
+    public async Task<PagedList<ProdutoDto>> GetProdutosPaged(int pageNumber, int pageSize)
+    {
+        var pagedProdutos = await _produtoRepository.GetProdutosPagedAsync(pageNumber, pageSize);
+        var produtosDto = pagedProdutos.ToProdutoDtoList().ToList();
+
+        return new PagedList<ProdutoDto>(produtosDto, pagedProdutos.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<ProdutoDto> GetById(Guid? id)

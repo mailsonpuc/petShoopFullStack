@@ -2,6 +2,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Application.Services;
 
@@ -41,6 +42,31 @@ public class ItemVendaService : IItemVendaService
         }
 
         return itemVendaDtos;
+    }
+
+    public async Task<PagedList<ItemVendaDto>> GetItensVendasPaged(int pageNumber, int pageSize)
+    {
+        var pagedItensVenda = await _itemVendaRepository.GetItensVendasPagedAsync(pageNumber, pageSize);
+        var itemVendaDtos = pagedItensVenda.ToItemVendaDtoList().ToList();
+
+        var produtos = await _produtoService.GetProdutos();
+        var produtoMap = produtos.ToDictionary(p => p.ProdutoId, p => p.Nome);
+
+        var vendas = await _vendaService.GetVendas();
+        var vendaMap = vendas.ToDictionary(v => v.VendaId, v => v);
+        var clienteMap = vendas.Where(v => v.ClienteId != Guid.Empty).ToDictionary(v => v.VendaId, v => v.ClienteNome);
+
+        foreach (var dto in itemVendaDtos)
+        {
+            dto.ProdutoNome = produtoMap.GetValueOrDefault(dto.ProdutoId);
+            dto.ClienteNome = clienteMap.GetValueOrDefault(dto.VendaId);
+            if (vendaMap.TryGetValue(dto.VendaId, out var vendaDto))
+            {
+                dto.VendaInfo = $"Venda em {vendaDto.DataVenda:dd/MM/yyyy HH:mm}";
+            }
+        }
+
+        return new PagedList<ItemVendaDto>(itemVendaDtos, pagedItensVenda.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<ItemVendaDto> GetById(Guid? id)

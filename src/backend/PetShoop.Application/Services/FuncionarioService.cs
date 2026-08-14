@@ -3,6 +3,7 @@ using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.Application.Mappings;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Domain.Validation;
 
 namespace PetShoop.Application.Services;
@@ -20,6 +21,14 @@ public class FuncionarioService : IFuncionarioService
     {
         var funcionarios = await _funcionarioRepository.GetFuncionariosAsync();
         return funcionarios.ToFuncionarioDtoList();
+    }
+
+    public async Task<PagedList<FuncionarioDto>> GetFuncionariosPaged(int pageNumber, int pageSize)
+    {
+        var pagedFuncionarios = await _funcionarioRepository.GetFuncionariosPagedAsync(pageNumber, pageSize);
+        var funcionariosDto = pagedFuncionarios.ToFuncionarioDtoList().ToList();
+
+        return new PagedList<FuncionarioDto>(funcionariosDto, pagedFuncionarios.TotalCount, pageNumber, pageSize);
     }
 
     public async Task<FuncionarioDto> GetById(Guid? id)

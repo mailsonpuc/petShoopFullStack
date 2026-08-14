@@ -1,4 +1,5 @@
 using PetShoop.Domain.Entities;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Domain.Interfaces;
 
@@ -12,4 +13,5 @@ public interface IFuncionarioRepository
     Task<bool> HasAgendamentosAsync(Guid funcionarioId);
     Task<bool> HasConsultasAsync(Guid funcionarioId);
     Task<bool> HasProntuariosAsync(Guid funcionarioId);
+    Task<PagedList<Funcionario>> GetFuncionariosPagedAsync(int pageNumber, int pageSize);
 }

@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class ProntuarioRepository : IProntuarioRepository
     public async Task<IEnumerable<Prontuario>> GetProntuariosAsync()
     {
         return await _context.Prontuarios.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<Prontuario>> GetProntuariosPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<Prontuario>.ToPagedListAsync(_context.Prontuarios.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<Prontuario> RemoveAsync(Prontuario prontuario)

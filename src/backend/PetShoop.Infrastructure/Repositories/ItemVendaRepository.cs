@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class ItemVendaRepository : IItemVendaRepository
     public async Task<IEnumerable<ItemVenda>> GetItensVendasAsync()
     {
         return await _context.ItensVendas.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<ItemVenda>> GetItensVendasPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<ItemVenda>.ToPagedListAsync(_context.ItensVendas.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<ItemVenda> RemoveAsync(ItemVenda itemVenda)

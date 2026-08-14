@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class VacinaRepository : IVacinaRepository
     public async Task<IEnumerable<Vacina>> GetVacinasAsync()
     {
         return await _context.Vacinas.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<Vacina>> GetVacinasPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<Vacina>.ToPagedListAsync(_context.Vacinas.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<Vacina> RemoveAsync(Vacina vacina)

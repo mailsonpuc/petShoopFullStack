@@ -1,5 +1,6 @@
 using PetShoop.Domain.Entities;
 using PetShoop.Domain.Interfaces;
+using PetShoop.Domain.Pagination;
 using PetShoop.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,11 @@ public class AgendamentoRepository : IAgendamentoRepository
     public async Task<IEnumerable<Agendamento>> GetAgendamentosAsync()
     {
         return await _context.Agendamentos.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<PagedList<Agendamento>> GetAgendamentosPagedAsync(int pageNumber, int pageSize)
+    {
+        return await PagedList<Agendamento>.ToPagedListAsync(_context.Agendamentos.AsNoTracking(), pageNumber, pageSize);
     }
 
     public async Task<Agendamento> RemoveAsync(Agendamento agendamento)

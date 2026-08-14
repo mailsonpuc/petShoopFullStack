@@ -1,4 +1,5 @@
 using PetShoop.Domain.Entities;
+using PetShoop.Domain.Pagination;
 
 namespace PetShoop.Domain.Interfaces;
 
@@ -10,4 +11,5 @@ public interface IServicoRepository
     Task<Servico> UpdateAsync(Servico servico);
     Task<Servico> RemoveAsync(Servico servico);
     Task<bool> HasAgendamentosAsync(Guid servicoId);
+    Task<PagedList<Servico>> GetServicosPagedAsync(int pageNumber, int pageSize);
 }
