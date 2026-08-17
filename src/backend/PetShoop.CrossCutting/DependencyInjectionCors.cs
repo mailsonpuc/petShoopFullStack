@@ -13,8 +13,15 @@ public static class DependencyInjectionCors
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
+                /*
                 policy
                     .WithOrigins("http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                */
+
+                policy
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
