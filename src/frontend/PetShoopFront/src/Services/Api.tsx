@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000/api",
+    
+    //http://localhost:5000/api
+    baseURL: "https://apipetshoop-f8b7cpataca3fhd8.canadacentral-01.azurewebsites.net/api",
+    
 });
 
 api.interceptors.response.use(
