@@ -5,54 +5,54 @@
 
 Visão geral da interação do usuário com as funcionalidades que fazem parte do sistema sociotécnico (protótipo de telas).
 
-<img src="img/Tela/interface1.jpg" >
+<img src="img/Tela/paginaHOME.png" >
 <p> Tela Inicial do Cliente. <p>
 <br><br>
 
 
-<img src="img/Tela/interface2.jpg" >
-<p> Tela de Histórico de Agendamentos. Disponível para Cliente e Barbeiro. <p>
+<img src="img/Tela/PaginaLogin.png" >
+<p> Tela de login. <p>
 <br><br>
 
-<img src="img/Tela/interface (3).jpg" >
-<p> Tela Inicial do Barbeiro. <p>
+<img src="img/Tela/TelaCadastro.png" >
+<p> Tela Cadastro. <p>
 <br><br>
 
-<img src="img/Tela/interface (4).jpg" >
-<p> Tela com os serviços disponíveis para o cliente de acordo com a categoria de serviços selecionada. <p>
+<img src="img/Tela/TelaDashBoard.png" >
+<p> Tela dahsboard com visão geral. <p>
 <br><br>
 
-<img src="img/Tela/interface (5).jpg" >
-<p> Tela de confirmação de Agendamento que aparece após o cliente escolher o serviço. <p>
+<img src="img/Tela/TelaCadastroDeClientesCOmPaginacao.png">
+<p> Tela cadastro de clientes com paginação. <p>
 <br><br>
 
-<img src="img/Tela/interface (7).jpg" >
-<p> Tela da Agenda do Barbeiro, onde ele pode verificar os horários já marcados e bloquear horários que não irá trabalhar. <p>
+<img src="img/Tela/TelaCadastroDePetsComPaginacao.png" >
+<p> Tela cadastro de pets com paginação. <p>
 <br><br>
 
-<img src="img/Tela/interface (8).jpg" >
-<p> Tela para o Cliente escolher qual tipo de serviço deseja agendar. <p>
+<img src="img/Tela/TelaCadastroDeFuncionario.png" >
+<p> Tela para cadastro de funcionario. <p>
 <br><br>
 
-<img src="img/Tela/interface (9).jpg" >
-<p> Tela de boas-vindas. <p>
+<img src="img/Tela/CadastroDeProdutos.png" >
+<p> Tela cadastro de produtos. <p>
 <br><br>
 
-<img src="img/Tela/interface (10).jpg" >
-<p> Tela "Minha Conta". Disponível para Cliente e Barbeiro. <p>
+<img src="img/Tela/TelaServico.png" >
+<p> Tela cadastro de serviços. <p>
 <br><br>
 
-<img src="img/Tela/interface (11).jpg" >
-<p> Tela para alterar os dados da conta, também disponível para Cliente e Barbeiro. <p>
+<img src="img/Tela/vacinas.png" >
+<p> Tela para vacinas. <p>
 <br><br>
 
-<img src="img/Tela/interface (12).jpg" >
-<p> Tela de Cadastro com opção de escolha: cliente ou barbeiro. <p>
+<img src="img/Tela/Prontuarios.png" >
+<p> Tela de prontuarios. <p>
 <br><br>
 
-<img src="img/Tela/interface (13).jpg" >
-<p> Tela de Próximos Agendamentos. Disponível para Cliente e Barbeiro. <p>
+<img src="img/Tela/vendas.png" >
+<p> Tela de vendas. <p>
 <br><br>
 
-<img src="img/Tela/interface (14).jpg" >
-<p> Tela de Login com opção de escolha: cliente ou barbeiro.  <p>
+<img src="img/Tela/telaItemsVendas.png" >
+<p> Tela de items que foi vendidos.  <p>
