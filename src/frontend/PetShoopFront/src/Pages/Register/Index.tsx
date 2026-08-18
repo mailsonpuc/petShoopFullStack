@@ -10,19 +10,54 @@ export function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passwordRequirements, setPasswordRequirements] = useState({
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    digit: false,
+    specialChar: false,
+  });
   const navigate = useNavigate();
+
+  const validatePassword = (password: string) => {
+    setPasswordRequirements({
+      length: password.length >= 6,
+      lowercase: /[a-z]/.test(password),
+      uppercase: /[A-Z]/.test(password),
+      digit: /\d/.test(password),
+      specialChar: /[^a-zA-Z0-9]/.test(password),
+    });
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setFormData({ ...formData, password: newPassword });
+    validatePassword(newPassword);
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
+    const allRequirementsMet = Object.values(passwordRequirements).every(Boolean);
+    if (!allRequirementsMet) {
+      setError("A senha não atende aos requisitos mínimos");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await fetch("http://localhost:5100/api/v1/Auth/register", {
+      const response = await fetch("http://localhost:5100/api/v1/Auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao criar conta");
+      }
 
       navigate("/login");
     } catch (err) {
@@ -98,7 +133,7 @@ export function Register() {
                 type={showPassword ? "text" : "password"}
                 required
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={handlePasswordChange}
                 placeholder="••••••••"
                 className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 pr-10 text-sm text-white placeholder-slate-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
@@ -110,6 +145,31 @@ export function Register() {
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
+            </div>
+            <div className="mt-2 space-y-1">
+              <p className="text-xs font-medium text-slate-400">A senha deve conter:</p>
+              <ul className="space-y-0.5">
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.length ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.length ? "✓" : "•"}</span>
+                  Mínimo de 6 caracteres
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.lowercase ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.lowercase ? "✓" : "•"}</span>
+                  Pelo menos 1 letra minúscula (a-z)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.uppercase ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.uppercase ? "✓" : "•"}</span>
+                  Pelo menos 1 letra maiúscula (A-Z)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.digit ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.digit ? "✓" : "•"}</span>
+                  Pelo menos 1 número (0-9)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.specialChar ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.specialChar ? "✓" : "•"}</span>
+                  Pelo menos 1 caractere especial (!@#$% etc.)
+                </li>
+              </ul>
             </div>
           </div>
 

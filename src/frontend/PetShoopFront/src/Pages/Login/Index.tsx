@@ -10,13 +10,43 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passwordRequirements, setPasswordRequirements] = useState({
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    digit: false,
+    specialChar: false,
+  });
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const validatePassword = (password: string) => {
+    setPasswordRequirements({
+      length: password.length >= 6,
+      lowercase: /[a-z]/.test(password),
+      uppercase: /[A-Z]/.test(password),
+      digit: /\d/.test(password),
+      specialChar: /[^a-zA-Z0-9]/.test(password),
+    });
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setFormData({ ...formData, password: newPassword });
+    validatePassword(newPassword);
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    const allRequirementsMet = Object.values(passwordRequirements).every(Boolean);
+    if (!allRequirementsMet) {
+      setError("A senha não atende aos requisitos mínimos");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       await login(formData);
@@ -35,7 +65,6 @@ export function Login() {
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 font-bold text-white shadow-lg shadow-blue-500/30">
             <Link to="/" className="flex items-center gap-2 text-white no-underline hover:text-slate-100">
               <span>P</span>
-
             </Link>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
@@ -80,7 +109,7 @@ export function Login() {
                 type={showPassword ? "text" : "password"}
                 required
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={handlePasswordChange}
                 placeholder="••••••••"
                 className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2.5 pr-10 text-sm text-white placeholder-slate-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
@@ -92,6 +121,31 @@ export function Login() {
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
+            </div>
+            <div className="mt-2 space-y-1">
+              <p className="text-xs font-medium text-slate-400">A senha deve conter:</p>
+              <ul className="space-y-0.5">
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.length ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.length ? "✓" : "•"}</span>
+                  Mínimo de 6 caracteres
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.lowercase ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.lowercase ? "✓" : "•"}</span>
+                  Pelo menos 1 letra minúscula (a-z)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.uppercase ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.uppercase ? "✓" : "•"}</span>
+                  Pelo menos 1 letra maiúscula (A-Z)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.digit ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.digit ? "✓" : "•"}</span>
+                  Pelo menos 1 número (0-9)
+                </li>
+                <li className={`flex items-center gap-1.5 text-xs ${passwordRequirements.specialChar ? "text-green-400" : "text-slate-500"}`}>
+                  <span>{passwordRequirements.specialChar ? "✓" : "•"}</span>
+                  Pelo menos 1 caractere especial (!@#$% etc.)
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -106,11 +160,9 @@ export function Login() {
 
         <p className="mt-8 text-center text-xs text-slate-400">
           Não tem uma conta?{" "}
-
-        <Link to="/register" className="font-medium text-blue-400 no-underline hover:text-blue-300">
+          <Link to="/register" className="font-medium text-blue-400 no-underline hover:text-blue-300">
             Cadastre-se
           </Link>
-
         </p>
       </div>
     </div>
