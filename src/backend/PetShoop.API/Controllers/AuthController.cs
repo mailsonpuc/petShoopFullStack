@@ -89,7 +89,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        return Unauthorized();
+        return Unauthorized(new Response { Status = "Error", Message = "Invalid username or password." });
     }
 
 
