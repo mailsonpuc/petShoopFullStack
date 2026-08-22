@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PetShoop.Infrastructure.Identity;
 using PetShoop.Infrastructure.Identity.Models;
 using PetShoop.Infrastructure.Identity.Services;
@@ -35,7 +36,7 @@ public class AuthController : ControllerBase
     }
 
 
-
+    [EnableRateLimiting("loginRateLimit")]
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -93,7 +94,7 @@ public class AuthController : ControllerBase
 
 
 
-
+    [EnableRateLimiting("loginRateLimit")]
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)

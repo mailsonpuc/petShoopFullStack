@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 
@@ -8,6 +9,7 @@ namespace PetShoop.API.Controllers;
 [Route("api/v1/dashboard")]
 [ApiController]
 [Authorize]
+[EnableRateLimiting("fixedwindow")]
 public class DashboardController : ControllerBase
 {
     private readonly IClienteService _clienteService;

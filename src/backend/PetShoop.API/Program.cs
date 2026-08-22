@@ -24,6 +24,9 @@ builder.Services.AddJwtConfiguration(builder.Configuration);
 // Swagger
 builder.Services.AddInfrastructureSwagger(builder.Configuration);
 
+// Rate Limiter
+builder.Services.AddInfrastructureRateLimiter(builder.Configuration);
+
 //  CORS
 builder.Services.AddInfrastructureCors(builder.Configuration);
 
@@ -48,7 +51,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
 app.UseCors("AllowFrontend");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

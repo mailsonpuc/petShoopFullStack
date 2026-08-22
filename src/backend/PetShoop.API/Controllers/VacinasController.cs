@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -11,6 +12,7 @@ namespace PetShoop.API.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Authorize]
+[EnableRateLimiting("fixedwindow")]
 public class VacinasController : ControllerBase
 {
     private readonly IVacinaService _vacinaService;

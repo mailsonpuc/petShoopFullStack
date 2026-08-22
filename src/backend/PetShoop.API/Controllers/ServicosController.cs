@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -11,6 +12,7 @@ namespace PetShoop.API.Controllers;
 [Route("api/v1/[controller]")]
 [ApiController]
 [Authorize]
+[EnableRateLimiting("fixedwindow")]
 public class ServicosController : ControllerBase
 {
     private readonly IServicoService _servicoService;
