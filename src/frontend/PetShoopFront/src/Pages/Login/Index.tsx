@@ -87,6 +87,8 @@ export function Login() {
               Usuário
             </label>
             <input
+              minLength={5}
+              maxLength={30}
               id="userName"
               type="text"
               required
@@ -105,6 +107,8 @@ export function Login() {
             </div>
             <div className="relative">
               <input
+                minLength={5}
+                maxLength={30}
                 id="password"
                 type={showPassword ? "text" : "password"}
                 required
