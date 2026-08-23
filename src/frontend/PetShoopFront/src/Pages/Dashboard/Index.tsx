@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { dashboardApi } from "../../Services/api";
-import { useAdminRole } from "../../Hooks/useAdminRole";
 
 export function Dashboard() {
-  const { isAdmin, loading: loadingRole } = useAdminRole();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<{
@@ -20,23 +18,19 @@ export function Dashboard() {
 
   useEffect(() => {
     async function load() {
-      if (!isAdmin) {
-        setLoading(false);
-        return;
-      }
       try {
         setLoading(true);
         setError(null);
         const response = await dashboardApi.get();
         setData(response);
       } catch (err) {
-        setError("Erro ao carregar dashboard");
+        setError(err instanceof Error ? err.message : "Erro ao carregar dashboard");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [isAdmin]);
+  }, []);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -44,7 +38,7 @@ export function Dashboard() {
       currency: "BRL",
     }).format(value);
 
-  if (loadingRole || loading) {
+  if (loading) {
     return (
       <div className="space-y-6">
         <div>
@@ -52,20 +46,6 @@ export function Dashboard() {
           <p className="mt-1 text-sm text-slate-400">Visão geral do sistema PetShoop</p>
         </div>
         <p className="text-sm text-slate-400">Carregando...</p>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Dashboard</h2>
-          <p className="mt-1 text-sm text-slate-400">Visão geral do sistema PetShoop</p>
-        </div>
-        <div className="rounded-xl border border-yellow-800 bg-yellow-950/50 p-4">
-          <p className="text-sm font-medium text-yellow-400">Você precisa ser admin para visualizar.</p>
-        </div>
       </div>
     );
   }

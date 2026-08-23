@@ -66,14 +66,20 @@ export function Sidebar() {
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 font-bold text-white shadow-lg shadow-blue-500/30">P</div>
         <span className="text-xl font-bold text-white">PetShoop</span>
       </div>
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {items.map((item) => (
-          <NavLink key={item.path} to={item.path} className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-blue-600/10 text-blue-400" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}>
-            <item.icon className="h-5 w-5" />
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
+      {isAdmin ? (
+        <nav className="flex-1 space-y-1 px-3 py-4">
+          {items.map((item) => (
+            <NavLink key={item.path} to={item.path} className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-blue-600/10 text-blue-400" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}>
+              <item.icon className="h-5 w-5" />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      ) : (
+        <div className="flex-1 px-6 py-4">
+          <p className="text-xs text-slate-500">Sem permissão para acessar este painel.</p>
+        </div>
+      )}
       <div className="border-t border-slate-800 px-6 py-4">
         <p className="text-xs text-slate-500">PetShoop FullStack v1.0</p>
       </div>

@@ -8,7 +8,7 @@ namespace PetShoop.API.Controllers;
 
 [Route("api/v1/dashboard")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "admin")]
 [EnableRateLimiting("fixedwindow")]
 public class DashboardController : ControllerBase
 {

@@ -11,7 +11,7 @@ namespace PetShoop.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
+[Authorize(Roles = "admin")]
 [EnableRateLimiting("fixedwindow")]
 public class VacinasController : ControllerBase
 {
@@ -86,7 +86,6 @@ public class VacinasController : ControllerBase
     /// <response code="200">Vacina excluída com sucesso.</response>
     /// <response code="401">Usuário não autenticado.</response>
     /// <response code="403">Apenas administradores podem excluir.</response>
-    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<VacinaDto>> Delete(Guid id)
     {

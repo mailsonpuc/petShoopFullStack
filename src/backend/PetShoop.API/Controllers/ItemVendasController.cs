@@ -10,7 +10,7 @@ namespace PetShoop.API.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "admin")]
 [EnableRateLimiting("fixedwindow")]
 public class ItemVendasController : ControllerBase
 {
@@ -100,7 +100,6 @@ public class ItemVendasController : ControllerBase
     /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
     /// <response code="200">Retorna a lista de agendamentos.</response>
     /// <response code="401">Usuário não autenticado.</response>
-    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<ItemVendaDto>> Delete(Guid id)
     {
