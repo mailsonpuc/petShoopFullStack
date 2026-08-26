@@ -2,8 +2,8 @@ import axios from "axios";
 
 const api = axios.create({
     
-    //https://apipetshoop-f8b7cpataca3fhd8.canadacentral-01.azurewebsites.net/api
-    baseURL: "http://localhost:5100/api",
+    //http://localhost:5100/api 
+    baseURL: "https://apipetshoop-f8b7cpataca3fhd8.canadacentral-01.azurewebsites.net/api",
     
 });
 
