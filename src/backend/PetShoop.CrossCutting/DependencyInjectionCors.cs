@@ -21,7 +21,10 @@ public static class DependencyInjectionCors
                         "http://localhost:5100",                  //back launchSettings.json
                         "http://127.0.0.1:5000",                  //back  de produçao no localhost
                         "http://localhost:5173",                  //front de produçao no localhost
-                        "https://pet-shoop-full-stack.vercel.app" //front de produçao
+                        "https://pet-shoop-full-stack.vercel.app", //front de produçao
+                        "http://127.0.0.1",
+                        "http://127.0.0.1:80",                    //nginx deploy front
+                        "http://0.0.0.0"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader();
