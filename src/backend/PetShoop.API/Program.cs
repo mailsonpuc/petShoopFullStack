@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PetShoop.API.Middleware;
 using PetShoop.CrossCutting;
 using PetShoop.CrossCutting.IoC;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseHttpMetrics();
 
 app.UseCors("AllowFrontend");
 
@@ -59,6 +61,7 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapMetrics("/metrics");
 app.MapHealthChecks("/health");
 
 app.MapControllers();
