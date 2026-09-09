@@ -1,50 +1,106 @@
-# Welcome to your Expo app 👋
+# PetShoop FrontEnd
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Frontend da aplicação PetShoop, construído com **React 19 + TypeScript + Vite + Tailwind CSS**.
 
-## Get started
+## Stack
 
-1. Install dependencies
+| Tecnologia | Uso |
+|---|---|
+| React 19 | Biblioteca de UI e gerenciamento de estado |
+| TypeScript | Tipagem estática em todo o código |
+| Vite 8 | Build tool, HMR em desenvolvimento e otimização de produção |
+| Tailwind CSS 4 | Framework de estilização utility-first |
+| React Router DOM 7 | Rotas do lado do cliente |
+| Axios | HTTP client para chamadas à API |
+| React Icons | Ícones vetoriais |
+| ESLint 10 + TypeScript-ESLint | Linting com regras tipadas |
 
-   ```bash
-   npm install
-   ```
+## Padrões de Arquitetura
 
-2. Start the app
+### Estrutura de pastas
 
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+src/
+├── Components/        # Componentes reutilizáveis (ProtectedRoute, Modal, PaginationControls, ConfirmDialog)
+├── Contexts/          # Contextos React (AuthContext)
+├── Hooks/             # Custom hooks (useCrud, useAdminRole)
+├── Services/          # Camada de acesso à API (Api.ts, api.ts)
+├── Types/             # Tipos e contratos de dados compartilhados
+├── Assets/            # Imagens e assets estáticos
+├── App.tsx            # Componente raiz com rotas
+├── main.tsx           # Entry point da aplicação
+├── index.css          # Estilos globais
+└── App.css            # Estilos específicos do App
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Padrão Repository / Service
 
-## Learn more
+A camada `Services/api.ts` atua como um repositório de dados, centralizando todas as chamadas HTTP para a API .NET. Cada domínio (Cliente, Pet, Funcionario, etc.) possui seu próprio objeto de API com as operações CRUD:
 
-To learn more about developing your project with Expo, look at the following resources:
+- ` clientesApi` – list, getPaged, getById, create, update, delete
+- `petsApi`, `funcionariosApi`, `produtosApi`, `servicosApi`, `agendamentosApi`, `consultasApi`, `vacinasApi`, `prontuariosApi`, `vendasApi`, `itemVendasApi`
+- `dashboardApi` – dados do painel
+- `authApi` – login e registro
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Hook customizado de CRUD (`useCrud.ts`)
 
-## Join the community
+Hook reutilizável que abstrai o estado (itais, loading, erro, paginação) e as operações de CRUD. Suporta tanto listagem simples quanto paginação server-side (`fetchPagedFn`).
 
-Join our community of developers creating universal apps.
+### Context API para autenticação (`AuthContext.tsx`)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Gerencia o estado de autenticação (usuário, token, loading) e persiste os dados no `localStorage`. Fornece `login`, `logout`, `isAuthenticated` e `user` para qualquer componente.
+
+### Proteção de rotas (`ProtectedRoute.tsx`)
+
+- `ProtectedRoute` – redireciona para `/login` se não autenticado.
+- `AdminProtectedRoute` – redireciona para `/sem-permissao` se o usuário não for administrador.
+
+### Estado e paginação
+
+A paginação é tratada de forma unificada: o tipo `PagedResponse<T>` contém `data` e `pagination` (`totalCount`, `pageSize`, `currentPage`, `totalPages`, `hasNextPage`, `hasPreviousPage`). O componente `PaginationControls` exibe os controles de página.
+
+## Configuração
+
+### Dependências
+
+```bash
+yarn install
+```
+
+### Variáveis de ambiente
+
+A API .NET é consumida via `Services/Api.ts`. Em desenvolvimento, aponte para a URL desejada (ex: `http://localhost:5100`). Em produção, use variáveis de ambiente ou configuração do Vite (`vite.config.ts`).
+
+## Comandos
+
+### Desenvolvimento
+
+```bash
+yarn dev
+```
+
+Inicia o servidor de desenvolvimento com HMR (Hot Module Replacement).
+
+### Build de produção
+
+```bash
+yarn build
+```
+
+Gera a pasta `dist/` com a aplicação otimizada para produção.
+
+### Lint
+
+```bash
+yarn lint
+```
+
+Executa o ESLint em todo o projeto.
+
+### Preview da build
+
+```bash
+yarn preview
+```
+
+Inicia um servidor estático para visualizar a build de produção.
