@@ -1,75 +1,106 @@
-# React + TypeScript + Vite
+# PetShoop FrontEnd
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend da aplicação PetShoop, construído com **React 19 + TypeScript + Vite + Tailwind CSS**.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Tecnologia | Uso |
+|---|---|
+| React 19 | Biblioteca de UI e gerenciamento de estado |
+| TypeScript | Tipagem estática em todo o código |
+| Vite 8 | Build tool, HMR em desenvolvimento e otimização de produção |
+| Tailwind CSS 4 | Framework de estilização utility-first |
+| React Router DOM 7 | Rotas do lado do cliente |
+| Axios | HTTP client para chamadas à API |
+| React Icons | Ícones vetoriais |
+| ESLint 10 + TypeScript-ESLint | Linting com regras tipadas |
 
-## React Compiler
+## Padrões de Arquitetura
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Estrutura de pastas
 
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── Components/        # Componentes reutilizáveis (ProtectedRoute, Modal, PaginationControls, ConfirmDialog)
+├── Contexts/          # Contextos React (AuthContext)
+├── Hooks/             # Custom hooks (useCrud, useAdminRole)
+├── Services/          # Camada de acesso à API (Api.ts, api.ts)
+├── Types/             # Tipos e contratos de dados compartilhados
+├── Assets/            # Imagens e assets estáticos
+├── App.tsx            # Componente raiz com rotas
+├── main.tsx           # Entry point da aplicação
+├── index.css          # Estilos globais
+└── App.css            # Estilos específicos do App
 ```
+
+### Padrão Repository / Service
+
+A camada `Services/api.ts` atua como um repositório de dados, centralizando todas as chamadas HTTP para a API .NET. Cada domínio (Cliente, Pet, Funcionario, etc.) possui seu próprio objeto de API com as operações CRUD:
+
+- ` clientesApi` – list, getPaged, getById, create, update, delete
+- `petsApi`, `funcionariosApi`, `produtosApi`, `servicosApi`, `agendamentosApi`, `consultasApi`, `vacinasApi`, `prontuariosApi`, `vendasApi`, `itemVendasApi`
+- `dashboardApi` – dados do painel
+- `authApi` – login e registro
+
+### Hook customizado de CRUD (`useCrud.ts`)
+
+Hook reutilizável que abstrai o estado (itais, loading, erro, paginação) e as operações de CRUD. Suporta tanto listagem simples quanto paginação server-side (`fetchPagedFn`).
+
+### Context API para autenticação (`AuthContext.tsx`)
+
+Gerencia o estado de autenticação (usuário, token, loading) e persiste os dados no `localStorage`. Fornece `login`, `logout`, `isAuthenticated` e `user` para qualquer componente.
+
+### Proteção de rotas (`ProtectedRoute.tsx`)
+
+- `ProtectedRoute` – redireciona para `/login` se não autenticado.
+- `AdminProtectedRoute` – redireciona para `/sem-permissao` se o usuário não for administrador.
+
+### Estado e paginação
+
+A paginação é tratada de forma unificada: o tipo `PagedResponse<T>` contém `data` e `pagination` (`totalCount`, `pageSize`, `currentPage`, `totalPages`, `hasNextPage`, `hasPreviousPage`). O componente `PaginationControls` exibe os controles de página.
+
+## Configuração
+
+### Dependências
+
+```bash
+yarn install
+```
+
+### Variáveis de ambiente
+
+A API .NET é consumida via `Services/Api.ts`. Em desenvolvimento, aponte para a URL desejada (ex: `http://localhost:5100`). Em produção, use variáveis de ambiente ou configuração do Vite (`vite.config.ts`).
+
+## Comandos
+
+### Desenvolvimento
+
+```bash
+yarn dev
+```
+
+Inicia o servidor de desenvolvimento com HMR (Hot Module Replacement).
+
+### Build de produção
+
+```bash
+yarn build
+```
+
+Gera a pasta `dist/` com a aplicação otimizada para produção.
+
+### Lint
+
+```bash
+yarn lint
+```
+
+Executa o ESLint em todo o projeto.
+
+### Preview da build
+
+```bash
+yarn preview
+```
+
+Inicia um servidor estático para visualizar a build de produção.
