@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -17,17 +17,39 @@ public class PetsController : ControllerBase
 {
     private readonly IPetService _petService;
     private readonly ILogger<PetsController> _logger;
+    private readonly IMemoryCache _memoryCache;
+    private const string PetsKey = "CachePets";
 
-    public PetsController(IPetService petService, ILogger<PetsController> logger)
+    public PetsController(IPetService petService, ILogger<PetsController> logger, IMemoryCache memoryCache)
     {
         _petService = petService;
         _logger = logger;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os pets cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos PetDto.</returns>
+    /// <response code="200">Retorna a lista de pets.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PetDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(PetsKey, out IEnumerable<PetDto>? cachedPets))
+        {
+            return Ok(cachedPets);
+        }
+
         var pets = await _petService.GetPets();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(PetsKey, pets, cacheEntryOptions);
         return Ok(pets);
     }
 

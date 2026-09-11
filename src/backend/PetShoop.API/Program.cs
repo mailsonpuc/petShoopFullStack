@@ -28,8 +28,11 @@ builder.Services.AddInfrastructureSwagger(builder.Configuration);
 // Rate Limiter
 builder.Services.AddInfrastructureRateLimiter(builder.Configuration);
 
-//  CORS
+// CORS
 builder.Services.AddInfrastructureCors(builder.Configuration);
+
+// Memory Cache
+builder.Services.AddInfrastructureMemoryCache();
 
 
 var app = builder.Build();

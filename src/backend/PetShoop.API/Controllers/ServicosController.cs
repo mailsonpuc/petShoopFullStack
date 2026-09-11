@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -16,16 +17,39 @@ namespace PetShoop.API.Controllers;
 public class ServicosController : ControllerBase
 {
     private readonly IServicoService _servicoService;
+    private readonly IMemoryCache _memoryCache;
+    private const string ServicosKey = "CacheServicos";
 
-    public ServicosController(IServicoService servicoService)
+    public ServicosController(IServicoService servicoService, IMemoryCache memoryCache)
     {
         _servicoService = servicoService;
+        _memoryCache = memoryCache;
     }
 
+
+
+    /// <summary>
+    /// Obtém a lista de todos os serviços cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos ServicoDto.</returns>
+    /// <response code="200">Retorna a lista de serviços.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ServicoDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(ServicosKey, out IEnumerable<ServicoDto>? cachedServicos))
+        {
+            return Ok(cachedServicos);
+        }
+
         var servicos = await _servicoService.GetServicos();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(ServicosKey, servicos, cacheEntryOptions);
         return Ok(servicos);
     }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -15,16 +16,38 @@ namespace PetShoop.API.Controllers;
 public class ProntuariosController : ControllerBase
 {
     private readonly IProntuarioService _prontuarioService;
+    private readonly IMemoryCache _memoryCache;
+    private const string ProntuariosKey = "CacheProntuarios";
 
-    public ProntuariosController(IProntuarioService prontuarioService)
+    public ProntuariosController(IProntuarioService prontuarioService, IMemoryCache memoryCache)
     {
         _prontuarioService = prontuarioService;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os prontuarios cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos ProntuarioDto.</returns>
+    /// <response code="200">Retorna a lista de prontuarios.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProntuarioDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(ProntuariosKey, out IEnumerable<ProntuarioDto>? cachedProntuarios))
+        {
+            return Ok(cachedProntuarios);
+        }
+
         var prontuarios = await _prontuarioService.GetProntuarios();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(ProntuariosKey, prontuarios, cacheEntryOptions);
         return Ok(prontuarios);
     }
 

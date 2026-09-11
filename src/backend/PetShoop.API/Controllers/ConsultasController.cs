@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -16,16 +17,37 @@ namespace PetShoop.API.Controllers;
 public class ConsultasController : ControllerBase
 {
     private readonly IConsultaService _consultaService;
+    private readonly IMemoryCache _memoryCache;
+    private const string ConsultasKey = "CacheConsultas";
 
-    public ConsultasController(IConsultaService consultaService)
+    public ConsultasController(IConsultaService consultaService, IMemoryCache memoryCache)
     {
         _consultaService = consultaService;
+        _memoryCache = memoryCache;
     }
 
+    /// <summary>
+    /// Obtém a lista de todos os Consultas cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos ConsultaDto.</returns>
+    /// <response code="200">Retorna a lista de consultas.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ConsultaDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(ConsultasKey, out IEnumerable<ConsultaDto>? cachedConsultas))
+        {
+            return Ok(cachedConsultas);
+        }
+
         var consultas = await _consultaService.GetConsultas();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(ConsultasKey, consultas, cacheEntryOptions);
         return Ok(consultas);
     }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 
@@ -18,6 +19,7 @@ public class DashboardController : ControllerBase
     private readonly IProdutoService _produtoService;
     private readonly IAgendamentoService _agendamentoService;
     private readonly IVendaService _vendaService;
+    private readonly IMemoryCache _memoryCache;
 
     public DashboardController(
         IClienteService clienteService,
@@ -25,7 +27,8 @@ public class DashboardController : ControllerBase
         IFuncionarioService funcionarioService,
         IProdutoService produtoService,
         IAgendamentoService agendamentoService,
-        IVendaService vendaService)
+        IVendaService vendaService,
+        IMemoryCache memoryCache)
     {
         _clienteService = clienteService;
         _petService = petService;
@@ -33,10 +36,11 @@ public class DashboardController : ControllerBase
         _produtoService = produtoService;
         _agendamentoService = agendamentoService;
         _vendaService = vendaService;
+        _memoryCache = memoryCache;
     }
 
     /// <summary>
-    /// Somente Admin pode apagar.
+    /// obtem dahsboard. Com cache de 30 segundos.
     /// </summary>
     /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
     /// <response code="200">Retorna a lista de agendamentos.</response>
@@ -45,6 +49,12 @@ public class DashboardController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<DashboardDto>> Get()
     {
+        var cacheKey = "dashboard_data";
+        if (_memoryCache.TryGetValue(cacheKey, out DashboardDto? cachedDashboard))
+        {
+            return Ok(cachedDashboard);
+        }
+
         var clientes = await _clienteService.GetClientes();
         var pets = await _petService.GetPets();
         var funcionarios = await _funcionarioService.GetFuncionarios();
@@ -66,6 +76,13 @@ public class DashboardController : ControllerBase
             AgendamentosHoje = agendamentos.Count(a => a.DataHora.Date == hoje),
             AgendamentosPendentes = agendamentos.Count(a => a.Status == Domain.Enums.StatusAgendamento.Agendado)
         };
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(cacheKey, dashboard, cacheEntryOptions);
 
         return Ok(dashboard);
     }

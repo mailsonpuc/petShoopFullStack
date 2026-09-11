@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -15,16 +16,38 @@ namespace PetShoop.API.Controllers;
 public class VendasController : ControllerBase
 {
     private readonly IVendaService _vendaService;
+    private readonly IMemoryCache _memoryCache;
+    private const string VendasKey = "CacheVendas";
 
-    public VendasController(IVendaService vendaService)
+    public VendasController(IVendaService vendaService, IMemoryCache memoryCache)
     {
         _vendaService = vendaService;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os vendas cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos VendaDto.</returns>
+    /// <response code="200">Retorna a lista de vendas.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VendaDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(VendasKey, out IEnumerable<VendaDto>? cachedVendas))
+        {
+            return Ok(cachedVendas);
+        }
+
         var vendas = await _vendaService.GetVendas();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(VendasKey, vendas, cacheEntryOptions);
         return Ok(vendas);
     }
 

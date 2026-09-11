@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -16,16 +17,38 @@ namespace PetShoop.API.Controllers;
 public class VacinasController : ControllerBase
 {
     private readonly IVacinaService _vacinaService;
+    private readonly IMemoryCache _memoryCache;
+    private const string VacinasKey = "CacheVacinas";
 
-    public VacinasController(IVacinaService vacinaService)
+    public VacinasController(IVacinaService vacinaService, IMemoryCache memoryCache)
     {
         _vacinaService = vacinaService;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os vacinas cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos VacinaDto.</returns>
+    /// <response code="200">Retorna a lista de vacinas.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VacinaDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(VacinasKey, out IEnumerable<VacinaDto>? cachedVacinas))
+        {
+            return Ok(cachedVacinas);
+        }
+
         var vacinas = await _vacinaService.GetVacinas();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(VacinasKey, vacinas, cacheEntryOptions);
         return Ok(vacinas);
     }
 

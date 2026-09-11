@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -16,13 +17,17 @@ public class AgendamentosController : ControllerBase
 {
     private readonly IAgendamentoService _agendamentoService;
 
-    public AgendamentosController(IAgendamentoService agendamentoService)
+    private readonly IMemoryCache _cache;
+    private const string AgendamentosKey = "CacheAgendamentos";
+
+    public AgendamentosController(IAgendamentoService agendamentoService, IMemoryCache cache)
     {
         _agendamentoService = agendamentoService;
+        _cache = cache;
     }
 
     /// <summary>
-    /// Obtém a lista de todos os agendamentos cadastrados.
+    /// Obtém a lista de todos os agendamentos cadastrados. Com cache de 30 segundos.
     /// </summary>
     /// <returns>Uma coleção de objetos AgendamentoDto.</returns>
     /// <response code="200">Retorna a lista de agendamentos.</response>
@@ -30,7 +35,20 @@ public class AgendamentosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AgendamentoDto>>> Get()
     {
+        var cacheKey = AgendamentosKey;
+        if (_cache.TryGetValue(cacheKey, out IEnumerable<AgendamentoDto>? cachedAgendamentos))
+        {
+            return Ok(cachedAgendamentos);
+        }
+
         var agendamentos = await _agendamentoService.GetAgendamentos();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _cache.Set(cacheKey, agendamentos, cacheEntryOptions);
         return Ok(agendamentos);
     }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -15,16 +16,38 @@ namespace PetShoop.API.Controllers;
 public class FuncionariosController : ControllerBase
 {
     private readonly IFuncionarioService _funcionarioService;
+    private readonly IMemoryCache _memoryCache;
+    private const string FuncionariosKey = "CacheFuncionarios";
 
-    public FuncionariosController(IFuncionarioService funcionarioService)
+    public FuncionariosController(IFuncionarioService funcionarioService, IMemoryCache memoryCache)
     {
         _funcionarioService = funcionarioService;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os funcionarios cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos FuncionarioDto.</returns>
+    /// <response code="200">Retorna a lista de funcionarios.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<FuncionarioDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(FuncionariosKey, out IEnumerable<FuncionarioDto>? cachedFuncionarios))
+        {
+            return Ok(cachedFuncionarios);
+        }
+
         var funcionarios = await _funcionarioService.GetFuncionarios();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(FuncionariosKey, funcionarios, cacheEntryOptions);
         return Ok(funcionarios);
     }
 

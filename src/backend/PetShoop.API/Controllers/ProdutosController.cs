@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using PetShoop.Application.DTOs;
 using PetShoop.Application.Interfaces;
 using PetShoop.CrossCutting.Pagination;
@@ -15,16 +16,38 @@ namespace PetShoop.API.Controllers;
 public class ProdutosController : ControllerBase
 {
     private readonly IProdutoService _produtoService;
+    private readonly IMemoryCache _memoryCache;
+    private const string ProdutosKey = "CacheProdutos";
 
-    public ProdutosController(IProdutoService produtoService)
+    public ProdutosController(IProdutoService produtoService, IMemoryCache memoryCache)
     {
         _produtoService = produtoService;
+        _memoryCache = memoryCache;
     }
 
+
+    /// <summary>
+    /// Obtém a lista de todos os produtos cadastrados. Com cache de 30 segundos.
+    /// </summary>
+    /// <returns>Uma coleção de objetos ProdutoDto.</returns>
+    /// <response code="200">Retorna a lista de produtos.</response>
+    /// <response code="401">Usuário não autenticado.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProdutoDto>>> Get()
     {
+        if (_memoryCache.TryGetValue(ProdutosKey, out IEnumerable<ProdutoDto>? cachedProdutos))
+        {
+            return Ok(cachedProdutos);
+        }
+
         var produtos = await _produtoService.GetProdutos();
+
+        var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+            .SetPriority(CacheItemPriority.High);
+
+        _memoryCache.Set(ProdutosKey, produtos, cacheEntryOptions);
         return Ok(produtos);
     }
 
