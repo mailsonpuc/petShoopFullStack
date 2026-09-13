@@ -37,7 +37,7 @@ public class PetRepository : IPetRepository
 
     public async Task<PagedList<Pet>> GetPetsPagedAsync(int pageNumber, int pageSize)
     {
-        return await PagedList<Pet>.ToPagedListAsync(_context.Pets.AsNoTracking(), pageNumber, pageSize);
+        return await PagedList<Pet>.ToPagedListAsync(_context.Pets.AsNoTracking().OrderBy(p => p.Nome), pageNumber, pageSize);
     }
 
     public async Task<Pet> RemoveAsync(Pet pet)

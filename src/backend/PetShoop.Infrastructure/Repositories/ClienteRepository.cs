@@ -41,6 +41,7 @@ public class ClienteRepository : IClienteRepository
     {
         var count = await _context.Clientes.CountAsync();
         var items = await _context.Clientes.AsNoTracking()
+            .OrderBy(c => c.Nome) //ordenar por nome
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
