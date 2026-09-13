@@ -26,8 +26,8 @@ public static class DependencyInjectionCors
                         "http://127.0.0.1:80",                    //nginx deploy front
                         "http://0.0.0.0"
                     )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .WithMethods("GET", "POST", "PUT", "DELETE")
+                    .WithHeaders("Content-Type", "Authorization");
 
                 /*
                   policy
